@@ -6,3 +6,4 @@ the symptom, the cause, the fix and how to turn the fix off, so that you can che
 | Note | Status |
 |---|---|
 | [The fixes ported from Guitar Hero 5](fixes-from-gh5.md) | In testing |
+| [NativeXRenderer in Guitar Hero: Warriors of Rock](native-x-renderer-ghwor.md) | In testing (not the default) |

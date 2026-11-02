@@ -10,7 +10,7 @@ below say how.
 
 Checked here (2026-11-01, by the tools, not yet by a player): the main menu, Quickplay+ and a song on the Xenos path
 (the sound not heard), the CPU, the timer fix, the quit prompt, ultrawide at 21:9, 120 FPS, two screen effects turned
-off. NativeXRenderer is not integrated yet.
+off. NativeXRenderer: [native-x-renderer-ghwor.md](native-x-renderer-ghwor.md).
 
 ## The threads' waits (CPU)
 

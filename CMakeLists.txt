@@ -1,5 +1,5 @@
 # GHWoRRecomp - static recompilation of Guitar Hero: Warriors of Rock (Xbox 360), built on the ReXGlue SDK, drawn by the SDK's Xenos
-# emulation (and, once integrated, by NativeXRenderer: native_x_renderer/, a submodule).
+# emulation or by NativeXRenderer (native_x_renderer/, a submodule).
 #
 # The SDK is the thirdparty/rexglue-sdk git submodule: ElGuslml/rexglue-sdk, branch recomp, the official
 # nightly of 2026-10-02 (v0.10.0 and 24 later commits) with the changes these projects and NativeXRenderer
@@ -67,6 +67,7 @@ set(GHWOR_SOURCES
     src/framerate.cpp
     src/keyboard.cpp
     src/main.cpp
+    src/native_x_renderer_ghwor.cpp
     src/options.cpp
     src/players.cpp
     src/quit_prompt.cpp
@@ -86,9 +87,8 @@ endif()
 rexglue_setup_target(ghwor GPU_PLUGINS xenos)
 add_dependencies(ghwor ghwor_sources_marker)
 
-# NativeXRenderer: the native renderer (native_x_renderer/README.md), built and linked from the start. Nothing
-# references it until the game side exists (src/native_x_renderer_ghwor.cpp: hooks and profile; the library's
-# docs/integrating-a-game.md), so the game draws on the Xenos path until then.
+# NativeXRenderer: the native renderer (native_x_renderer/README.md). The game side (hooks, profile) is in
+# src/native_x_renderer_ghwor.cpp; the game draws on the Xenos path while native_x_renderer is off.
 add_subdirectory(native_x_renderer)
 target_link_libraries(ghwor PRIVATE native_x_renderer)
 # NVIDIA's DLSS runtime next to the executable.

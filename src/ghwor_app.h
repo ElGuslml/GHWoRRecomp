@@ -12,6 +12,9 @@
 #include <rex/system/xthread.h>
 #include <rex/ui/imgui_dialog.h>
 
+#include <native_x_renderer/native_x_renderer.h>
+
+#include "native_x_renderer_ghwor.h"
 #include "keyboard.h"
 #include "options.h"
 #include "project.h"
@@ -57,21 +60,22 @@ class GhworApp : public rex::ReXApp {
     ghwor::EnsureDefaultConfig(exe_dir / GAME_CONFIG);
     if (!rex::ReXApp::SetupEnvironment()) return false;
     REXLOG_INFO("[startup] User data: {}", user_data_root().string());
+    REXLOG_INFO("[startup] {}", native_x_renderer::Describe());
     if (!rex::cvar::Query<bool>("achievements_cache_only") && !ghwor::CheckGameFiles(game_data_root())) return false;
     ghwor::LoadLauncherOptions(exe_dir / GAME_OPTIONS, ghwor::GpuPluginPath());
     return true;
   }
 
-  // Window title (the SDK sets "<app name> <SDK build stamp>"), then ultrawide (src/widescreen.cpp): the cameras'
-  // aspect ratio follows the window. NativeXRenderer is initialized here too, before the guest starts, once the game
-  // has its side (native_x_renderer/docs/integrating-a-game.md, step 2):
-  //   native_x_renderer::Initialize(ghwor::NativeXRendererProfile(),
-  //                                 runtime() ? runtime()->graphics_system() : nullptr, window(),
-  //                                 runtime() ? runtime()->cache_root() : std::filesystem::path());
+  // Window title (the SDK sets "<app name> <SDK build stamp>"), then NativeXRenderer, before the guest starts: its
+  // hooks (src/native_x_renderer_ghwor.cpp) are pass-throughs until it is initialized; then ultrawide
+  // (src/widescreen.cpp): the cameras' aspect ratio follows the window.
   void OnPostSetup() override {
     if (window()) {
       window()->SetTitle(GAME_TITLE);
     }
+    native_x_renderer::Initialize(ghwor::NativeXRendererProfile(),
+                                  runtime() ? runtime()->graphics_system() : nullptr, window(),
+                                  runtime() ? runtime()->cache_root() : std::filesystem::path());
     if (window()) {
       ghwor::SetOutputSize(window()->GetActualPhysicalWidth(), window()->GetActualPhysicalHeight());
     }
