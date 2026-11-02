@@ -4,7 +4,7 @@ The game's side of NativeXRenderer (`native_x_renderer/`, the library that hooks
 on the host). The hooks and the profile are in [`src/native_x_renderer_ghwor.cpp`](../src/native_x_renderer_ghwor.cpp);
 the library's checklist is `native_x_renderer/docs/integrating-a-game.md`.
 
-**Status (2026-11-02):** GH5's side, mapped to this game's library. Not the default renderer:
+**Status (2026-11-02):** GH5's side, mapped to this game's library; FXAA and SMAA. Not the default renderer:
 `--native_x_renderer=true` or the launcher's NativeXRenderer card.
 
 ## The addresses
@@ -23,9 +23,17 @@ the library's checklist is `native_x_renderer/docs/integrating-a-game.md`.
 - GH5's DrawIndexedVerticesUP and BeginIndexedVertices are not in this executable. The engine's three BeginVertices /
   EndVertices pairs (`sub_822C3F78`, `sub_822C53A0`, `sub_822C9948`) call EndVertices (`sub_822D1890`, `[dev+48] =
   [dev+13652]`): `inline_draw_end` covers them and EndVertices is not hooked, as in GH5.
-- **`scene_resolve_caller = 0`: no antialiasing yet**, as GH5. A traced song frame has the scene's 1280x720 copy after
-  its 513 draws from `0x8255AD64 < 0x826493C8`, the render targets' helper every resolve goes through
-  (`sub_8255AC80`): to be told apart in the menus too before it is set.
+- **Antialiasing: FXAA and SMAA** (`native_x_renderer_antialiasing`, SMAA by default; the launcher's renderer card).
+  Every resolve goes through the render targets' helper `sub_8255AC80`; `scene_resolve_caller = 0x8255AD1C`, its
+  color resolve. The game alternates two kinds of frame, both shown, which copy the scene into the same 1280x720
+  texture the screen effects' composite samples, from different places: one through the scene renderer
+  `sub_8255A3C8` after the scene's draws (`< 0x8255A994`), the other from inside the composite `sub_82641110` after the
+  bloom's passes (`< 0x82641558`), with an earlier copy of the stage and the crowd (`< 0x8264C1B8`). With the first
+  outer caller only, every other frame was left as it was (applied 300 times in 600 frames). So no outer caller:
+  every 1280x720 copy through the helper is antialiased, 900 times in 600 frames (in the menus too); the helper's
+  smaller copies (the effects' quarter sizes, the lobby's 400x400 portraits) are left out by their size. The HUD and
+  the note highway are drawn over the composite: they stay sharp. DLAA is not available (the game's views are not
+  marked): in the launcher it gives no antialiasing.
 
 ## Checked (2026-11-02, Game.ps1, keyboard)
 
@@ -44,7 +52,11 @@ the library's checklist is `native_x_renderer/docs/integrating-a-game.md`.
 
 ## Not done yet
 
-- **A resolve into a 3D texture** (`resolve to a texture of dimension 2: not supported yet`): once in three runs, on
-  entering the band lobby the first time, from a 32x32 surface (a 32x32x32 volume, probably a color lookup table).
-  NativeXRenderer skips it; nothing different was seen on screen. Not reproduced since.
+- **A resolve into a 3D texture** (`resolve to a texture of dimension 2: not supported yet`): the engine's
+  "LightVolume" render stage (its stage table at `0x8286B9B0`, gated by `[0x82858FF0]`, 1 in the image) builds a volume
+  of 16 slices from the scene's lights with bit 4 set (`sub_825F0CE0`: per slice a draw, then a resolve into the slice
+  of the renderer's texture 44) and draws with it at once (`sub_825F0668` -> `sub_825EF978`, the volume as sampler 3).
+  It ran in two frames of one run of five (16 resolves skipped in each, entering the band lobby and the song), never in
+  the others: a light effect of a frame. NativeXRenderer skips 1D and 3D resolve destinations, so that frame draws its
+  light volume from a texture nobody filled.
 - Frame rates above 60 and larger outputs (3440x1440, 160 FPS) with NativeXRenderer, a real play test.

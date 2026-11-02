@@ -80,10 +80,17 @@ const native_x_renderer::Profile& NativeXRendererProfile() {
     p.xdk_version = "2.0.11164";
     p.output_width = 1280;  // the presentation parameters come from a video-mode table at run time
     p.output_height = 720;
-    // The finished scene's copy, before the HUD and the note highway. GH5's resolves all went through the render
-    // targets' helpers (none of their return addresses the scene's alone), and this game's composite is GH5's: 0 until
-    // a trace tells the scene's copy apart.
-    p.scene_resolve_caller = 0;
+    // The finished scene's copy, before the screen effects' composite, the note highway and the HUD, for FXAA and SMAA.
+    // Every resolve goes through the render targets' helper sub_8255AC80 (its color resolve returns to 0x8255AD1C), as
+    // GH5's did, and the game alternates two kinds of frame, both shown, that copy the scene from different places into
+    // the same 1280x720 texture the composite then samples: one through the scene renderer sub_8255A3C8 after the
+    // scene's draws (0x8255A990), the other from inside the composite sub_82641110 after the bloom's passes (0x82641554),
+    // with an earlier copy of the stage and the crowd before (0x8264C1B4). Antialiasing one of them only (the outer
+    // caller) left every other frame's edges as they were; so every 1280x720 copy through the helper is antialiased (1.5
+    // a frame), the HUD and the highway drawn over the composite stay sharp. The same helper's smaller copies (the
+    // screen effects' quarter sizes, the band lobby's 400x400 portraits) are not the scene: NativeXRenderer takes only
+    // copies of the output's size.
+    p.scene_resolve_caller = 0x8255AD1C;
     // The ultrawide hooks (src/widescreen.cpp) widen the 16:9 cameras by AspectFactor() and keep the 2D layer at
     // 16:9 in the center: NativeXRenderer may fill a wider output (native_x_renderer_fill_screen).
     p.widens_cameras = true;
