@@ -32,8 +32,9 @@ the library's checklist is `native_x_renderer/docs/integrating-a-game.md`.
   outer caller only, every other frame was left as it was (applied 300 times in 600 frames). So no outer caller:
   every 1280x720 copy through the helper is antialiased, 900 times in 600 frames (in the menus too); the helper's
   smaller copies (the effects' quarter sizes, the lobby's 400x400 portraits) are left out by their size. The HUD and
-  the note highway are drawn over the composite: they stay sharp. DLAA is not available (the game's views are not
-  marked): in the launcher it gives no antialiasing.
+  the note highway are drawn over the composite: they stay sharp. No DLAA: the game's views are not marked
+  (`native_x_renderer::BeginView`), so DLAA would turn SMAA and FXAA off and DLSS never run; the launcher (RecompLauncher
+  3.6, `game::kHasDlaa = false`) offers SMAA, FXAA and none, and reads an options file's `dlaa` as SMAA.
 
 ## Checked (2026-11-02, Game.ps1, keyboard)
 
