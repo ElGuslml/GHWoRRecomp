@@ -1,0 +1,242 @@
+# ghwor_functions.toml - Manual corrections for the analyzer (default.xex): functions it missed, [[switch_tables]] the
+# codegen mistranslates and [[midasm_hook]]s into src/. KameoRecomp's kameo_functions.toml, POTCAWERecomp's
+# potcawe_functions.toml and GRAWRecomp's yeti_functions.toml have examples of each. The hooks are GH5's
+# (GH5Recomp's gh5_functions.toml), each found here by a function matcher over both executables' instruction indexes
+# and checked instruction by instruction (docs/fixes-from-gh5.md).
+
+# The C runtime's setjmp and longjmp (sub_82798F90 saves f14-f31, r13-r31, v64-v127, r1, LR and CR in the jmp_buf;
+# sub_82798C70 unwinds to it and loads them back), the same code as GH5's (179 and 197 instructions, identical). The
+# codegen turns calls to them into the host's setjmp and longjmp, keyed by the guest jmp_buf; translated as plain
+# functions, longjmp would load the registers and return to its caller instead of jumping. Only the image decoders use
+# them, as in GH5: libjpeg (sub_826D0590: setjmp at its error manager + 144, where its error function sub_826CF640
+# longjmps back) and libpng (sub_826D07B0, sub_826E35B0: setjmp at the start of the png struct, longjmp from
+# sub_826E1808 and sub_826CF708).
+setjmp_address = 0x82798F90
+longjmp_address = 0x82798C70
+
+# Codegen: the registers no call passes on are local variables of each function, not fields of the PPCContext, so
+# the compiler keeps them in host registers and the __savegprlr/__restgprlr helpers are elided, as in GH5, GH Van
+# Halen, KameoRecomp, GRAWRecomp and POTCAWERecomp. non_argument_as_local (r0, r2, r11, r12) stays off: the SEH funclets
+# read r12, which the SDK does not pass them. The non-volatile vector registers stay in the context (SDK change 42), as
+# in GH5 and GH Van Halen, whose compiler passes values to its callees in them outside the calling convention (GH5's
+# v92: vor128 v92,v12,v12, then a callee's vmsum4fp128 v63,v92,v0). That pattern was not found here (no vor128 into
+# v92, nor GH5's functions), but this is the safe setting.
+non_volatile_as_local = true
+non_volatile_vectors_as_local = false
+cr_as_local = true
+ctr_as_local = true
+xer_as_local = true
+reserved_as_local = true
+
+[functions]
+# The functions that call setjmp keep their registers in the context (share_registers): the host longjmp returns
+# into their C++ frame, and the codegen restores the context it saved at the setjmp, not local variables. The guest
+# longjmp loaded r14-r31 with their values at the setjmp. None of them calls longjmp itself, so their ends (from
+# .pdata) do not move.
+0x826D0590 = { share_registers = true }   # libjpeg's guard
+0x826D07B0 = { share_registers = true }   # libpng's guards
+0x826E35B0 = { share_registers = true }
+# Branch (b) targets that the automatic analysis did not assign to any function (the first build, 2026-11-01). All
+# are small functions reached only through tail calls, each right after an unconditional end (bctr): virtual call
+# thunks (lwz r11,0(r3) / lwz r10,N(r11) / mtctr / bctr) and setters. Their callers forward to a member (lwz r3,N(r3),
+# a null check, then b), as GH5's.
+0x8259EE08 = {}   # branched to from 0x825AA590 (virtual call thunk, slot 104)
+0x8259EE18 = {}   # branched to from 0x825AA4C4 (virtual call thunk, slot 120)
+0x8259EEA8 = {}   # branched to from 0x825AA684 (virtual call thunk, slot 168)
+0x82409F18 = {}   # branched to from 0x82543410 (stores r4 at +144, a flag at +104 of r4 from the byte at +136)
+0x8260B160 = {}   # branched to from 0x8246CFAC and 0x8246CFC8 (sets the byte at +241)
+
+# The game's threads wait without spinning (src/thread_waits.cpp): four loops checked a condition again and
+# again and kept a core at 100 % each (the three job workers, the main thread at the start of a frame and while
+# it waits for the render thread, the render thread waiting for the vertical blank). Each hook spins briefly and then
+# sleeps between checks; ghwor_wait_sleep_us = 0 disables them. With ghwor_wait_smart (on) the workers block on the job
+# event, the render thread sleeps until shortly before the vertical blank, and the main thread waiting for a job group
+# (sub_82551028) watches the group's counts between passes instead of taking the queue's lock again at once.
+[[midasm_hook]]
+address = 0x825FF264   # li r4,0 (sub_825FF208: a job worker with an empty queue, before WaitForSingleObject(event, 0))
+name = "GHWoRJobWaitHook"
+[[midasm_hook]]
+address = 0x8242C51C   # cmplwi cr6,r3,0 (sub_8242C450: while (sub_825528E0(0x82A81CF8) != 0) {})
+name = "GHWoRFrameWaitHook"
+registers = ["r3"]
+[[midasm_hook]]
+address = 0x8242AC1C   # cmplw cr6,r11,r10 (sub_8242ABE8: while (frames[24] == frames[20]) {}, waiting for the render thread)
+name = "GHWoRRenderWaitHook"
+registers = ["r11", "r10"]
+[[midasm_hook]]
+address = 0x825841B0   # cmpld cr6,r3,r11 (sub_825840F0: until the vertical blank counter reaches the next value)
+name = "GHWoRVblankWaitHook"
+registers = ["r3", "r11"]
+[[midasm_hook]]
+address = 0x825842F8   # cmpld cr6,r3,r30 (sub_825840F0: until the other counter reaches the frame's last vertical blank)
+name = "GHWoRVblankWait2Hook"
+registers = ["r3", "r30"]
+[[midasm_hook]]
+address = 0x825510C4   # lwz r11,0(r31) (sub_82551028: the main thread waiting for a job group, after a pass)
+name = "GHWoRJobGroupWaitHook"
+registers = ["r31", "r30"]
+# The D3D library's six waits for the GPU (fences, the present, ...) call sub_822D5D60 for every check: at 120 FPS
+# the render thread spent half its time there (GH Van Halen).
+[[midasm_hook]]
+address = 0x822D5D60   # mflr r12 (entry of sub_822D5D60: a check of a wait for the GPU, its condition still false)
+name = "GHWoRGpuWaitHook"
+
+# Songs in sync with their audio (src/timer.cpp): the engine's timer replaces the 50,000,000 Hz that
+# KeQueryPerformanceFrequency reports by the original console's real timebase rate, 49,875,000; the SDK's timebase
+# runs at 50 MHz, so the game's clock ran 0.25 % fast and the notes drifted ahead of the audio.
+# ghwor_timer_fix = false disables it.
+[[midasm_hook]]
+address = 0x823A02D4   # cmplw cr6,r11,r7 (sub_823A0238: r11 = the reported frequency, r7 = 50,000,000)
+name = "GHWoRTimerFrequencyHook"
+registers = ["r7"]
+
+# Ultrawide (src/widescreen.cpp), with ghwor_ultrawide: the projection of every 16:9 view is widened (Hor+: the 3D views
+# see more at the sides; their aspect ratio is the view's size, not the SetScreen aspect), and the screen elements'
+# vertices (pixels of the 1280x720 canvas) are narrowed around the center just before they are drawn to the screen
+# (the menus, the HUD, the note highway and its notes stay 16:9), with the clip windows they draw through.
+[[midasm_hook]]
+address = 0x824C6EE0   # entry of sub_824C6EE0, a perspective projection from its frustum (f1-f4: left, right, bottom, top)
+name = "GHWoRFrustumHook"
+registers = ["f1", "f2", "f3", "f4"]
+[[midasm_hook]]
+address = 0x824D9498   # bl DrawVerticesUP in sub_824D9230 (a sprite's quad: r6 = its vertices, r7 = their stride)
+name = "GHWoRSpriteHook"
+registers = ["r6", "r7"]
+[[midasm_hook]]
+address = 0x82625AD0   # bl DrawVerticesUP in sub_826255D8 (another element's quad: the loading screen's layers)
+name = "GHWoRElementQuadHook"
+registers = ["r6", "r7"]
+[[midasm_hook]]
+address = 0x8265B65C   # bl DrawVerticesUP in sub_8265B540 (a batch of quads: r5 = vertices, r6 = data, r7 = stride)
+name = "GHWoRSpriteBatchHook"
+registers = ["r5", "r6", "r7"]
+[[midasm_hook]]
+address = 0x824D96D4   # bl SetScissorRect in sub_824D94A8 (a screen element's clip window: r4 = {x1, y1, x2, y2})
+name = "GHWoRClipWindowHook"
+registers = ["r4"]
+[[midasm_hook]]
+address = 0x822C6704   # bl DrawVerticesUP in sub_822C5D20 (a sustained note's tail: r5 = vertices, r6 = data, r7 = stride)
+name = "GHWoRTailHook"
+registers = ["r5", "r6", "r7"]
+[[midasm_hook]]
+address = 0x822C4540   # bl EndVertices in sub_822C3F78 (a sprite drawn as a grid of quads, the highway's board: r3 = device)
+name = "GHWoRMeshSpriteHook"
+registers = ["r3"]
+[[midasm_hook]]
+address = 0x822C8974   # bl DrawVerticesUP in sub_822C8810 (a 2D particle's quad: r5 = vertices, r6 = data, r7 = stride)
+name = "GHWoRParticleHook"
+registers = ["r5", "r6", "r7"]
+
+
+# Frame rates above 60 (src/framerate.cpp, ghwor_frame_rate_fix): the engine's clocks counted in vertical blanks
+# divide by its vertical blanks per second (the global 0x82860438, 60): the divisions use it times the emulated
+# vblank's rate over 60, so those clocks keep their speed (no visible case known). GH Van Halen's frame time hook is
+# not needed: this game's frame time is measured on the time base, as GH5's.
+[[midasm_hook]]
+address = 0x82629360   # extsw r8,r30 (sub_826291F8: a vblank clock's vblanks into seconds, r30 = vblanks per second)
+name = "GHWoRVblankClockHook"
+registers = ["r30"]
+[[midasm_hook]]
+address = 0x82629588   # extsw r11,r30 (sub_826291F8: seconds back into vblanks, r30 = vblanks per second)
+name = "GHWoRVblankClockHook"
+registers = ["r30"]
+# Script waits counted in game frames ("Wait N gameframes", waitonegameframe, waitgameframes, Yield, and the compiled
+# scripts' waits): above 60 Hz they last the console's N / 60 s.
+[[midasm_hook]]
+address = 0x8256B2A0   # entry of sub_8256B2A0 (a type 1 game-frame wait set: r3 = the wait, r4 = N)
+name = "GHWoRFrameWaitSetHook"
+registers = ["r3", "r4"]
+[[midasm_hook]]
+address = 0x8256B250   # entry of sub_8256B250 (a type 8 game-frame wait set: r3 = the wait, r4 = N)
+name = "GHWoRFrameWaitSetHook"
+registers = ["r3", "r4"]
+[[midasm_hook]]
+address = 0x8256B5E4   # addi r11,r11,-1 (sub_8256B5A0: a game-frame wait's count above 0, r3 = the wait)
+name = "GHWoRFrameWaitCountHook"
+registers = ["r3", "r11"]
+# Button presses polled by scripts (ControllerMake) last one frame: a script whose waits are held above 60 Hz is given
+# the presses of the frames it skipped.
+[[midasm_hook]]
+address = 0x824CD5B0   # bgt cr6 (sub_824CD3D8: a controller's input state updated, r30 = the state, r9 = the pressed bits)
+name = "GHWoRInputUpdateHook"
+registers = ["r30", "r9"]
+[[midasm_hook]]
+address = 0x824D58C8   # entry of sub_824D58C8 (the script function ControllerMake: r4 = the script)
+name = "GHWoRButtonPollHook"
+registers = ["r4"]
+[[midasm_hook]]
+address = 0x824D5988   # addi r1,r1,112 (sub_824D58C8's exit, every path)
+name = "GHWoRButtonPollEndHook"
+# The whammy on a sustain is told by the frame (the bar's movement since the previous frame, a countdown of 5 frames,
+# 5 frames in a row to turn a star power sustain blue or back): above 60 Hz over a 60th of a second and 5 / 60 s.
+[[midasm_hook]]
+address = 0x82180BA0   # mflr r12 (sub_82180BA0: a player's update in a song, every frame; src/keyboard.cpp)
+name = "GHWoRSongFrameHook"
+[[midasm_hook]]
+address = 0x82187120   # fsubs f0,f30,f0 (sub_82186FF8, a guitar: the bar's position minus the previous frame's)
+name = "GHWoRWhammyHook"
+registers = ["r31", "f30", "f0"]
+[[midasm_hook]]
+address = 0x82187244   # fsubs f12,f30,f0 (sub_82186FF8, another controller: the first axis minus the previous frame's)
+name = "GHWoRWhammyHook"
+registers = ["r31", "f30", "f0"]
+[[midasm_hook]]
+address = 0x82187258   # fsubs f0,f29,f0 (sub_82186FF8, another controller: the second axis minus the previous frame's)
+name = "GHWoRWhammy2Hook"
+registers = ["r31", "f29", "f0"]
+[[midasm_hook]]
+address = 0x82186F94   # fsubs f13,f0,f13 (sub_82186E08, the touch strip: its position minus the previous frame's)
+name = "GHWoRWhammyHook"
+registers = ["r31", "f0", "f13"]
+[[midasm_hook]]
+address = 0x82187140   # lfs f13,16216(r11) (sub_82186FF8, a guitar: r29 = 5, the countdown its store and a bot's store)
+name = "GHWoRWhammyCountdownHook"
+registers = ["r29"]
+[[midasm_hook]]
+address = 0x82187278   # lfs f13,16216(r11) (sub_82186FF8: r29 = 5, the countdown both axes store)
+name = "GHWoRWhammyCountdownHook"
+registers = ["r29"]
+[[midasm_hook]]
+address = 0x82186FC0   # stwx r9,r31,r8 (sub_82186E08: the whammy countdown, 5 frames)
+name = "GHWoRWhammyCountdownHook"
+registers = ["r9"]
+[[midasm_hook]]
+address = 0x8218EB24   # cmpwi cr6,r11,5 (sub_8218E9A0: frames in a row of whammying)
+name = "GHWoRWhammyStateHook"
+registers = ["r11"]
+[[midasm_hook]]
+address = 0x8218EC10   # cmpwi cr6,r11,5 (sub_8218E9A0: frames in a row of not whammying)
+name = "GHWoRWhammyStateHook"
+registers = ["r11"]
+# The loading screen's animations step by the frame: above 60 Hz the steps are scaled by 60 / the rate.
+[[midasm_hook]]
+address = 0x825F9E30   # after fmuls f31,f13,f12 (sub_825F9D10: the spinning star, f31 = its turn each frame, 0.175 radians times DisplayLoadingScreen's speed)
+name = "GHWoRLoadingStarHook"
+registers = ["f31"]
+[[midasm_hook]]
+address = 0x8243190C   # add r11,r10,r11 (sub_824318C0: DisplayLoadingScreen's icon, its angle plus its step, r10 = the step in degrees)
+name = "GHWoRLoadingSpinnerHook"
+registers = ["r10"]
+[[midasm_hook]]
+address = 0x825FA198   # fadds f0,f0,f29 (sub_825F9F70's mode 2: a wave's phase plus its step, f29)
+name = "GHWoRLoadingWaveHook"
+registers = ["f29"]
+[[midasm_hook]]
+address = 0x825FA1A8   # fadds f0,f13,f0 (sub_825F9F70's mode 2: the other phase plus its step, f0)
+name = "GHWoRLoadingWaveHook"
+registers = ["f0"]
+
+# The screen effects each turned off by an option (src/screen_fx.cpp, ghwor_fx_*): the effects' composite
+# (sub_82641110, two passes) picks its shader variants and chooses how each pass draws by testing a word of flags, one
+# bit per effect, through sub_8252F3E8, as the effects' own passes do (GH5's composite read the word itself, three
+# times): each test loses the bits of the effects turned off.
+[[midasm_hook]]
+address = 0x8252F428   # and r9,r10,r11 (sub_8252F3E8, the effects' test), after lwz r10,4(r31): r10 = the flags
+name = "GHWoRScreenFxFlagsHook"
+registers = ["r10"]
+
+# Quitting from the main menu (src/quit_prompt.cpp): once per frame, the hook looks the main menu's own element up in
+# the game's element table and offers the SDK's quit prompt (B) while it exists and no dialog box does.
+[[midasm_hook]]
+address = 0x8242C510   # stfd f0,-19760(r7) (sub_8242C450: the main thread's frame, before its wait)
+name = "GHWoRQuitPromptHook"
