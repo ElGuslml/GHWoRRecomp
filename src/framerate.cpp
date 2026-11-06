@@ -127,6 +127,10 @@ double FrameSeconds() { return 1.0 / VblankRate(); }
 // the wait).
 constexpr uint32_t kSelfTimedScripts[] = {
     0x74B936AB,  // star power's drain: current_deltatime off the meter each pass
+    // button_checker: ButtonCheckerPerFrame (sub_8216A210), the player's input object (sub_821402D0 or sub_8213E688) and
+    // sub_8218BF88, which takes 20 pixels * the frame's time / 0.1 s off each fret's height after a hit. Held to 60
+    // passes a second the frets fell back in 266 ms at 160 FPS (measured in GH5), 100 ms every frame, as at 60.
+    0x716BADDC,
     // GetFrameLength each pass:
     0xC8580B17, 0xD1260990,  // Transition_Play's timer and the events it spawns, with use_song_time = 0
     0x473164C7, 0x06913019,  // compiled; 0x473164C7's step is two frames' length measured across a waitonegameframe

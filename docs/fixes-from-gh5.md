@@ -63,9 +63,14 @@ blank's rate; the game's clock is real time. `src/framerate.cpp` (`ghwor_frame_r
 speed what counts frames, as GH5's: the vblank clocks, the scripts' game-frame waits, the button presses scripts poll,
 the whammy on a sustain and the loading screen's animations. Where this game differs: the whammy's hooks read the note
 hold object from another register and its fields moved; the loading star's turn is multiplied by a new speed parameter;
-19 scripts that measure their own time by the frame's (GH5: the star power drain only) are left to run every frame, as
-their waits would make them slower. Checked at 120 FPS: a song failed with no player at the same point (11 %) as at 60.
+20 scripts that measure their own time by the frame's (GH5: two) are left to run every frame, as their waits would make
+them slower. Checked at 120 FPS: a song failed with no player at the same point (11 %) as at 60.
 **Off:** 60 in the launcher.
+
+**The frets falling back (2026-11-05, GH5's fix).** On a hit the fret heads rise 20 pixels and fall back in 0.1 s. Each
+pass of the script `button_checker` (`0x716BADDC`, through `sub_8218BF88`) lowers them by the frame's time, and the fix
+above held that script to 60 passes a second: at 160 FPS the fall took 0.27 s in GH5, where it was measured. It now
+runs every frame (at 160 FPS here: 59 passes a second held, one a frame now).
 
 ## Ultrawide
 
