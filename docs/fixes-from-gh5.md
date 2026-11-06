@@ -69,12 +69,20 @@ their waits would make them slower. Checked at 120 FPS: a song failed with no pl
 
 ## Ultrawide
 
-The same as GH5's (`src/widescreen.cpp`, 8 hooks): every 16:9 perspective is widened (Hor+, `sub_824C6EE0`), and the 2D
+The same as GH5's (`src/widescreen.cpp`, 9 hooks): every 16:9 perspective is widened (Hor+, `sub_824C6EE0`), and the 2D
 layer is narrowed to 16:9 in the center; outside a song black bars cover the sides. This game's clip windows are
 scaled by the 2D layer's zoom before the hook sees them, and the sustain tails' constant register is read from the byte
 the game writes for it. Checked at 2560x1080: the bars in the menus, the stage over the whole window in a song with the
 highway and HUD in the center. **Off:** 16:9 in the launcher (`ghwor_ultrawide = false`); `ghwor_ultrawide_hud =
 false`; `ghwor_menu_bars = false`; `ghwor_ultrawide_overlays = false`.
+
+**The black band beside the highway (2026-11-05, GH5's fix).** In ultrawide a soft black band ran along both sides of the
+highway; at 16:9 there was none. The game starts its scene with a depth only quad in the highway's shape at the near
+plane (`sub_822C53A0`, vertices in pixels of the 1280x720 canvas), so the stage is not drawn under the board. It went
+through none of the 2D layer's hooks, so it stayed as wide as the stretched canvas while the board over it was narrowed:
+the stage failed its depth test beside the highway, leaving the clear's black, blurred by the screen effects.
+`GHWoRHighwayMaskHook` narrows it with the rest (factor 1.34: NativeXRenderer and the Xenos path at 1720x720, in a
+Quickplay+ song). It follows `ghwor_ultrawide_hud`, as the board does.
 
 ## Turning off the screen effects
 

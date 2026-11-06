@@ -123,6 +123,10 @@ address = 0x822C4540   # bl EndVertices in sub_822C3F78 (a sprite drawn as a gri
 name = "GHWoRMeshSpriteHook"
 registers = ["r3"]
 [[midasm_hook]]
+address = 0x822C588C   # bl EndVertices in sub_822C53A0 (the highway's depth mask, a quad of 8 byte vertices: r3 = device)
+name = "GHWoRHighwayMaskHook"
+registers = ["r3"]
+[[midasm_hook]]
 address = 0x822C8974   # bl DrawVerticesUP in sub_822C8810 (a 2D particle's quad: r5 = vertices, r6 = data, r7 = stride)
 name = "GHWoRParticleHook"
 registers = ["r5", "r6", "r7"]
