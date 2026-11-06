@@ -52,9 +52,11 @@ players who play).
 
 ## A second controller
 
-`signin_ui_cancel = true` and `signin_guests = true`, as GH5's. The profile following the controller that presses at
-the title screen (`src/players.cpp`) is **not active**: this game has no title screen (the intro video, the autosave
-notice, then the main menu). The first controller connected plays with the profile.
+`signin_ui_cancel = true` and `signin_guests = true`, as GH5's. A guitar that started the game with a controller
+connected before it was the profile's guest. This game has no title screen (the intro video, the autosave notice, then
+the main menu), so the window of GH5's fix opens with the game: the first controller to press a button, wherever that
+is, takes the profile and the others are its guests. It counts once, for good: a second player moves nothing
+(`src/players.cpp`). **Off:** `ghwor_profile_follows_press = false`.
 
 ## GH Metallica's of 2026-11-03/05
 

@@ -4,8 +4,8 @@
 
 namespace ghwor {
 
-// Each frame, whether the title screen is shown (src/quit_prompt.cpp's hook): while it is, the controller that presses
-// a button first becomes the profile's.
-void SetTitleScreen(bool shown);
+// Each frame (src/quit_prompt.cpp's hook), whether a dialog box is over the screen: from the start of the game until
+// someone presses a button, the first controller to press becomes the profile's.
+void UpdatePressWindow(bool dialog);
 
 }  // namespace ghwor

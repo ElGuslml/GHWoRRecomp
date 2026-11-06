@@ -96,9 +96,7 @@ void GHWoRQuitPromptHook() {
     REXLOG_DEBUG("[quit_prompt] main menu {} dialog {}", main_menu, dialog);
     last_state = state;
   }
-  // GH Van Halen's title screen gave the profile to the controller pressing there (src/players.cpp); this game has
-  // none (the autosave notice is not told apart yet), so the first controller connected keeps the profile.
-  ghwor::SetTitleScreen(false);
+  ghwor::UpdatePressWindow(dialog);
   if (main_menu && !dialog) {
     rex::ui::OfferQuitPrompt();
   }
