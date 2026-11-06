@@ -71,6 +71,14 @@ registers = ["r3", "r11"]
 address = 0x825842F8   # cmpld cr6,r3,r30 (sub_825840F0: until the other counter reaches the frame's last vertical blank)
 name = "GHWoRVblankWait2Hook"
 registers = ["r3", "r30"]
+# The game's two callbacks advance the counters those loops wait on: an event set right after each advance wakes the
+# waiting render thread at once (src/thread_waits.cpp).
+[[midasm_hook]]
+address = 0x8239FBD8   # lwz r10,40(r11) (sub_8239FB98, the swap callback: after the swap counter 0x8298C1F0's advance)
+name = "GHWoRSwapSignalHook"
+[[midasm_hook]]
+address = 0x8239FB80   # and r9,r4,r8 (sub_8239FB20, the vertical blank callback: after the counter 0x8298C1E0's advance)
+name = "GHWoRVblankSignalHook"
 [[midasm_hook]]
 address = 0x825510C4   # lwz r11,0(r31) (sub_82551028: the main thread waiting for a job group, after a pass)
 name = "GHWoRJobGroupWaitHook"
@@ -89,6 +97,13 @@ name = "GHWoRGpuWaitHook"
 address = 0x823A02D4   # cmplw cr6,r11,r7 (sub_823A0238: r11 = the reported frequency, r7 = 50,000,000)
 name = "GHWoRTimerFrequencyHook"
 registers = ["r7"]
+
+# A slot's kind of controller (a guitar, the drums, the singer) follows the controller played (src/players.cpp): the
+# game asks for it only when the port's controller connects, and the keyboard shares slot 0 with the first controller.
+[[midasm_hook]]
+address = 0x823D02A0   # mflr r12 (entry of sub_823D02A0: a controller port's update; r3 = the port)
+name = "GHWoRControllerPortHook"
+registers = ["r3"]
 
 # Ultrawide (src/widescreen.cpp), with ghwor_ultrawide: the projection of every 16:9 view is widened (Hor+: the 3D views
 # see more at the sides; their aspect ratio is the view's size, not the SetScreen aspect), and the screen elements'
@@ -244,3 +259,14 @@ registers = ["r10"]
 [[midasm_hook]]
 address = 0x8242C510   # stfd f0,-19760(r7) (sub_8242C450: the main thread's frame, before its wait)
 name = "GHWoRQuitPromptHook"
+
+# Above 60 Hz (src/framerate.cpp): the strings' 62 Hz vibration, which 60 FPS shows as a 2 Hz wobble, and their fade of
+# 0.99 a frame, as at 60 (GH5's; this game reads both once and keeps them).
+[[midasm_hook]]
+address = 0x821008C0   # stfs f1,68(r30) (sub_821005F0, the strings' fade from the script global 0xB70CCCA3)
+name = "GHWoRStringFadeHook"
+registers = ["f1"]
+[[midasm_hook]]
+address = 0x821008E8   # stfs f1,76(r30) (sub_821005F0, the strings' frequency from the script global 0xFD146572)
+name = "GHWoRStringFrequencyHook"
+registers = ["f1"]

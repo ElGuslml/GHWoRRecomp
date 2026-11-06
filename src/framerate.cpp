@@ -460,3 +460,24 @@ void GHWoRLoadingWaveHook(PPCRegister& step) {
     step.f64 = double(float(step.f64 * FrameStepScale()));
   }
 }
+
+// The strings' vibration, GH5's fix. This game reads the script globals once (sub_821005F0, a musician's instrument)
+// and keeps them: each frame sub_82101190 fades each string's amplitude (sub_82100910: by the 0.99 of +68, the script
+// global 0xB70CCCA3) and places it displaced by amplitude * sin(2 pi * 62 Hz (+76, 0xFD146572) * timer). At 60 FPS a 62 Hz
+// vibration sampled 60 times a second shows as a slow wobble of 62 - 60 = 2 Hz, what the console shows; above 60 the
+// real 62 Hz would show, and the 0.99 a frame fades it faster. Above 60 Hz they are kept as the frequency 60 FPS shows
+// and the fade per 60th of a second. There is no script placing them here (GH5's 0x02B91F04), nor Havok (GH5's
+// GH5PhysicsStepHook has nothing to change).
+// [[midasm_hook]] 0x821008C0 (sub_821005F0: before "stfs f1,68(r30)"): f1 = the amplitude's factor each frame.
+void GHWoRStringFadeHook(PPCRegister& f1) {
+  if (HighRate() && f1.f64 > 0.0) {
+    f1.f64 = double(float(std::pow(f1.f64, 60.0 / VblankRate())));
+  }
+}
+
+// [[midasm_hook]] 0x821008E8 (sub_821005F0: before "stfs f1,76(r30)"): f1 = Hz.
+void GHWoRStringFrequencyHook(PPCRegister& f1) {
+  if (HighRate()) {
+    f1.f64 -= 60.0 * std::round(f1.f64 / 60.0);
+  }
+}
