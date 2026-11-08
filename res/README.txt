@@ -51,6 +51,9 @@ OPTIONS IN GH Warriors of Rock Launcher
 - Internal resolution: the game's image rendered at 2x or 3x and fitted to the screen.
 - Anisotropic filtering: 16x by default (sharper textures at oblique angles).
 - Graphics API: DirectX 12 (recommended) or Vulkan.
+- DLC: install your own downloadable content, Guitar Hero 5's included (the game plays it, as on the
+  console). "Choose folder..." looks for packages in a folder and its subfolders; your files stay where they
+  are. The songs of a Track Pack show in Quickplay+'s song list.
 
 
 STEAM BIG PICTURE

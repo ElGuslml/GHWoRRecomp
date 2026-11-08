@@ -4,8 +4,9 @@ The game's side of NativeXRenderer (`native_x_renderer/`, the library that hooks
 on the host). The hooks and the profile are in [`src/native_x_renderer_ghwor.cpp`](../src/native_x_renderer_ghwor.cpp);
 the library's checklist is `native_x_renderer/docs/integrating-a-game.md`.
 
-**Status (2026-11-02):** GH5's side, mapped to this game's library; FXAA and SMAA. Not the default renderer:
-`--native_x_renderer=true` or the launcher's NativeXRenderer card.
+**Status (2026-11-07):** GH5's side, mapped to this game's library; FXAA and SMAA. The default renderer, as in GH5
+(`kNativeXRendererDefault`: a first run draws with NativeXRenderer and SMAA); the launcher's Xenos card or
+`--native_x_renderer=false` turns it off.
 
 ## The addresses
 
@@ -61,3 +62,24 @@ the library's checklist is `native_x_renderer/docs/integrating-a-game.md`.
   the others: a light effect of a frame. NativeXRenderer skips 1D and 3D resolve destinations, so that frame draws its
   light volume from a texture nobody filled.
 - Frame rates above 60 and larger outputs (3440x1440, 160 FPS) with NativeXRenderer, a real play test.
+- **Shadow quality** (the launcher's row, NativeXRenderer's D92; GH5's `cdec72f`): off. GH5's shadow filter fix does not
+  carry over: its nine samples come from `sub_825CCE98`, with a switch on 4, 9 or 16 samples that nothing in this
+  executable has, and the stage that called it is here the light volume's (`sub_825F14C8`). Before the row is turned on
+  the log must show NativeXRenderer finding this game's shadow maps in a song. At startup, with
+  `native_x_renderer_shadow_scale = 4`, it takes a 640x360 depth surface drawn with no color target (EDRAM base 1488)
+  for one: a screen fraction, not a shadow map, which the shadow scale must leave alone.
+
+## Stalls on a first play (NativeXRenderer D126)
+
+A graphics pipeline new to the driver can take most of a second to compile, and D101 made draws into offscreen targets
+wait for theirs: in GH5 the first play of a song stopped for up to 787 ms. D126 skips instead of waiting when the target
+has been drawn into on more than 16 frames in a row (it keeps its last frame and mends itself); other offscreen draws
+still wait. Measured in GH5 (its `docs/first-play-stalls.md`); in this game Test-Games ran clean with it on a window size
+new to the driver. **Off:** `native_x_renderer_skip_steady_passes = false` in `ghwor.toml`.
+
+## The bloom's lattice (NativeXRenderer D127): not needed here
+
+GH Metallica's fix for a lattice in its bloom (`unscaled_screen_fractions`, D127) is in the submodule (`655cd0b`, GH5's)
+and off in this profile: the issue's author said GH5, Band Hero and Warriors of Rock do not need it, and GH5 was checked
+(its blur's input is already smoothed at the host's scale). Not checked in this game: if a grid or a doubled glow is
+ever seen at a large output, the same check applies (GH5's `docs/native-x-renderer-gh5.md`).

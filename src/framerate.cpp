@@ -83,6 +83,29 @@ std::unordered_map<uint32_t, FrameWait> g_frame_waits;  // by the wait's guest a
 
 bool HighRate() { return REXCVAR_GET(ghwor_frame_rate_fix) && VblankRate() != 60.0; }
 
+// A frame at the chosen rate: one vertical blank.
+double FrameSeconds() { return 1.0 / VblankRate(); }
+
+// The frames as they come, measured on the main thread (GHWoRMainFrameHook, once a frame): the last one and an average
+// of about the last ten. A frame lasts one vertical blank only while the game keeps the chosen rate; when it falls below
+// it (at 240 Hz a frame that takes 5 ms is shown for 8.3), what is counted in frames below keeps the console's time by
+// these, as the game's own clock does, not by a frame of 1 / the chosen rate (GH5's c0cb7b0).
+std::atomic<double> g_last_frame{0.0};     // seconds
+std::atomic<double> g_average_frame{0.0};  // seconds
+
+// The next frame's length, as far as it can be told: the recent average (a frame at the chosen rate until one is
+// measured).
+double FrameInterval() {
+  const double average = g_average_frame.load(std::memory_order_relaxed);
+  return average > 0.0 ? average : FrameSeconds();
+}
+
+// The length of the frame that just ended.
+double LastFrameSeconds() {
+  const double last = g_last_frame.load(std::memory_order_relaxed);
+  return last > 0.0 ? last : FrameSeconds();
+}
+
 // The game's vertical blanks per second scaled to the emulated rate (unchanged at 60 Hz).
 void ScaleVblankRate(PPCRegister& rate) {
   if (!REXCVAR_GET(ghwor_frame_rate_fix)) {
@@ -95,6 +118,21 @@ void ScaleVblankRate(PPCRegister& rate) {
 }
 
 }  // namespace
+
+// [[midasm_hook]] 0x8242C57C (sub_8242C450, the main thread's frame, at its end: "addi r1,r1,128"; GH5's 0x82413BCC
+// in sub_82413AA0). A sample is kept between a 4000th and a 20th of a second: a load that stops the main thread is not
+// a frame.
+void GHWoRMainFrameHook() {
+  static std::chrono::steady_clock::time_point last;  // only the main thread
+  const auto now = std::chrono::steady_clock::now();
+  if (last != std::chrono::steady_clock::time_point{}) {
+    const double seconds = std::clamp(std::chrono::duration<double>(now - last).count(), 0.00025, 0.05);
+    g_last_frame.store(seconds, std::memory_order_relaxed);
+    const double average = g_average_frame.load(std::memory_order_relaxed);
+    g_average_frame.store(average > 0.0 ? average + 0.1 * (seconds - average) : seconds, std::memory_order_relaxed);
+  }
+  last = now;
+}
 
 // [[midasm_hook]] 0x82629360 and 0x82629588 (sub_826291F8): before "extsw r8,r30" / "extsw r11,r30", r30 = the
 // game's vertical blanks per second, which divides a clock counted in vertical blanks (the vblank counter
@@ -121,8 +159,6 @@ void GHWoRVblankClockHook(PPCRegister& r30) { ScaleVblankRate(r30); }
 // frame, and by a whole one whenever a frame came a little early).
 namespace {
 
-double FrameSeconds() { return 1.0 / VblankRate(); }
-
 // The scripts that measure their own time by the frame's (below), and the name of the script a wait belongs to (+60 of
 // the wait).
 constexpr uint32_t kSelfTimedScripts[] = {
@@ -136,12 +172,39 @@ constexpr uint32_t kSelfTimedScripts[] = {
     0x473164C7, 0x06913019,  // compiled; 0x473164C7's step is two frames' length measured across a waitonegameframe
     0xCF931794, 0x17D365CC, 0xEE68B834, 0x3D11F8E9, 0xA947584A,  // compiled (one file, 0xB438B63B)
     0x75DBE425,
-    // GetDeltaTime each pass (GH Van Halen's and GH5's ports left theirs to the hold):
-    0xEC23DF7E, 0xE66D1DA1, 0x4E850682, 0xE20DF41E, 0x6742F67A, 0xE5C4CFDD, 0xCFDDF140, 0x3E4FDDAF,
+    // GetDeltaTime each pass (GH5 runs its five of these every frame too). Left held, as in GH5: 0xCFDDF140, the jam
+    // studio's arrows, which also adds 0.1 a pass to the time that speeds the scroll up (thresholds 0.2 to 5): every
+    // frame it would speed up 2.67 times as soon at 160 FPS; held it scrolls at 60 / the rate of its speed.
+    0xEC23DF7E, 0xE66D1DA1, 0x4E850682, 0xE20DF41E, 0x6742F67A, 0xE5C4CFDD, 0x3E4FDDAF,
 };
 
 bool SelfTimed(uint32_t script) {
   return std::find(std::begin(kSelfTimedScripts), std::end(kSelfTimedScripts), script) != std::end(kSelfTimedScripts);
+}
+
+// The camera cuts and the band's moves (GH5's 722e5c0). The game draws the stage and the crowd in one frame and the band
+// in the next (IsPrimaryFrame, 0x316A336A), and two scripts align what follows to one kind of frame: 0xCAD261DF waits a
+// game frame in the other kind ("if IsPrimaryFrame else Wait 1 gameframes"), 0x6506F6C8 in a primary one (GH5's
+// 0xCAD261DF waited 2 or 1). The 22 scripts that call them go on in whole frames: the band's clips (Band_PlayClip,
+// 0x01DE43A7: wait 2, the clip, wait 1, the finish), a musician changed and changed back a frame later, the four
+// musicians changed at a time of the song (0xF1C14221, a loop on GetSongTimeMs). Each is one shot (no other loop than 0x0DA14A2E's four passes without a
+// wait) or a loop testing the song's time, so running every frame does not speed them up. Held to 60 passes a second a
+// wait of 1 lasted 3 frames at 160 FPS and fell in either kind: in GH5 each cut showed 1 to 5 frames with no scene, then
+// the stage from a camera not yet placed (18 such runs in 8000 frames, none with this). Here the cut itself
+// (0xA5BB57BB) calls neither, and Party Play at 160 FPS showed no frame without a scene with or without this (19,500
+// frames each, a per-frame trace); there 0xF1C14221 polls every frame and 0xF93E0168 waits through 0xCAD261DF.
+constexpr uint32_t kFrameExactScripts[] = {
+    0xCAD261DF, 0x6506F6C8,
+    // Their callers: of 0xCAD261DF,
+    0x9A8F399F, 0xC09883B8, 0xF1C14221, 0xF93E0168,
+    // and of 0x6506F6C8.
+    0x0050D48F, 0x01DE43A7, 0x094DD2E1, 0x0DA14A2E, 0x309DB495, 0x3B948900, 0x44DDB52D, 0x45233C61, 0x4F4822E4,
+    0x57EA03DA, 0x679800B9, 0x80E45206, 0x883F7786, 0x9AFA7534, 0x9FFB805D, 0xBF51BD3C, 0xC1CA119A, 0xE4DE9864,
+};
+
+bool FrameExact(uint32_t script) {
+  return std::find(std::begin(kFrameExactScripts), std::end(kFrameExactScripts), script) !=
+         std::end(kFrameExactScripts);
 }
 
 uint32_t WaitingScript(uint32_t wait) {
@@ -167,17 +230,19 @@ void GHWoRFrameWaitSetHook(PPCRegister& r3, PPCRegister& r4) {
   // held to 60 passes a second it drained 60 frames' time a second, and at 160 FPS star power lasted 160 / 60 times as
   // long (Gustavo, in GH Metallica and GH Van Halen). This game has the same script (without GH5's GetFrameLength
   // band). Of its 9287 scripts 18 more wait in game frames and add or take the frame's time (GetFrameLength or
-  // GetDeltaTime) each pass, timers counted by it, 7 of them compiled; they run every frame too (GH5's port found one
-  // more by GetFrameLength, 0x473164C7, measuring across a timed wait there, and left six GetDeltaTime ones to the
-  // hold). The waiting script's name is at +60 of its wait (+244 of the script, as in GH5; GH Van Halen's +48, +216),
-  // a compiled script's too (sub_823A4090 stores it either way).
-  if (SelfTimed(WaitingScript(r3.u32))) {
+  // GetDeltaTime) each pass, timers counted by it, 7 of them compiled; 17 of them run every frame too (GH5's drummer,
+  // 0x473164C7, measured across a timed wait there and needed a hook of its own; here it waits a game frame). The
+  // scripts that align to a kind of frame (kFrameExactScripts) run every frame as well. The waiting script's name is at
+  // +60 of its wait (+244 of the script, as in GH5; GH Van Halen's +48, +216), a compiled script's too (sub_823A4090
+  // stores it either way).
+  const uint32_t waiting = WaitingScript(r3.u32);
+  if (SelfTimed(waiting) || FrameExact(waiting)) {
     std::lock_guard lock(g_frame_waits_mutex);
     g_frame_waits.erase(r3.u32);
     return;
   }
   const auto now = std::chrono::steady_clock::now();
-  const auto frame = std::chrono::duration<double>(FrameSeconds());
+  const auto frame = std::chrono::duration<double>(FrameInterval());
   std::lock_guard lock(g_frame_waits_mutex);
   FrameWait& wait = g_frame_waits[r3.u32];
   const bool follows = wait.end != std::chrono::steady_clock::time_point{} &&
@@ -189,7 +254,9 @@ void GHWoRFrameWaitSetHook(PPCRegister& r3, PPCRegister& r4) {
 
 // [[midasm_hook]] 0x8256B5E4 (sub_8256B5A0, a game-frame wait's count above 0): before "addi r11,r11,-1" and its
 // store to +4, r3 = the wait, r11 = the count. Set to 1 (it becomes 0, the wait ends next frame) once the wait's end is
-// less than a frame and a half away, so that next frame is the one nearest to it; else to 2 (it stays waiting).
+// less than a frame and a half away, so that next frame is the one nearest to it; else to 2 (it stays waiting). A frame
+// is the frames' recent length (FrameInterval), so the nearest frame is still chosen when the rate falls below the
+// chosen one.
 void GHWoRFrameWaitCountHook(PPCRegister& r3, PPCRegister& r11) {
   if (!HighRate()) {
     return;
@@ -208,7 +275,7 @@ void GHWoRFrameWaitCountHook(PPCRegister& r3, PPCRegister& r11) {
     REXLOG_INFO("[frame rate] script waits in game frames last as at 60 FPS (vblank at {:.0f} Hz)", VblankRate());
   }
   const double left = std::chrono::duration<double>(end - std::chrono::steady_clock::now()).count();
-  r11.u64 = left < 1.5 * FrameSeconds() ? 1 : 2;
+  r11.u64 = left < 1.5 * FrameInterval() ? 1 : 2;
 }
 
 // Button presses polled by scripts: the script function ControllerMake (sub_824D58C8; GuitarControllerMake,
@@ -219,8 +286,8 @@ void GHWoRFrameWaitCountHook(PPCRegister& r3, PPCRegister& r11) {
 // between (Gustavo in GH Metallica: the video calibration's strums counted only sometimes; a probe at 160: the
 // calibration's script polled every 2 or 3 frames and 3 of 7 strums fell in frames between, 7 of 7 seen with this; the
 // audio calibration polls the same way). Each script is given the presses of the updates since its previous run that
-// it did not see, once, from the last 60th of a second and a frame: they are added to the state's pressed bits while
-// its ControllerMake runs, then the bits are put back.
+// it did not see, once, from the last 60th of a second and a frame (of the frames' recent length): they are added to the
+// state's pressed bits while its ControllerMake runs, then the bits are put back.
 namespace {
 
 constexpr int kKeptUpdates = 8;
@@ -292,7 +359,7 @@ void GHWoRButtonPollHook(PPCRegister& r4) {
     return;
   }
   const auto now = std::chrono::steady_clock::now();
-  const auto window = std::chrono::duration<double>(1.0 / 60.0 + FrameSeconds());
+  const auto window = std::chrono::duration<double>(1.0 / 60.0 + FrameInterval());
   std::lock_guard lock(g_input_mutex);
   if (g_script_polls.size() > 256) {
     std::erase_if(g_script_polls, [&](const auto& entry) { return now - entry.second.last > std::chrono::seconds(1); });
@@ -346,7 +413,9 @@ void GHWoRButtonPollEndHook() {
 // +98764) it tells the held frets (sub_82177430, six lanes here, GH5's five), and a star power sustain turns blue or
 // back. Above 60 Hz a frame's movement is smaller and 5 frames are shorter (Gustavo at 120 in GH Metallica: the blue
 // came and went while he moved the bar). The position is compared with the one from a 60th of a second before, and
-// the 5 frames are 5 / 60 s.
+// the 5 frames are 5 / 60 s: as many frames as fit in it at the frames' recent length (FrameInterval), not at the chosen
+// rate, so that they keep 5 / 60 s when the rate falls below it. The count of frames in a row is compared with 5 for
+// equality, so each run of frames keeps the number it began with: one that changed as the rate moved could jump past it.
 namespace {
 
 struct WhammySamples {
@@ -365,7 +434,7 @@ void CompareWhammyOverSixtieth(int axis, uint32_t object, PPCRegister& position,
     return;
   }
   const auto now = std::chrono::steady_clock::now();
-  const double frame = FrameSeconds();
+  const double frame = FrameInterval();
   std::lock_guard lock(g_whammy_mutex);
   WhammySamples& samples = g_whammy[uint64_t(object) << 1 | uint64_t(axis)];
   for (int i = 1; i <= 8; ++i) {
@@ -383,7 +452,26 @@ void CompareWhammyOverSixtieth(int axis, uint32_t object, PPCRegister& position,
   samples.next = (samples.next + 1) & 7;
 }
 
-int WhammyFrames(int frames) { return int(std::lround(frames * VblankRate() / 60.0)); }
+// The console's frames (60ths of a second) in frames of the recent length.
+int WhammyFrames(int frames) { return std::max(1, int(std::lround(frames / 60.0 / FrameInterval()))); }
+
+// A run of frames in a row of whammying or not, by its count's guest address: the count last seen and the number of
+// frames its 5 / 60 s were given when it began.
+struct WhammyRun {
+  int32_t last = 0;
+  int frames = 0;
+};
+std::unordered_map<uint32_t, WhammyRun> g_whammy_runs;  // under g_whammy_mutex
+
+int WhammyRunFrames(uint32_t count_address, int32_t count) {
+  std::lock_guard lock(g_whammy_mutex);
+  WhammyRun& run = g_whammy_runs[count_address];
+  if (run.frames == 0 || count <= run.last) {  // the first seen, or a new run (the count went back)
+    run.frames = WhammyFrames(5);
+  }
+  run.last = count;
+  return run.frames;
+}
 
 }  // namespace
 
@@ -409,10 +497,12 @@ void GHWoRWhammyCountdownHook(PPCRegister& frames) {
 }
 
 // [[midasm_hook]] 0x8218EB24 and 0x8218EC10 (sub_8218E9A0): before "cmpwi cr6,r11,5", r11 = the frames in a row of
-// whammying or not (dead after the comparison): 5 when they reach 5 / 60 s.
-void GHWoRWhammyStateHook(PPCRegister& r11) {
+// whammying or not (dead after the comparison), r30 / r10 = that count's address (+98760 / +98764 of the note hold
+// object, the same registers as GH5's): 5 when they reach 5 / 60 s.
+void GHWoRWhammyStateHook(PPCRegister& count_address, PPCRegister& r11) {
   if (HighRate()) {
-    r11.u64 = int32_t(r11.u32) == WhammyFrames(5) ? 5 : 0;
+    const int32_t count = int32_t(r11.u32);
+    r11.u64 = count == WhammyRunFrames(count_address.u32, count) ? 5 : 0;
   }
 }
 
@@ -425,11 +515,28 @@ void GHWoRWhammyStateHook(PPCRegister& r11) {
 //   0x82861540, set through sub_82431448) turns by a whole number of degrees each frame (+48, added to the angle at
 //   +44; not seen);
 // - in its mode 2 (not seen) a grid waves with two phases that advance by constants each frame.
-// Above 60 Hz the steps are scaled by 60 / the rate; the icon's fraction of a degree is carried to the next frame.
-// (Its flipbook, sub_825F9220, already runs on the time base.)
+// Above 60 Hz each step is scaled by the frame's length in 60ths of a second; the icon's fraction of a degree is carried
+// to the next frame. The render thread draws it while the main thread loads, so each animation measures its own frames
+// (sub_825F9F70 steps each once a frame); a step after more than a 10th of a second without one is a frame at the chosen
+// rate (the screen shown again), and none is longer than a 20th. (Its flipbook, sub_825F9220, already runs on the time
+// base.)
 namespace {
 
-double FrameStepScale() { return 60.0 / VblankRate(); }
+enum LoadingStep { kLoadingStar, kLoadingIcon, kLoadingWave, kLoadingWave2, kLoadingSteps };
+
+double FrameStepScale(LoadingStep step) {
+  static std::chrono::steady_clock::time_point last[kLoadingSteps];  // only the render thread draws the loading screen
+  const auto now = std::chrono::steady_clock::now();
+  double seconds = FrameSeconds();
+  if (last[step] != std::chrono::steady_clock::time_point{}) {
+    const double since = std::chrono::duration<double>(now - last[step]).count();
+    if (since <= 0.1) {
+      seconds = std::min(since, 0.05);
+    }
+  }
+  last[step] = now;
+  return 60.0 * seconds;
+}
 
 }  // namespace
 
@@ -437,7 +544,7 @@ double FrameStepScale() { return 60.0 / VblankRate(); }
 // constant, "lfd f31,-24376(r10)"), f31 = the star's turn in radians each frame.
 void GHWoRLoadingStarHook(PPCRegister& f31) {
   if (HighRate()) {
-    f31.f64 *= FrameStepScale();
+    f31.f64 *= FrameStepScale(kLoadingStar);
   }
 }
 
@@ -447,7 +554,7 @@ void GHWoRLoadingSpinnerHook(PPCRegister& r10) {
     return;
   }
   static double carry = 0.0;  // only the render thread draws the loading screen
-  const double step = double(int32_t(r10.u32)) * FrameStepScale() + carry;
+  const double step = double(int32_t(r10.u32)) * FrameStepScale(kLoadingIcon) + carry;
   const double whole = std::floor(step);
   carry = step - whole;
   r10.u64 = uint64_t(int64_t(whole));
@@ -457,7 +564,12 @@ void GHWoRLoadingSpinnerHook(PPCRegister& r10) {
 // f29 / f0 = the step each wave phase advances by.
 void GHWoRLoadingWaveHook(PPCRegister& step) {
   if (HighRate()) {
-    step.f64 = double(float(step.f64 * FrameStepScale()));
+    step.f64 = double(float(step.f64 * FrameStepScale(kLoadingWave)));
+  }
+}
+void GHWoRLoadingWave2Hook(PPCRegister& step) {
+  if (HighRate()) {
+    step.f64 = double(float(step.f64 * FrameStepScale(kLoadingWave2)));
   }
 }
 
@@ -467,11 +579,14 @@ void GHWoRLoadingWaveHook(PPCRegister& step) {
 // vibration sampled 60 times a second shows as a slow wobble of 62 - 60 = 2 Hz, what the console shows; above 60 the
 // real 62 Hz would show, and the 0.99 a frame fades it faster. Above 60 Hz they are kept as the frequency 60 FPS shows
 // and the fade per 60th of a second. There is no script placing them here (GH5's 0x02B91F04), nor Havok (GH5's
-// GH5PhysicsStepHook has nothing to change).
-// [[midasm_hook]] 0x821008C0 (sub_821005F0: before "stfs f1,68(r30)"): f1 = the amplitude's factor each frame.
-void GHWoRStringFadeHook(PPCRegister& f1) {
-  if (HighRate() && f1.f64 > 0.0) {
-    f1.f64 = double(float(std::pow(f1.f64, 60.0 / VblankRate())));
+// GH5PhysicsStepHook has nothing to change). The fade is applied where each frame uses it, by that frame's own length
+// (LastFrameSeconds), not to the factor kept: a factor for a frame at the chosen rate fades slower whenever the game
+// falls below it (GH5's c0cb7b0; the factor stored once, as this hook did first, could only know the chosen rate).
+// [[midasm_hook]] 0x82100950 (sub_82100910, each string each frame: before "fmuls f11,f12,f0", the amplitude times the
+// factor; f12 is loaded again for each string): f12 = the amplitude's factor each frame (+68).
+void GHWoRStringFadeHook(PPCRegister& f12) {
+  if (HighRate() && f12.f64 > 0.0) {
+    f12.f64 = double(float(std::pow(f12.f64, 60.0 * LastFrameSeconds())));
   }
 }
 

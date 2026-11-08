@@ -84,8 +84,9 @@ inline constexpr const char* kReleasesPage = "";
 // nothing of NativeXRenderer.
 inline constexpr bool kHasNativeXRenderer = GAME_HAS_NATIVE_X_RENDERER;
 // The renderer chosen until the player picks one (an options file without native_x_renderer): NativeXRenderer once a
-// full play test has gone through it (as in POTCAWE, its D56), the Xenos path until then.
-inline constexpr bool kNativeXRendererDefault = false;
+// full play test has gone through it (as in POTCAWE, its D56), the Xenos path until then. NativeXRenderer, as in GH5
+// (its 575136e), with SMAA on the scene's copy.
+inline constexpr bool kNativeXRendererDefault = true;
 // The antialiasing row's DLAA (NativeXRenderer's D47: NVIDIA DLSS on the main 3D view, jittered): only for a game whose
 // hooks mark its views (native_x_renderer::BeginView and EndViewGeometry, as POTCAWE's). This one does not: DLAA would
 // turn SMAA and FXAA off and DLSS never run. The row offers SMAA, FXAA and none.
@@ -145,8 +146,9 @@ inline constexpr std::array<Toggle, 5> kToggles{{
 // --- Downloadable content ---
 
 // The DLC page (page_dlc.cpp, dlc.h): Xbox 360 content packages, each installed by the game's --install_content tool
-// mode (SDK change 44) into its user data's content folder. Off until checked with this game's content.
-inline constexpr bool kHasDlcPage = false;
+// mode (SDK change 44) into its user data's content folder. Checked with a Guitar Hero 5 package (docs/dlc.md): its
+// songs show in Quickplay+.
+inline constexpr bool kHasDlcPage = true;
 
 // --- The keyboard ---
 

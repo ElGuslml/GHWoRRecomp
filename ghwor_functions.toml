@@ -186,8 +186,14 @@ registers = ["r4"]
 [[midasm_hook]]
 address = 0x824D5988   # addi r1,r1,112 (sub_824D58C8's exit, every path)
 name = "GHWoRButtonPollEndHook"
+# The frames' real length (src/framerate.cpp: what is counted in frames above 60 Hz keeps the console's time by it when
+# the frame rate falls below the chosen one), measured once a frame on the main thread.
+[[midasm_hook]]
+address = 0x8242C57C   # addi r1,r1,128 (sub_8242C450: the main thread's frame, at its end; GH5's 0x82413BCC)
+name = "GHWoRMainFrameHook"
 # The whammy on a sustain is told by the frame (the bar's movement since the previous frame, a countdown of 5 frames,
-# 5 frames in a row to turn a star power sustain blue or back): above 60 Hz over a 60th of a second and 5 / 60 s.
+# 5 frames in a row to turn a star power sustain blue or back): above 60 Hz over a 60th of a second and 5 / 60 s, in
+# frames of their measured length.
 [[midasm_hook]]
 address = 0x82180BA0   # mflr r12 (sub_82180BA0: a player's update in a song, every frame; src/keyboard.cpp)
 name = "GHWoRSongFrameHook"
@@ -220,14 +226,15 @@ address = 0x82186FC0   # stwx r9,r31,r8 (sub_82186E08: the whammy countdown, 5 f
 name = "GHWoRWhammyCountdownHook"
 registers = ["r9"]
 [[midasm_hook]]
-address = 0x8218EB24   # cmpwi cr6,r11,5 (sub_8218E9A0: frames in a row of whammying)
+address = 0x8218EB24   # cmpwi cr6,r11,5 (sub_8218E9A0: frames in a row of whammying, r30 = the count's address)
 name = "GHWoRWhammyStateHook"
-registers = ["r11"]
+registers = ["r30", "r11"]
 [[midasm_hook]]
-address = 0x8218EC10   # cmpwi cr6,r11,5 (sub_8218E9A0: frames in a row of not whammying)
+address = 0x8218EC10   # cmpwi cr6,r11,5 (sub_8218E9A0: frames in a row of not whammying, r10 = the count's address)
 name = "GHWoRWhammyStateHook"
-registers = ["r11"]
-# The loading screen's animations step by the frame: above 60 Hz the steps are scaled by 60 / the rate.
+registers = ["r10", "r11"]
+# The loading screen's animations step by the frame: above 60 Hz each step is scaled by the frame's length in 60ths of a
+# second, each animation measuring its own frames (the render thread draws it while the main thread loads).
 [[midasm_hook]]
 address = 0x825F9E30   # after fmuls f31,f13,f12 (sub_825F9D10: the spinning star, f31 = its turn each frame, 0.175 radians times DisplayLoadingScreen's speed)
 name = "GHWoRLoadingStarHook"
@@ -242,7 +249,7 @@ name = "GHWoRLoadingWaveHook"
 registers = ["f29"]
 [[midasm_hook]]
 address = 0x825FA1A8   # fadds f0,f13,f0 (sub_825F9F70's mode 2: the other phase plus its step, f0)
-name = "GHWoRLoadingWaveHook"
+name = "GHWoRLoadingWave2Hook"
 registers = ["f0"]
 
 # The screen effects each turned off by an option (src/screen_fx.cpp, ghwor_fx_*): the effects' composite
@@ -261,11 +268,12 @@ address = 0x8242C510   # stfd f0,-19760(r7) (sub_8242C450: the main thread's fra
 name = "GHWoRQuitPromptHook"
 
 # Above 60 Hz (src/framerate.cpp): the strings' 62 Hz vibration, which 60 FPS shows as a 2 Hz wobble, and their fade of
-# 0.99 a frame, as at 60 (GH5's; this game reads both once and keeps them).
+# 0.99 a frame, as at 60 (GH5's; this game reads both once and keeps them: the fade is applied each frame by that
+# frame's length, where it is used).
 [[midasm_hook]]
-address = 0x821008C0   # stfs f1,68(r30) (sub_821005F0, the strings' fade from the script global 0xB70CCCA3)
+address = 0x82100950   # fmuls f11,f12,f0 (sub_82100910, each string each frame: the amplitude times the fade of +68, f12)
 name = "GHWoRStringFadeHook"
-registers = ["f1"]
+registers = ["f12"]
 [[midasm_hook]]
 address = 0x821008E8   # stfs f1,76(r30) (sub_821005F0, the strings' frequency from the script global 0xFD146572)
 name = "GHWoRStringFrequencyHook"

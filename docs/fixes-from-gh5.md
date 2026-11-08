@@ -95,9 +95,30 @@ blank's rate; the game's clock is real time. `src/framerate.cpp` (`ghwor_frame_r
 speed what counts frames, as GH5's: the vblank clocks, the scripts' game-frame waits, the button presses scripts poll,
 the whammy on a sustain and the loading screen's animations. Where this game differs: the whammy's hooks read the note
 hold object from another register and its fields moved; the loading star's turn is multiplied by a new speed parameter;
-20 scripts that measure their own time by the frame's (GH5: two) are left to run every frame, as their waits would make
-them slower. Checked at 120 FPS: a song failed with no player at the same point (11 %) as at 60.
+19 scripts that measure their own time by the frame's are left to run every frame, as their waits would
+make them slower; the jam studio's arrows (`0xCFDDF140`) stay held, as in GH5 (they also add 0.1 a pass to the time
+that speeds the scroll up, so every frame they would speed up 2.67 times as soon at 160 FPS). Checked at 120 FPS: a song
+failed with no player at the same point (11 %) as at 60.
 **Off:** 60 in the launcher.
+
+**Camera cuts (2026-11-07, GH5's fix).** The game draws the stage and the crowd in one frame and the band in the next
+(`IsPrimaryFrame`), and two scripts align what follows to one kind of frame: `0xCAD261DF` and `0x6506F6C8` (GH5 has
+only the first). They and the 22 scripts that call them (the band's clips, a musician changed and changed back a frame
+later) go on in whole frames, and held to 60 passes a second their waits fell in either kind of frame: in GH5 each cut
+showed 1 to 5 frames with no scene at 160 FPS (a 512x512 square in a corner, then the stage from a camera not yet
+placed). They now run every frame (`kFrameExactScripts`): each is one shot or a loop on the song's time, so nothing
+runs faster. Here the cut itself calls neither, and Party Play at 160 FPS showed no frame without a scene with or
+without this (about 19,500 frames each, a per-frame trace): the scripts run as the game wrote them, a visible change is
+not proven. GH5's drummer fix is not needed: this game's drummer script waits a game frame and already ran every frame.
+
+**When the frame rate falls below the chosen one (2026-11-07, GH5's fix).** What the fix counts in frames took a frame
+as one vertical blank at the chosen rate: the whammy's 5 frames, the strings' fade (0.99 a frame), the loading screen's
+steps, and the margins that pick the frame a script wait ends in and the presses given to scripts. When the game could
+not keep that rate (a frame that takes 5 ms at 240 Hz is shown for 8.3), those ran slower until it came back. They use
+the frames' real length now, measured once a frame on the main thread (`GHWoRMainFrameHook` at `0x8242C57C`): the last
+frame's for the strings' fade (applied where each frame uses it, `0x82100950`: this game keeps the fade it reads once),
+the average of about the last ten for the rest; the loading screen's animations measure their own. The whammy's count
+of frames in a row is compared with 5 for equality, so each run keeps the number of frames it began with.
 
 **The frets falling back (2026-11-05, GH5's fix).** On a hit the fret heads rise 20 pixels and fall back in 0.1 s. Each
 pass of the script `button_checker` (`0x716BADDC`, through `sub_8218BF88`) lowers them by the frame's time, and the fix
