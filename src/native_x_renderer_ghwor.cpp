@@ -94,6 +94,11 @@ const native_x_renderer::Profile& NativeXRendererProfile() {
     // The ultrawide hooks (src/widescreen.cpp) widen the 16:9 cameras by AspectFactor() and keep the 2D layer at
     // 16:9 in the center: NativeXRenderer may fill a wider output (native_x_renderer_fill_screen).
     p.widens_cameras = true;
+    // The screen effects' reduced copies of the screen (640x360, 320x180, 160x90) at the game's resolution (D127). Their
+    // blurs step by constants for 320x180 texels, so at the render scale the taps skipped host texels: the background the
+    // depth of field blurs showed a grid at 3440x1440 (Gustavo, the rocker creator's character screen; its blurred copy of
+    // the scene is the 320x180 0x8436000). GH5, whose bloom showed nothing, was checked on its title screen only.
+    p.unscaled_screen_fractions = true;
     native_x_renderer::DeviceLayout& d = p.device;
     // Six dirty masks from +0: VS constants, PS constants, register groups and the program, fetch slots (low half,
     // slot 0 in bit 31) and the 0x2280 group, the 0x2300/0x2380 groups with the clip planes and bool/loop constants,

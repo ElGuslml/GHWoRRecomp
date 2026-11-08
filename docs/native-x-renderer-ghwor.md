@@ -77,9 +77,20 @@ has been drawn into on more than 16 frames in a row (it keeps its last frame and
 still wait. Measured in GH5 (its `docs/first-play-stalls.md`); in this game Test-Games ran clean with it on a window size
 new to the driver. **Off:** `native_x_renderer_skip_steady_passes = false` in `ghwor.toml`.
 
-## The bloom's lattice (NativeXRenderer D127): not needed here
+## The depth of field's lattice (NativeXRenderer D127)
 
-GH Metallica's fix for a lattice in its bloom (`unscaled_screen_fractions`, D127) is in the submodule (`655cd0b`, GH5's)
-and off in this profile: the issue's author said GH5, Band Hero and Warriors of Rock do not need it, and GH5 was checked
-(its blur's input is already smoothed at the host's scale). Not checked in this game: if a grid or a doubled glow is
-ever seen at a large output, the same check applies (GH5's `docs/native-x-renderer-gh5.md`).
+At 3440x1440 the background the depth of field blurs showed a grid of fine lines and doubled edges (Gustavo, 2026-11-08,
+Create > rocker creator > the character screen); at 1280x720 it was smooth, and turning the depth of field off took it
+away. The screen effects' reduced copies of the screen (640x360, 320x180, 160x90) were drawn at the render scale
+(860x360 for 320x180), and their blurs step by constants written for the game's texels, so their taps skipped host texels.
+The depth of field's blurred copy of the scene (320x180, resolved into `0x8436000`) had the stripes before the composite,
+measured in a frame dump. GH Metallica's fix (`unscaled_screen_fractions`, D127) is set in this profile: those copies and
+the textures resolved from them are made at the game's resolution, as on the console. It also covers the CoC map (scene
+objects drawn at 320x180, `0x84AE000`), the bloom's passes and the ambient occlusion's 640x360 passes. The blur is then as
+soft as the console's, and the boundary between sharp and blurred parts has the console's resolution. The characters,
+the scene and the HUD stay at the output's resolution.
+
+**Off:** `native_x_renderer_unscaled_screen_fractions = false` in `ghwor.toml`.
+
+The issue's author had said this engine's games (GH5, Band Hero, Warriors of Rock) did not need it; GH5 was checked on
+its title screen's bloom only.
