@@ -15,9 +15,11 @@ if (-not $browser) { throw "Chrome or Edge is needed to render the images" }
 $work = Join-Path $env:TEMP "$(Split-Path $repo -Leaf)-installer-images"
 New-Item -ItemType Directory -Force $work | Out-Null
 
-function Render([string]$svg, [int]$width, [int]$height, [string]$fit, [string]$out) {
+function Render([string]$svg, [int]$width, [int]$height, [string]$fit, [string]$out, [string]$viewBox = "") {
   $content = [System.IO.File]::ReadAllText($svg)
-  # The art fills the area as the launcher draws it (preserveAspectRatio), the icon is centered.
+  # The art fills the area as the launcher draws it (preserveAspectRatio), the icon is centered. A viewBox, when
+  # given, is the part of the art the area is cropped around.
+  if ($viewBox) { $content = $content -replace 'viewBox="[^"]*"', "viewBox=""$viewBox""" }
   $content = $content -replace '<svg ', "<svg preserveAspectRatio=""$fit"" width=""$width"" height=""$height"" "
   $content = $content -replace ' width="256" height="256"', ''
   $html = "<!doctype html><html><head><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}" +
@@ -35,8 +37,10 @@ function Render([string]$svg, [int]$width, [int]$height, [string]$fit, [string]$
   "$out ${width}x${height}"
 }
 
+# The art cropped around the emblem: its middle is at x 703 of the art's 1280 (464..943), right of the art's middle.
 foreach ($size in @(@(202, 386), @(336, 643), @(430, 824))) {
-  Render "$repo\launcher\art\background.svg" $size[0] $size[1] "xMidYMid slice" "wizard-$($size[0])x$($size[1]).png"
+  Render "$repo\launcher\art\background.svg" $size[0] $size[1] "xMidYMid slice" "wizard-$($size[0])x$($size[1]).png" `
+    "480 0 447 760"
 }
 $icon = "$repo\res\icon.svg"
 foreach ($size in @(58, 97, 124)) {

@@ -41,7 +41,8 @@ another path.
 ## Low latency audio and V-Sync
 
 As GH5's: GH Warriors of Rock Launcher's Low latency audio (`audio_wasapi_exclusive`, off by default) and V-Sync
-(`native_x_renderer_present_mode` and `vblank_follows_display`, on by default).
+(`native_x_renderer_present_mode` and `vblank_follows_display`, on by default). Low latency audio checked by Gustavo
+(2026-11-08).
 
 ## The guitar and the keyboard
 
@@ -171,7 +172,7 @@ The SDK fix GH5 needed (`NtCancelIoFile`, recomp change 65) is in this game's SD
 ## Language
 
 The game picks its text pack from `XGetLanguage` (English, French, German, Italian, Spanish); the launcher's language
-row sets it. Not checked in this game yet.
+row sets it. Checked by Gustavo (2026-11-08).
 
 ## The job queue's lock and wake-ups (2026-11-08, from GH Metallica)
 
