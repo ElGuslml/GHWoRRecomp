@@ -147,17 +147,21 @@ inline constexpr std::array<Toggle, 5> kToggles{{
 
 // --- Downloadable content ---
 
-// The DLC page (page_dlc.cpp, dlc.h): Xbox 360 content packages, each installed by the game's --install_content tool
-// mode (SDK change 44) into its user data's content folder. Checked with a Guitar Hero 5 package (docs/dlc.md): its
-// songs show in Quickplay+.
+// The DLC page (page_dlc.cpp, dlc.h; docs/dlc.md): the player's DLC folder, its packages read by the game where they
+// are (SDK change 80, content_packages.txt); packages extracted by launchers before 3.16 still read. Checked with a
+// collection of 191 packages on a hard disk (154 for this game) and a Guitar Hero 5 package: its songs show in
+// Quickplay+.
 inline constexpr bool kHasDlcPage = true;
+inline constexpr DlcMode kDlcMode = DlcMode::kFolder;
 
-// Which installed packages the game reads (docs/dlc.md; GH5Recomp's local_docs/20). Its script 5A4B6A0C resolves every
-// content folder by a manifest, as Guitar Hero 5: a package is known by the QBKey of its display name (sub_823B0A48,
-// its first 45 characters) and must carry "cmanifest_<key>.pak.xen", be named in another package's, or be in the
-// content index on the disc (dlc_disc_names.h: Guitar Hero 5's DLC among them). One it cannot resolve it reports damaged.
+// Which packages the game reads (docs/dlc.md; GH5Recomp's local_docs/20). Its script 5A4B6A0C resolves every content
+// folder by a manifest, as Guitar Hero 5: a package is known by the QBKey of its display name (sub_823B0A48; its first
+// 42 characters, XCONTENT's length: the community's packs with longer names carry the manifest of the first 42, "All
+// Nightmare Long - GHWT" and "Free Bird Wii Edition") and must carry "cmanifest_<key>.pak.xen", be named in another
+// package's, or be in the content index on the disc (dlc_disc_names.h: Guitar Hero 5's DLC among them). One it cannot
+// resolve it reports damaged.
 inline constexpr DlcRule kDlcRule{.manifest_prefix = "cmanifest_",
-                                  .name_length = 45,
+                                  .name_length = 42,
                                   .known_names = kDlcDiscNames,
                                   .foreign = DlcForeign::kDamaged};
 

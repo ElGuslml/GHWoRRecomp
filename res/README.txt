@@ -66,9 +66,13 @@ when you press PLAY.
   them as you play.
 - Your profile (your picture at the top right): hours played, streaks, the week's activity, your games
   and your favorite achievements; edit your name, picture and color, or switch profiles.
-- DLC: install your own downloadable content. "Choose folder..." looks for packages in a folder and its
-  subfolders; your files stay where they are. Guitar Hero 5's packages add their songs to Quickplay+'s song
-  list too.
+- DLC: choose the folder where you keep your Xbox 360 packages (LIVE, PIRS or CON files, in it or its
+  subfolders). The game reads them from there: nothing is copied, and the other ElGus Recomps launchers can
+  use the same folder. The packages are listed by the game they were made for, each with a switch; those
+  the game cannot read come turned off (with one on, the game would say a package is damaged). Guitar
+  Hero 5's packages add their songs to Quickplay+'s song list too. DLC installed by an earlier version keeps
+  working; if your folder has the same packages, "Remove copies" deletes the installed copies to free space
+  (it asks first, and never touches your folder).
 - Achievements: the game's 50 achievements, unlocked or not. In the game, F7 shows the same list.
 - Controls: your guitars, controllers, the keyboard and the microphone.
   - A guitar or a controller: what each of its buttons does. A guitar's frets are A, B, Y, X and LB of an
@@ -176,8 +180,8 @@ KNOWN ISSUES
   than a motherboard's audio): calibrate the audio in the game's options.
 - Above 60 FPS is experimental: something may still run too fast. Tell us what and where.
 - Playing with the keyboard is experimental.
-- Downloadable content: only a Guitar Hero 5 package has been tried so far (its songs show up in Quickplay+);
-  Warriors of Rock's own packages have not been tried yet.
+- Downloadable content: Guitar Hero 5's packages add their songs to Quickplay+; Warriors of Rock's own
+  packages and the community's are read, but their songs have not been played yet.
 - The first time an effect appears, it may show up a few frames late.
 
 

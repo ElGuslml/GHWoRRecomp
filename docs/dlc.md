@@ -1,12 +1,28 @@
 # Downloadable content (DLC)
 
-**Status: working (2026-11-07).** A package made for Guitar Hero 5, the Megadeth Track Pack, adds its three songs to
-Quickplay+: 113 songs with it, 110 without.
+**Status: working (2026-11-10).** The player's DLC folder: the game reads Xbox 360 content packages where they are
+(0.1.1-beta.2 on; before, the launcher extracted each package). A package made for Guitar Hero 5, the Megadeth Track
+Pack, adds its three songs to Quickplay+: 113 songs with it, 110 without.
 
-GH Warriors of Rock Launcher's DLC page installs Xbox 360 content packages (STFS: LIVE, PIRS or CON) with the game
-itself: `GHWoRRecomp.exe --install_content=<package>` extracts one into
+## Your DLC folder (0.1.1-beta.2)
 
-    userdata\0000000000000000\41560883\00000002\<package name>\
+GH Warriors of Rock Launcher's DLC page takes the folder where the player keeps their packages (STFS files: LIVE, PIRS
+or CON, in it and its subfolders), as many games' as they like; the other ElGus Recomps launchers can use the same
+folder. The launcher reads each package's header and the names at its root, checks it against this game's rule (below,
+"Which packages the game reads"), and writes the game's list,
+`userdata\0000000000000000\41560883\content_packages.txt`, with the packages on. The game (the SDK's change 80) lists
+those packages as its downloadable content and reads them from their files: nothing is copied, written or deleted. The
+page groups the packages by the game they were made for, each with a switch (a group's switch turns all of it); those
+the game cannot resolve come turned off. The folder and the player's choices are in `dlc_library.txt` beside the list;
+the folder is read again each time the launcher opens (`kDlcMode = kFolder` in `launcher/game.h`, launcher 3.17).
+
+Packages installed by an earlier launcher (extracted into `userdata\0000000000000000\41560883\00000002\<package>\` by
+`GHWoRRecomp.exe --install_content=<package>`) keep working and show as "Installed copies". One that is also in the DLC
+folder (the same file name, or the same name and size) shows once, as the copy the game reads; "Remove copies" deletes
+those copies after a confirmation, and the folder's packages take their place.
+
+Checked with a collection of 191 packages on a hard disk (Guitar Hero 5's, World Tour's and the community's): 154 for
+this game, each mounted from its file when the game asks (6-11 ms for the community's packs).
 
 ## What was checked
 
@@ -31,8 +47,8 @@ before, none of 5 after. Details: GHMetalRecomp's `local_docs/39-dlc-disc-read-e
 ## Which packages the game reads (launcher 3.15.0)
 
 The game's DLC script (`5A4B6A0C`) resolves every content folder as Guitar Hero 5's does: it knows a package by the
-QBKey of its display name (lower case, any other character than a letter or digit an underscore, the first 45
-characters; `sub_823B0A48`) and reads it if the key is in the content index on its disc (815 keys in 399 entries,
+QBKey of its display name (lower case, any other character than a letter or digit an underscore; `sub_823B0A48`) and
+reads it if the key is in the content index on its disc (815 keys in 399 entries,
 Guitar Hero 5's DLC and Death Magnetic among them: `launcher/dlc_disc_names.h`), in a manifest of another package, or
 if the package carries `cmanifest_<key>.pak.xen`. The Megadeth Track Pack has no `cmanifest`; the disc's index names
 it. A folder it cannot resolve it reports damaged ("Content package %a is damaged or unreadable"). In Guitar Hero 5,
@@ -44,7 +60,12 @@ where the game does not look. Each package has a switch; one turned on by the pl
 packages at hand (Megadeth's and a Death Magnetic stand-in kept on, Guitar Hero II's turned off), not in the game:
 this game logs no request for a missing manifest.
 
+The name is cut at 42 characters, XCONTENT's display name length: the community's packs with longer names carry the
+manifest of their first 42 ("All Nightmare Long - GHWT", "Free Bird Wii Edition"), so the rule uses 42
+(`sub_823B0A48` copies 45).
+
 ## Turning it off
 
-Turn the package off on the DLC page (or remove it), or move its folder out of `00000002`. `kHasDlcPage` in
-`launcher/game.h` hides the page.
+Turn the package (or its game's group) off on the DLC page. Without a DLC folder chosen, the game's list is not
+written and the game reads only what is extracted into `00000002`. `kHasDlcPage` in `launcher/game.h` hides the page;
+`kDlcMode = kInstall` brings back the page that extracts the packages.
