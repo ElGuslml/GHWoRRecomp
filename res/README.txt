@@ -181,7 +181,9 @@ KNOWN ISSUES
 - Above 60 FPS is experimental: something may still run too fast. Tell us what and where.
 - Playing with the keyboard is experimental.
 - Downloadable content: Guitar Hero 5's packages add their songs to Quickplay+; Warriors of Rock's own
-  packages and the community's are read, but their songs have not been played yet.
+  packages and the community's are read, but their songs have not been played yet. The community's custom
+  songs need its "GH:WoR Customs Database" package in your DLC folder too: without it the number of songs can
+  change from one start to the next.
 - The first time an effect appears, it may show up a few frames late.
 
 

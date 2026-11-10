@@ -182,7 +182,9 @@ graphics instead), and tell us whether it happens there too.
   a motherboard's audio): calibrate the audio in the game's options.
 - ⚡ Above 60 FPS is experimental: something may still run too fast.
 - 🎶 Downloadable content: Guitar Hero 5's packages add their songs to Quickplay+; Warriors of Rock's own packages and
-  the community's are read, but their songs have not been played yet ([details](docs/dlc.md)).
+  the community's are read, but their songs have not been played yet ([details](docs/dlc.md)). The community's
+  custom songs need its **GH:WoR Customs Database** package in your DLC folder too: without it the number of songs
+  can change from one start to the next.
 - ✨ With the Xenos renderer, or if you skip "Compiling shaders", the first time an effect appears it may show up a
   moment late.
 
