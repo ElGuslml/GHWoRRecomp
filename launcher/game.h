@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "dlc_disc_names.h"
 #include "game_types.h"
 #include "project.h"
 #include "version.h"
@@ -150,6 +151,15 @@ inline constexpr std::array<Toggle, 5> kToggles{{
 // mode (SDK change 44) into its user data's content folder. Checked with a Guitar Hero 5 package (docs/dlc.md): its
 // songs show in Quickplay+.
 inline constexpr bool kHasDlcPage = true;
+
+// Which installed packages the game reads (docs/dlc.md; GH5Recomp's local_docs/20). Its script 5A4B6A0C resolves every
+// content folder by a manifest, as Guitar Hero 5: a package is known by the QBKey of its display name (sub_823B0A48,
+// its first 45 characters) and must carry "cmanifest_<key>.pak.xen", be named in another package's, or be in the
+// content index on the disc (dlc_disc_names.h: Guitar Hero 5's DLC among them). One it cannot resolve it reports damaged.
+inline constexpr DlcRule kDlcRule{.manifest_prefix = "cmanifest_",
+                                  .name_length = 45,
+                                  .known_names = kDlcDiscNames,
+                                  .foreign = DlcForeign::kDamaged};
 
 // NativeXRenderer's pipeline list (its D129, pipelines.h): Play first runs the game's --native_x_renderer_prepare_pipelines
 // ("Compiling shaders") when the executable, the list (<TITLEID>.pipelines.list beside it) or the graphics driver
