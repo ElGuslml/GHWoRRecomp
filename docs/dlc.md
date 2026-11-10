@@ -64,6 +64,29 @@ The name is cut at 42 characters, XCONTENT's display name length: the community'
 manifest of their first 42 ("All Nightmare Long - GHWT", "Free Bird Wii Edition"), so the rule uses 42
 (`sub_823B0A48` copies 45).
 
+## A different song count at each start: the community's packs need the Customs Database (2026-11-10)
+
+A player with 190 packages, the community's among them, saw 800, 802, 806 and 891 songs in Quickplay+ on five starts
+with nothing changed in between. Another player's collection gave 874 every time: it had the community's
+"GH:WoR Customs Database" package (the "custom cache"). With that package in the DLC folder the first player's count
+stays the same too (the players' check and Gustavo's).
+
+The game resolves its content folders in a random order (script `5A4B6A0C`): it picks an unresolved folder at random
+(`sub_823B12F0`, the game's own random numbers seeded from the clock), loads its `cmanifest`, and repeats until none
+is left or until a manifest resolves nothing new; any folder still unresolved is marked damaged. The order changes at
+every start, on a console too. The Customs Database (`cmanifest_a6844ca7.pak.xen`, `cdl2000000000.pak.xen`,
+`cdl2000000000_text.pak.xen`: 955 album and song titles) resolves no other folder: it brings text that the
+community's packs refer to. Why the count varies without it is not known: in the collection at hand every package
+resolves in any order. Candidates: a file table limited to 17035 entries, filled in resolution order
+(`sub_823B21B8`); songs whose titles only the Customs Database defines; song data that loads faster here than from
+the console's disk.
+
+Guitar Hero II and III packages are never read: they are not in the disc's index, carry no manifest, and no other
+package names them. The game marks them damaged whatever the order, which is why the launcher turns them off.
+
+If this is reported again, ask whether the Customs Database is in the DLC folder. Details:
+`local_docs/15-dlc-inconsistent-loading.md` (not published).
+
 ## Turning it off
 
 Turn the package (or its game's group) off on the DLC page. Without a DLC folder chosen, the game's list is not
