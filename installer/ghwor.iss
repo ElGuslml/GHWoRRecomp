@@ -23,6 +23,9 @@
 ; uninstall entry.
 #define RepoUrl "https://github.com/ElGuslml/GHWoRRecomp"
 
+; The file's version takes numbers alone: 0.1.1 for "0.1.1-beta.1".
+#define FileVersion Copy(AppVersion, 1, Pos("-", AppVersion + "-") - 1)
+
 [Setup]
 ; Never change the AppId: Windows knows the installation by it, and a newer installer finds the older one with it.
 AppId={{DD99678D-F0E3-4D7B-9E99-3E22A271A300}
@@ -35,7 +38,7 @@ AppPublisherURL={#RepoUrl}
 AppSupportURL={#RepoUrl}/issues
 AppUpdatesURL={#RepoUrl}/releases
 #endif
-VersionInfoVersion={#AppVersion}.0
+VersionInfoVersion={#FileVersion}.0
 VersionInfoDescription={#AppName} (Recomp) setup
 PrivilegesRequired=lowest
 DefaultDirName={autopf}\GHWoRRecomp
