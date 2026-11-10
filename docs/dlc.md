@@ -18,6 +18,16 @@ files, and for manifests of its own (`cmanifest_%x.pak`).
   same route without it, 110. No errors in the log.
 - Not tried: playing one of its songs, a package made for Warriors of Rock, and the other alternate titles' packages.
 
+## Many packages: "Disc Read Error" at start (fixed in 0.1.1-beta.1, SDK change 78)
+
+A player's collection of 190 packages (806 songs) showed the "Disc Read Error" dialog a few seconds after starting,
+during "Checking for downloadable content...". The game lists its content one package at a time with the XDK's
+asynchronous `XEnumerate`, which ends each call with `ObDereferenceObject` on the enumerator. The SDK looked that
+object up through a handle it keeps in a dispatch header, which an enumerator does not have: after the first call it
+released whatever object had taken a freed handle, sometimes a file the game had just opened, and the game's next read
+of it failed. Now the object is found by its guest address. Reproduced with 190 packages (copies of three): 7 runs of 7
+before, none of 5 after. Details: GHMetalRecomp's `local_docs/39-dlc-disc-read-error.md`.
+
 ## Turning it off
 
 Remove the package from the DLC page, or delete its folder. `kHasDlcPage` in `launcher/game.h` hides the page.
