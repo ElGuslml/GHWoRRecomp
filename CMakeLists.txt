@@ -64,6 +64,7 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${GHWOR_SOURCES_
 
 # Sources
 set(GHWOR_SOURCES
+    src/camera_cuts.cpp
     src/framerate.cpp
     src/keyboard.cpp
     src/main.cpp
@@ -72,6 +73,7 @@ set(GHWOR_SOURCES
     src/players.cpp
     src/quit_prompt.cpp
     src/screen_fx.cpp
+    src/split_render.cpp
     src/startup.cpp
     src/thread_waits.cpp
     src/timer.cpp

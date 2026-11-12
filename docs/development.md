@@ -61,7 +61,20 @@ Command-line options (`--name=value`, for example Steam launch options) win over
 [frame rates above 60](fixes-from-gh5.md#frame-rates-above-60)), `--ghwor_ultrawide=true`
 ([ultrawide](fixes-from-gh5.md#ultrawide)), `--anisotropic_override=0` (off; 5 = 16×), `--user_language=4`
 (French; [language](fixes-from-gh5.md#language)), `--quit_prompt=false` (B in the main menu does not ask to
-quit).
+quit), `--ghwor_split_render=false` (the main view's 3D scene drawn whole in every frame instead of over two, as on
+the console; NativeXRenderer's frame generation sets it at startup unless it is given, and `true` keeps the split with
+it; DLAA, DLSS and FSR 3.1 keep the split and run once a pair since NativeXRenderer's D146:
+[the split render](fixes-from-gh5.md#the-split-render)), `--ghwor_camera_cut_reset=false`
+(DLAA's, DLSS's and FSR 3.1's history kept across the camera's cuts, to compare:
+[the camera's cuts](native-x-renderer-ghwor.md#dlaa-dlss-and-fsr-31)), `--gpu_adapter=10DE:2782` (the graphics card
+by its PCI vendor and device IDs in hexadecimal, `"VVVV:DDDD"`, as the launcher's Settings → Graphics writes it; `""`
+= automatic; the SDK's: its Direct3D 12 and Vulkan providers take it before `vulkan_device` and `d3d12_adapter`,
+which then count only when no card has those IDs, and NativeXRenderer reads only `gpu_adapter` (its D141) and logs
+`[native_x_renderer] gpu_adapter VVVV:DDDD: <name>`, or warns `not found among the Vulkan devices: the default one`;
+two identical cards share their IDs, and the first is taken), `--native_x_renderer_dlss_model=cnn` (DLSS's CNN
+model instead of the Transformer, NVIDIA's default; `transformer` or empty) and `--native_x_renderer_dlss_log=true`
+(NGX's own log, verbose, in the game's: which DLSS preset it used). The DLSS ones need DLSS: the launcher's
+Upscaling row (`launcher/game.h`, `kHasDlaa`), or `--native_x_renderer_antialiasing=dlss_quality` and the other modes.
 
 ## The launcher
 

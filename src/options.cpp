@@ -92,6 +92,10 @@ double DisplayRefresh(int32_t monitor) {
 
 }  // namespace
 
+bool IsTemporalAntialiasing(const std::string& mode) {
+  return mode == "dlaa" || mode.rfind("dlss_", 0) == 0 || mode.rfind("fsr_", 0) == 0;
+}
+
 void LoadLauncherOptions(const std::filesystem::path& options_path,
                          const std::filesystem::path& gpu_plugin_path) {
 #ifdef _WIN32
@@ -123,8 +127,7 @@ void LoadLauncherOptions(const std::filesystem::path& options_path,
     // needs DLSS or FSR 3.1 (NativeXRenderer turns it off otherwise and says so) and 120 FPS or more: the game at 60 or
     // more, never below the console's.
     if (rex::cvar::Query<bool>("native_x_renderer_frame_generation") && rex::cvar::Query<bool>("native_x_renderer")) {
-      std::string aa = rex::cvar::Query<std::string>("native_x_renderer_antialiasing");
-      bool temporal = aa == "dlaa" || aa.rfind("dlss_", 0) == 0 || aa.rfind("fsr_", 0) == 0;
+      bool temporal = IsTemporalAntialiasing(rex::cvar::Query<std::string>("native_x_renderer_antialiasing"));
       if (temporal && frame_rate < 120) {
         rex::cvar::SetFlagByName("native_x_renderer_frame_generation", "false");
         REXLOG_INFO("[options] frame generation off: it needs " GAME_FRAME_RATE_CVAR " at 120 or more (the game would "
@@ -165,6 +168,54 @@ void LoadLauncherOptions(const std::filesystem::path& options_path,
   if (rex::cvar::Query<bool>("native_x_renderer") && rex::cvar::Query<std::string>("gpu_backend") != "vulkan") {
     rex::cvar::SetFlagByName("gpu_backend", "vulkan");
     REXLOG_INFO("[options] gpu_backend set to vulkan: NativeXRenderer draws");
+  }
+
+  // The split render (src/split_render.cpp): the game draws the main view's 3D scene over two frames (the stage and the
+  // crowd in one, the band and the post-processing in the next), as on the console, and it stays so with DLAA, DLSS and
+  // FSR 3.1 (NativeXRenderer's D146): the profile (src/native_x_renderer_ghwor.cpp) names the stage's copy
+  // (< 0x8255A994), where their view pauses for the next frame, and the whole scene's (< 0x8264C1B8), where they run
+  // once a pair. Before, these options turned the split off for those modes: the upscaler then took both copies in
+  // turn, its history alternating the stage alone and the whole scene (the band ghosted and D48 matched no draws, the
+  // F9 trace of ghwor_009), and with the split off the 3D, drawn whole in every frame, looked less smooth to Panchovix
+  // than with it (docs/native-x-renderer-ghwor.md). ghwor_split_render = false (a toml, the command line) still draws
+  // the scene whole in every frame, the upscaler then on each. Frame generation (D123) takes each frame's view, which a
+  // pair gives every other frame only: with it the split is turned off at startup unless given. The SDK settings
+  // overlay's Save writes a false into ghwor.toml (SerializeToTOML writes every flag off its default: the false these
+  // options set for frame generation, or set for every temporal mode before D146), where it then counts as given, with
+  // any antialiasing, and keeps the split off (src/split_render.cpp reads only the cvar): the scene drawn whole in
+  // every frame at the CPU's cost. The log warns then, naming where it was given; the player removes the line from
+  // ghwor.toml (the launcher has no row for it).
+  if (rex::cvar::Query<bool>("native_x_renderer")) {
+    std::string aa = rex::cvar::Query<std::string>("native_x_renderer_antialiasing");
+    rex::cvar::Source source = rex::cvar::GetFlagSource("ghwor_split_render");
+    const char* given = source == rex::cvar::Source::kConfig ? "given in a toml" : "given";
+    const bool temporal = IsTemporalAntialiasing(aa);
+    const bool frame_generation = temporal && rex::cvar::Query<bool>("native_x_renderer_frame_generation");
+    const bool split = rex::cvar::Query<bool>("ghwor_split_render");
+    if (frame_generation) {
+      if (source == rex::cvar::Source::kDefault) {
+        rex::cvar::SetFlagByName("ghwor_split_render", "false");
+        REXLOG_INFO("[options] ghwor_split_render set to false: frame generation with {} takes the 3D view of every "
+                    "frame, which the split gives every other frame only",
+                    aa);
+      } else if (split) {
+        REXLOG_WARN("[options] ghwor_split_render=true with {} and frame generation ({}): the 3D view comes every "
+                    "other frame, and frame generation then generates no frame (NativeXRenderer's D146). Remove "
+                    "ghwor_split_render (or set it to false) for frame generation",
+                    aa, given);
+      } else {
+        REXLOG_INFO("[options] ghwor_split_render=false with {} and frame generation ({})", aa, given);
+      }
+    } else if (source != rex::cvar::Source::kDefault && !split) {
+      REXLOG_WARN("[options] ghwor_split_render=false with {} ({}): the 3D scene is drawn whole in every frame instead "
+                  "of over two as on the console{}. A false saved into ghwor.toml (the settings overlay's Save) stays: "
+                  "remove the ghwor_split_render line from ghwor.toml",
+                  aa, given, temporal ? ", the upscaler on each frame" : "");
+    } else if (temporal) {
+      REXLOG_INFO("[options] ghwor_split_render stays on with {}: the 3D scene over two frames as on the console, the "
+                  "upscaler once a pair, at the whole scene's copy (NativeXRenderer's D146)",
+                  aa);
+    }
   }
 
   // Ultrawide on the Xenos path (src/widescreen.cpp): the cameras see with the window's aspect ratio, so the

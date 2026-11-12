@@ -82,15 +82,45 @@ const native_x_renderer::Profile& NativeXRendererProfile() {
     p.output_height = 720;
     // The finished scene's copy, before the screen effects' composite, the note highway and the HUD, for FXAA and SMAA.
     // Every resolve goes through the render targets' helper sub_8255AC80 (its color resolve returns to 0x8255AD1C), as
-    // GH5's did, and the game alternates two kinds of frame, both shown, that copy the scene from different places into
-    // the same 1280x720 texture the composite then samples: one through the scene renderer sub_8255A3C8 after the
-    // scene's draws (0x8255A990), the other from inside the composite sub_82641110 after the bloom's passes (0x82641554),
-    // with an earlier copy of the stage and the crowd before (0x8264C1B4). Antialiasing one of them only (the outer
-    // caller) left every other frame's edges as they were; so every 1280x720 copy through the helper is antialiased (1.5
-    // a frame), the HUD and the highway drawn over the composite stay sharp. The same helper's smaller copies (the
+    // GH5's did, and the game alternates two kinds of frame (the split render, src/split_render.cpp) that copy the
+    // scene from different places into the same 1280x720 texture: one through the scene renderer sub_8255A3C8 after
+    // the stage's and the crowd's draws (0x8255A990; that frame shows the last pair's image again, and the next
+    // restores the scene from this copy), the other the whole scene before the screen effects (0x8264C1B4) and from
+    // inside the composite sub_82641110 after the bloom's passes (0x82641554). Antialiasing one of them only (the outer
+    // caller) left every other frame's edges as they were; so every 1280x720 copy through the helper is antialiased
+    // (1.5 a frame), the HUD and the highway drawn over the composite stay sharp. The same helper's smaller copies (the
     // screen effects' quarter sizes, the band lobby's 400x400 portraits) are not the scene: NativeXRenderer takes only
     // copies of the output's size.
     p.scene_resolve_caller = 0x8255AD1C;
+    // DLAA, DLSS and FSR 3.1 (NativeXRenderer's auto views, D119: the game marks no view): the upscaler's view ends at
+    // a copy of the output's size through the helper's color resolve, and the upscaled image is what that copy reads;
+    // only the copy of the finished 3D scene from sub_8264BB88 (the main view's last stage, < 0x8264C1B8), before the
+    // screen effects, the note highway and the HUD (D146's outer caller: the composite's copy after the effects,
+    // < 0x82641558, and stage 12's or a material's copies in the middle of the scene, 0x8264A54C, 0x82620798,
+    // 0x826207D8, are not it). With the split render on, as on the console, the view spans the two frames of a pair
+    // (D146): the stage's frame copies its stage and crowd at < 0x8255A994 (sub_8255A3C8's call 0x8255A990 to the
+    // helper, which reaches the resolve by a tail call), where the view pauses without the upscaler; the band's frame
+    // restores them from that copy (D113's depth alias), draws the band and copies the whole scene at < 0x8264C1B8,
+    // where DLSS runs once a pair. The F9 traces of a song with the split on (ghwor_009, 36 frames; the trace prints
+    // these outer callers, read as NativeXRenderer reads them) show the two kinds strictly alternating and those copies
+    // once each per kind, and a probe of the main view's camera (ghwor_017) set in the stage's frame and the same in
+    // the band's (449 and 447 frames, alternating): one camera per pair. Before D146 DLSS took both copies in turn, its
+    // history alternating a scene without the band and the whole one (the band ghosted, D48 matched no draws), and the
+    // options turned the split off for it. With the split off (ghwor_split_render = false, still possible by hand) the
+    // 19 stages are drawn in every frame and copied once a frame at < 0x8264C1B8, DLSS on each frame as before:
+    // measured then (RTX A2000, 3840x2160, a song, 2026-11-10; ghwor_012, dlss_quality from 2560x1440, and ghwor_013,
+    // dlss_performance from 1920x1080), DLSS applied in 585 to 600 frames of each 600 once under way, D118's camera
+    // vote in all of those views but 2 (114-240 offers each), 214-346 draws matched per application (D48). The
+    // camera's cuts start the history again (src/camera_cuts.cpp, D145).
+    p.upscale_resolve_caller = 0x8255AD1C;
+    p.upscale_resolve_outer_caller = 0x8264C1B8;
+    p.view_pause_outer_caller = 0x8255A994;
+    // The bloom draws the stage's lit parts again after the upscale point (from 0x826387C4 on: the lit windows, the
+    // lights' sprites), testing the scene's depth, and blurs them into its glow: without the view's jitter those draws
+    // met the jittered depth differently in every frame, and small lit details far away flickered with DLSS, DLAA and
+    // FSR 3.1, not with SMAA (NativeXRenderer's D148; Panchovix's A/B in a song, 2026-11-11: no flicker with
+    // ghwor_fx_bloom = false, nor with this).
+    p.jitter_after_view = true;
     // The ultrawide hooks (src/widescreen.cpp) widen the 16:9 cameras by AspectFactor() and keep the 2D layer at
     // 16:9 in the center: NativeXRenderer may fill a wider output (native_x_renderer_fill_screen).
     p.widens_cameras = true;
