@@ -89,10 +89,20 @@ inline constexpr bool kHasNativeXRenderer = GAME_HAS_NATIVE_X_RENDERER;
 // full play test has gone through it (as in POTCAWE, its D56), the Xenos path until then. NativeXRenderer, as in GH5
 // (its 575136e), with SMAA on the scene's copy.
 inline constexpr bool kNativeXRendererDefault = true;
-// The antialiasing row's DLAA (NativeXRenderer's D47: NVIDIA DLSS on the main 3D view, jittered): only for a game whose
-// hooks mark its views (native_x_renderer::BeginView and EndViewGeometry, as POTCAWE's). This one does not: DLAA would
-// turn SMAA and FXAA off and DLSS never run. The row offers SMAA, FXAA and none.
-inline constexpr bool kHasDlaa = false;
+// The antialiasing row's DLAA (NativeXRenderer's D47: NVIDIA DLSS on the main 3D view, jittered), and with it the Video
+// page's AMD FSR 3.1 and NVIDIA DLSS. The game's split render stays on with them (src/options.cpp, as on the console)
+// and they run once a pair of frames, the view paused in the stage's frame and finished in the band's, at the whole
+// scene's copy before the screen effects (NativeXRenderer's D146; each camera cut starts their history again,
+// src/camera_cuts.cpp, D145). Played in a song (2026-11-10, docs/native-x-renderer-ghwor.md's DLAA, DLSS and FSR 3.1):
+// DLSS Quality and Performance at 3840x2160, the motion as smooth as SMAA's, no ghosting on the band, 60 FPS held with
+// the CNN model on an RTX A2000; DLAA and FSR 3.1 the same. Far lit windows that flickered with all of them, drawn again
+// by the bloom after the upscale point, no longer do (NativeXRenderer's D148). Before D146 DLSS needed the split off,
+// where the 3D looked less smooth.
+inline constexpr bool kHasDlaa = true;
+// The Video page's DLSS model row, after the upscaling quality while the upscaler is NVIDIA DLSS (RecompLauncher
+// 3.20.0): Transformer, NVIDIA's own default, or CNN (NativeXRenderer's native_x_renderer_dlss_model), lighter: on
+// the RTX A2000 at 3840x2160 CNN held 60 FPS where the Transformer model did not.
+inline constexpr bool kHasDlssModel = true;
 
 // The Graphics page's shadow quality row: NativeXRenderer draws the game's shadow maps at a scale of their own
 // (native_x_renderer_shadow_scale, its D92): at least twice or four times the game's resolution. Only where it
@@ -197,6 +207,32 @@ inline constexpr std::array<KeyDefault, 19> kKeyboardDefaults{{
     {"keybind_lstick_right", ""},
     {"keybind_lstick_press", ""},
 }};
+// The keyboard playing drums (kHasDrums): its keys apart from the guitar's, in the highway's order. Five lanes, a
+// Guitar Hero kit (pads on B, Y, X and A, the orange cymbal on RB, the kick pedal on LB): D red, F yellow, J blue,
+// K orange, L green, Space the kick; four lanes, a Rock Band kit (no orange): K green. Backspace is Star Power (Space
+// is the kick); the right stick's arrow off (a Guitar Hero kit's sticks carry its pads' velocity). The others are the
+// guitar's (kKeyboardDefaults), as the menus' keys. GH Metallica's (its 765862e); the launcher needs them with
+// kHasDrums off too.
+inline constexpr std::array<KeyDefault, 8> kDrumKeyboardDefaults{{
+    {"keybind_b", "D"},
+    {"keybind_y", "F"},
+    {"keybind_x", "J"},
+    {"keybind_right_shoulder", "K"},
+    {"keybind_a", "L"},
+    {"keybind_left_shoulder", "Space"},
+    {"keybind_back", "Backspace"},
+    {"keybind_rstick_right", ""},
+}};
+inline constexpr std::array<KeyDefault, 8> kDrumKeyboardDefaultsFourLanes{{
+    {"keybind_b", "D"},
+    {"keybind_y", "F"},
+    {"keybind_x", "J"},
+    {"keybind_right_shoulder", ""},
+    {"keybind_a", "K"},
+    {"keybind_left_shoulder", "Space"},
+    {"keybind_back", "Backspace"},
+    {"keybind_rstick_right", ""},
+}};
 // The Keyboard page's switch that makes the keyboard's frets strum as they are pressed (the SDK's mnk_tap_target with
 // src/startup.cpp's mnk_tap_sources, the frets): the control it presses when on, the D-pad (strumming); "": no switch.
 // The same on each controller's page for the controllers playing guitar (gamepad_tap_target, gamepad_tap_sources).
@@ -217,11 +253,22 @@ inline constexpr bool kHasMicrophones = true;
 // The microphone's gain (usb_microphone_1_gain) until the player changes it, and the Microphone's Reset: src/startup.cpp's.
 inline constexpr int kMicrophoneGainDefault = -12;
 
+// --- Drums ---
+
+// A controller or the keyboard playing drums (launcher 3.19.1, the Instrument row): the SDK's gamepad_device_subtypes
+// gives it XInput's drum kit subtype, 8, and the Drum kit row chooses Guitar Hero's five lanes or a Rock Band kit's
+// four (the SDK's change 87: "8:1"). Off: this game's drums through the launcher are not checked yet (GH Metallica's
+// four lanes, the kit's capability flags bit 0 read in its sub_8239D688 and sub_8239D890, are not checked in this
+// game's executable). The keys above and game.cpp's GameDrumControlsFor are there for the launcher all the same.
+inline constexpr bool kHasDrums = false;
+
 // --- The controls in the game's words ---
 
 // The game's functions (game_types.h's GameControl) in groups, in the launcher's language (game.cpp); empty: the pages show the Xbox 360 controls
 // (texts.cpp). The Keyboard page lists after them, under "Other controls", the ones no function is on.
 const std::vector<GameControlGroup>& GameControlsFor(uint32_t language);
+// The same for a controller or the keyboard playing drums (kHasDrums), five or four lanes.
+const std::vector<GameControlGroup>& GameDrumControlsFor(uint32_t language, bool four_lanes);
 
 // --- Texts of the game's own (game.cpp) ---
 

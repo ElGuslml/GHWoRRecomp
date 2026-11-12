@@ -95,20 +95,25 @@ when you press PLAY.
   - Video: the monitor, fullscreen, borderless or window, the resolution, the image format (fill a screen
     wider than 16:9, where the stage is seen wider while the note highway, the HUD and the menus stay 16:9
     in the center, or keep 16:9 with bars), the internal resolution the game is drawn at, upscaling (AMD
-    FSR 1 or NVIDIA NIS, from fewer lines than the screen's) and sharpness, and V-Sync (on by default: no
-    tearing, and no extra delay; leave it on with a G-Sync or FreeSync monitor too).
-  - Graphics: the renderer, the frame rate, antialiasing and anisotropic filtering. NativeXRenderer (the
-    default) draws the game natively with Vulkan; Xenos emulates the Xbox 360 GPU instead (DirectX 12 or
-    Vulkan): choose it if something looks wrong with NativeXRenderer, and tell us where. Frame rate: 60 FPS
-    (original), and 120, 144, 160, 165 or 240 FPS where your monitor reaches them (experimental). The songs
-    keep their speed and stay in sync at every frame rate. The game's screen effects can be turned off one by
-    one.
+    FSR 1 or NVIDIA NIS, from fewer lines than the screen's, or AMD FSR 3.1 and NVIDIA DLSS, which rebuild
+    the 3D from several frames; DLSS with its Transformer model or the lighter CNN) and sharpness, and
+    V-Sync (on by default: no tearing, and no extra delay; leave it on with a G-Sync or FreeSync monitor
+    too).
+  - Graphics: the renderer, the graphics card, the frame rate, antialiasing and anisotropic filtering.
+    NativeXRenderer (the default) draws the game natively with Vulkan; Xenos emulates the Xbox 360 GPU
+    instead (DirectX 12 or Vulkan): choose it if something looks wrong with NativeXRenderer, and tell us
+    where. Graphics card: on a PC with two (a laptop's integrated and dedicated ones), the one the game
+    draws with. Frame rate: 60 FPS (original), and 120, 144, 160, 165 or 240 FPS where your monitor
+    reaches them (experimental). The songs keep their speed and stay in sync at every frame rate. The
+    game's screen effects can be turned off one by one.
   - Game: the launcher's language and the game's (English, French, German, Italian or Spanish; the game
-    has no language menu of its own), and Low latency audio (off by default): the game takes your audio
-    device in exclusive mode and the sound comes sooner (about 55 ms on a USB audio interface); other
-    programs cannot play on that device while the game runs. Calibrate the audio again after changing it.
-    Debug keys (off by default): F3, F4 and ` open the developer's windows in the game (frame times,
-    settings, console).
+    has no language menu of its own). Debug keys (off by default): F3, F4 and ` open the developer's
+    windows in the game (frame times, settings, console).
+  - Audio: the output device (Windows default, or another one), the channels (Automatic, Stereo or Mono:
+    the same sound on both sides), the volume, mute while another window is in front, and Low latency
+    audio (off by default): the game takes your audio device in exclusive mode and the sound comes sooner
+    (about 55 ms on a USB audio interface); other programs cannot play on that device while the game runs.
+    Calibrate the audio again after changing it.
 - Updates: the launcher checks for a new version when it starts (you can turn that off) and installs it
   for you, keeping your saves, settings and game files.
 
@@ -159,7 +164,9 @@ FILES
 - Your saves, achievements and playtime are in your profile: %APPDATA%\ElGuslml Recomps.
 
 Command line options (--name=value, for example in Steam launch options) win over both files, e.g.
---user_language=1 (English), --ghwor_frame_rate=120 or --native_x_renderer=false (the Xenos renderer).
+--user_language=1 (English), --ghwor_frame_rate=120, --native_x_renderer=false (the Xenos renderer) or
+--gpu_adapter=10DE:2782 (a graphics card by its PCI IDs, vendor:device in hexadecimal, as the launcher's
+Settings > Graphics writes it).
 
 
 REPORTING A PROBLEM

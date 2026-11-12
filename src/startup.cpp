@@ -102,10 +102,10 @@ audio_thread_priority = true
 # meanwhile is made up by dropping as many of its next frames: a short skip, and the music stays with the notes (the
 # SDK default, false, plays the rest of the song that much late, until a pause).
 audio_keep_time = true
-# GH Warriors of Rock Launcher's "Low latency audio" (audio_wasapi_exclusive, off by default) takes the output device in
-# exclusive mode, past Windows' audio engine. With it, 10 ms kept in the device's buffer and 2 of the game's frames
-# queued instead of 4: on a Focusrite Scarlett 2i2, 20 ms from the game's frame to the driver playing it, where the
-# shared output takes 77 ms (measured in GH Metallica). Without it these do nothing.
+# GH Warriors of Rock Launcher's "Low latency audio" (Settings > Audio; audio_wasapi_exclusive, off by default) takes
+# the output device in exclusive mode, past Windows' audio engine. With it, 10 ms kept in the device's buffer and 2 of
+# the game's frames queued instead of 4: on a Focusrite Scarlett 2i2, 20 ms from the game's frame to the driver
+# playing it, where the shared output takes 77 ms (measured in GH Metallica). Without it these do nothing.
 audio_wasapi_exclusive_buffer_ms = 10
 audio_wasapi_exclusive_queue = 2
 # V-Sync (GH Warriors of Rock Launcher's row writes both): NativeXRenderer presents with FIFO, each frame shown once

@@ -103,14 +103,15 @@ failed with no player at the same point (11 %) as at 60.
 **Off:** 60 in the launcher.
 
 **Camera cuts (2026-11-07, GH5's fix).** The game draws the stage and the crowd in one frame and the band in the next
-(`IsPrimaryFrame`), and two scripts align what follows to one kind of frame: `0xCAD261DF` and `0x6506F6C8` (GH5 has
-only the first). They and the 22 scripts that call them (the band's clips, a musician changed and changed back a frame
+(`IsPrimaryFrame`; both in every frame with [`ghwor_split_render = false`](#the-split-render)), and two scripts align
+what follows to one kind of frame: `0xCAD261DF` and `0x6506F6C8` (GH5 has only the first). They and the 22 scripts that call them (the band's clips, a musician changed and changed back a frame
 later) go on in whole frames, and held to 60 passes a second their waits fell in either kind of frame: in GH5 each cut
 showed 1 to 5 frames with no scene at 160 FPS (a 512x512 square in a corner, then the stage from a camera not yet
 placed). They now run every frame (`kFrameExactScripts`): each is one shot or a loop on the song's time, so nothing
-runs faster. Here the cut itself calls neither, and Party Play at 160 FPS showed no frame without a scene with or
-without this (about 19,500 frames each, a per-frame trace): the scripts run as the game wrote them, a visible change is
-not proven. GH5's drummer fix is not needed: this game's drummer script waits a game frame and already ran every frame.
+runs faster. Here the cut itself (`0xA5BB57BB`, CameraCuts_StartCallback, where DLSS's history now starts again:
+[the camera's cuts](native-x-renderer-ghwor.md#dlaa-dlss-and-fsr-31)) calls neither, and Party Play at 160 FPS showed
+no frame without a scene with or without this (about 19,500 frames each, a per-frame trace): the scripts run as the
+game wrote them, a visible change is not proven. GH5's drummer fix is not needed: this game's drummer script waits a game frame and already ran every frame.
 
 **When the frame rate falls below the chosen one (2026-11-07, GH5's fix).** What the fix counts in frames took a frame
 as one vertical blank at the chosen rate: the whammy's 5 frames, the strings' fade (0.99 a frame), the loading screen's
@@ -185,3 +186,73 @@ to take it. The same engine here, so the same two fixes:
 - `ghwor_job_wake_one` (on; `src/thread_waits.cpp`, the job event's pulse hooked): one waiting worker is woken per
   job. GH Metallica: each worker 5,300 -> 3,400 wakes a second, 1.98 -> 1.84 cores.
 Not measured here yet. Off: `critical_section_spin_us = 0`, `ghwor_job_wake_one = false`.
+
+## The split render
+
+**New here (2026-11-10), made for DLSS and FSR 3.1.** `ghwor_split_render` (on = as on the console;
+`src/split_render.cpp`, three hooks). Run off with DLSS Quality and Performance in a song (`ghwor_012`, `ghwor_013`):
+DLSS on every frame, far fewer artifacts, but the 3D looked less smooth than with the split on. Since NativeXRenderer's
+D146 (the same day; DLSS run in a song: smooth, no ghosting) DLSS and FSR 3.1 work with the split on, once a pair of
+frames, and the split stays on with them; off it is a choice by hand (and frame generation's). The measurements, how
+DLSS takes the frames and the reset at the camera's cuts are in
+[NativeXRenderer's DLAA, DLSS and FSR 3.1](native-x-renderer-ghwor.md#dlaa-dlss-and-fsr-31). Its CPU cost is not
+measured yet (below).
+
+**Symptom:** with NativeXRenderer's DLSS (`dlss_quality`, its auto views ending at the helper's copy `0x8255AD1C`) the
+band ghosted and things stuck to the image, and DLSS's draw matching (D48) found no pairs: 0 matched, no camera votes.
+**Cause:** the engine draws the main view's 3D scene over two frames, as GH5's (NativeXRenderer's D113). The script
+function SetSplitRenderMode (`sub_8250A418`) stores a mode, a ratio and a split stage at +1896, +1908 and +1912 of the
+main thread's render settings (`0x829C0870`); the renderer's init (`sub_8242B988`) sets mode 1, ratio 1.0 and stage 8,
+so the split is on unless a script turns it off. With a mode other than 0 the main thread alternates the frame's kind
+(`sub_8242C450` at `0x8242C46C`: kind 1, 2, 1, 2), and the scene renderer (`sub_8255A3C8`) runs the main view's 19
+stages over the two:
+- kind 1 (IsPrimaryFrame, `0x316A336A`): stages 1-8 (the stage and the crowd, the depth copy, the ambient occlusion),
+  then the partial scene copied through the helper (`< 0x8255A994`); what is shown is the previous kind 2's image,
+  redrawn from `[0x829BE118]` ("FrameBuffer_SplitRender") by the "ui" viewport, under a new HUD;
+- kind 2: a clear, the kind 1's color and depth restored with a quad (D113's depth alias), stages 9-19 (the light
+  volume, the band), the whole scene copied before the post-processing (`< 0x8264C1B8`), the composite, its capture into
+  `[0x829BE118]`, the HUD.
+The 3D scene changes 30 times a second. The F9 trace of a song showed the two kinds strictly alternating (36 frames),
+and DLSS ran on both copies: its history alternated a scene without the band and the whole one, and two frames in a row
+never drew the same draws.
+
+**Fix:** with `ghwor_split_render = false` the mode is held at 0 in the main thread's copy, at the start of each frame
+before the main thread reads it (`0x8242C46C`) and right after SetSplitRenderMode stores one (`0x8250A4C4`); the
+render thread's copy is made from it each frame after that. SetSplitRenderMode's parameters are each optional and
+stored each on its own: the mode only when given (`stw r11,1896(r30)` at `0x8250A464`, skipped otherwise), so the mode
+a script asks for is taken at that store (a third hook, r11), and a call without it keeps the game's mode, is not held
+and logs `mode not given` (reading +1896 there would see the held 0 and take it for the game's). Every test of the split reads the mode first, and with 0
+each takes the engine's one-frame path: every frame kind 1 (IsPrimaryFrame always true); the main view's 19 stages in
+one frame, its clear, no copy at `0x8255A994` and no restore (`0x8255A604`, `0x8255A634`, `sub_82554780`); no redraw
+or capture of `[0x829BE118]` (`0x8255A6A0`); the viewports kept for kind 2 drawn every frame (`0x8255A78C`,
+`sub_82554AB0`); all of stage 4's objects (`sub_82557E88`, which divides them by the ratio only with a mode); no update
+of the main thread skipped (`sub_825559E0`, `sub_82558BC0`, `sub_82558E50`). The whole scene is then copied once a
+frame before the post-processing (`< 0x8264C1B8`), where DLSS's auto views end; the ambient occlusion's 640x360 copies
+through the same helper come before the band but are not the output's size. Two copies of the output's size could
+still come first, not seen in the traced song: stage 12's (`0x8264A54C`, objects of pass 18) and a material's
+"framebuffer" parameter (`0x82620798`, `0x826207D8`); since D146 the profile's upscale point is the copy from
+`0x8264C1B8` only. The game's own mode is kept and put back if the cvar is turned on again. `src/options.cpp` set it to
+false with NativeXRenderer's `dlaa`, `dlss_*` and `fsr_*` modes until D146; now only with frame generation (D123,
+which takes the 3D view of every frame), unless it is given (a toml, the command line), and logs
+`[options] ghwor_split_render ...` (`stays on with dlss_quality ...`; a warning when it is given `true` with frame
+generation). A `false` the SDK settings overlay's Save wrote into `ghwor.toml` (it writes every cvar off its default:
+the false the options set before D146, or now with frame generation) stays with any antialiasing, and the split stays
+off with it; it is logged as a warning then (`ghwor_split_render=false with smaa (given in a toml)`), and removing the
+line from `ghwor.toml` brings the split back (the launcher has no row for it). The game logs `[split render]` once
+with what it does, and SetSplitRenderMode's values as the scripts set them (the first call and each change: which
+modes the menus and the songs use is not known).
+
+**Costs and differences from the console:**
+- CPU: the main view's 19 stages every frame (in the trace the stage's frame had 300-570 draws and the band's
+  600-1000, so each frame now draws about both), and the main thread's updates kind 2 skipped. Not measured: the
+  renderer's CPU (about 6 ms a frame in a song with the split) and the cores in a song should be compared.
+- The scene changes 60 times a second (the band, the cameras, the light volume); effects made for a scene at 30 Hz
+  (the motion blur from the camera's movement) may look different.
+- The scripts that align to a kind of frame (camera cuts, above): `0xCAD261DF` ("if IsPrimaryFrame else Wait 1
+  gameframes") no longer waits, and `0x6506F6C8` waits one game frame each time (before, every other time), so the
+  band's clips and a musician's change can come a frame later.
+- Whether the console ever ran mode 0 is not known (the scripts' arguments could not be read from `qb.pab.xen`): the
+  log's SetSplitRenderMode lines tell what the scripts ask for.
+
+**Off:** `ghwor_split_render = true`, the default (also with DLSS and FSR 3.1 since D146; given in `ghwor.toml` or on
+the command line it keeps the split with frame generation too).
