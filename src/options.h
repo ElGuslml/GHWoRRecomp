@@ -8,6 +8,7 @@
 #pragma once
 
 #include <filesystem>
+#include <string>
 
 namespace ghwor {
 
@@ -18,5 +19,9 @@ void LoadLauncherOptions(const std::filesystem::path& options_path,
 
 // The GPU DLL next to the executable (rexgpu-xenos.dll, or its RelWithDebInfo/Debug variant).
 std::filesystem::path GpuPluginPath();
+
+// Whether a native_x_renderer_antialiasing value is one of NativeXRenderer's temporal modes: DLAA, DLSS and FSR 3.1,
+// which accumulate the 3D scene from frame to frame (dlaa, dlss_*, fsr_*).
+bool IsTemporalAntialiasing(const std::string& mode);
 
 }  // namespace ghwor

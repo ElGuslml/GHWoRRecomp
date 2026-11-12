@@ -92,6 +92,10 @@ double DisplayRefresh(int32_t monitor) {
 
 }  // namespace
 
+bool IsTemporalAntialiasing(const std::string& mode) {
+  return mode == "dlaa" || mode.rfind("dlss_", 0) == 0 || mode.rfind("fsr_", 0) == 0;
+}
+
 void LoadLauncherOptions(const std::filesystem::path& options_path,
                          const std::filesystem::path& gpu_plugin_path) {
 #ifdef _WIN32
@@ -123,8 +127,7 @@ void LoadLauncherOptions(const std::filesystem::path& options_path,
     // needs DLSS or FSR 3.1 (NativeXRenderer turns it off otherwise and says so) and 120 FPS or more: the game at 60 or
     // more, never below the console's.
     if (rex::cvar::Query<bool>("native_x_renderer_frame_generation") && rex::cvar::Query<bool>("native_x_renderer")) {
-      std::string aa = rex::cvar::Query<std::string>("native_x_renderer_antialiasing");
-      bool temporal = aa == "dlaa" || aa.rfind("dlss_", 0) == 0 || aa.rfind("fsr_", 0) == 0;
+      bool temporal = IsTemporalAntialiasing(rex::cvar::Query<std::string>("native_x_renderer_antialiasing"));
       if (temporal && frame_rate < 120) {
         rex::cvar::SetFlagByName("native_x_renderer_frame_generation", "false");
         REXLOG_INFO("[options] frame generation off: it needs " GAME_FRAME_RATE_CVAR " at 120 or more (the game would "
@@ -165,6 +168,38 @@ void LoadLauncherOptions(const std::filesystem::path& options_path,
   if (rex::cvar::Query<bool>("native_x_renderer") && rex::cvar::Query<std::string>("gpu_backend") != "vulkan") {
     rex::cvar::SetFlagByName("gpu_backend", "vulkan");
     REXLOG_INFO("[options] gpu_backend set to vulkan: NativeXRenderer draws");
+  }
+
+  // The split render (src/split_render.cpp, Gustavo's ghwor_scene_every_frame, the launcher's "Venue at the full frame
+  // rate"): the game draws the main view's 3D scene over two frames (the stage and the crowd in one, the band and the
+  // post-processing in the next), as on the console, and it stays so with DLAA, DLSS and FSR 3.1 (NativeXRenderer's
+  // D159): the profile (src/native_x_renderer_ghwor.cpp) names the stage's copy (< 0x8255A994), where their view pauses
+  // for the next frame, and the whole scene's (< 0x8264C1B8), where they run once a pair. Before, these options turned
+  // the split off for those modes: the upscaler then took both copies in turn, its history alternating the stage alone
+  // and the whole scene (the band ghosted and D48 matched no draws, the F9 trace of ghwor_009), and with the split off
+  // the 3D, drawn whole in every frame, looked less smooth to Panchovix than with it (docs/native-x-renderer-ghwor.md).
+  // ghwor_scene_every_frame = true draws the scene whole in every frame, the upscaler then on each. Frame generation
+  // (D123) takes each frame's view, which a pair gives every other frame only: with it ghwor_scene_every_frame is set
+  // to true at startup.
+  if (rex::cvar::Query<bool>("native_x_renderer")) {
+    std::string aa = rex::cvar::Query<std::string>("native_x_renderer_antialiasing");
+    const bool temporal = IsTemporalAntialiasing(aa);
+    const bool frame_generation = temporal && rex::cvar::Query<bool>("native_x_renderer_frame_generation");
+    const bool every_frame = rex::cvar::Query<bool>("ghwor_scene_every_frame");
+    if (frame_generation && !every_frame) {
+      rex::cvar::SetFlagByName("ghwor_scene_every_frame", "true");
+      REXLOG_INFO("[options] ghwor_scene_every_frame set to true: frame generation with {} takes the 3D view of every "
+                  "frame, which the split render gives every other frame only",
+                  aa);
+    } else if (temporal && every_frame) {
+      REXLOG_INFO("[options] ghwor_scene_every_frame = true with {}: the 3D scene whole in every frame, the upscaler "
+                  "on each",
+                  aa);
+    } else if (temporal) {
+      REXLOG_INFO("[options] the split render stays on with {}: the 3D scene over two frames as on the console, the "
+                  "upscaler once a pair, at the whole scene's copy (NativeXRenderer's D159)",
+                  aa);
+    }
   }
 
   // Ultrawide on the Xenos path (src/widescreen.cpp): the cameras see with the window's aspect ratio, so the

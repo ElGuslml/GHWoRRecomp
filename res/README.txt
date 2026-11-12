@@ -108,9 +108,10 @@ when you press PLAY.
   - Video: the monitor, fullscreen, borderless or window, the resolution, the image format (fill a screen
     wider than 16:9, where the stage is seen wider while the note highway, the HUD and the menus stay 16:9
     in the center, or keep 16:9 with bars), the internal resolution the game is drawn at, upscaling (AMD
-    FSR 1 or NVIDIA NIS, from fewer lines than the screen's) and sharpness, the shadows' quality (up to
-    four times the original resolution), and V-Sync (on by default: no tearing, and no extra delay; leave
-    it on with a G-Sync or FreeSync monitor too).
+    FSR 1 or NVIDIA NIS, from fewer lines than the screen's, or AMD FSR 3.1 and NVIDIA DLSS, which rebuild
+    the 3D from several frames; DLSS with its Transformer model or the lighter CNN) and sharpness, the
+    shadows' quality (up to four times the original resolution), and V-Sync (on by default: no tearing, and
+    no extra delay; leave it on with a G-Sync or FreeSync monitor too).
   - Graphics: the renderer, the graphics card, the frame rate, antialiasing and anisotropic filtering.
     NativeXRenderer (the default) draws the game natively with Vulkan; Xenos emulates the Xbox 360 GPU
     instead (DirectX 12 or Vulkan): choose it if something looks wrong with NativeXRenderer, and tell us
@@ -199,7 +200,9 @@ FILES
 - Your saves, achievements and playtime are in your profile: %APPDATA%\ElGuslml Recomps.
 
 Command line options (--name=value, for example in Steam launch options) win over both files, e.g.
---user_language=1 (English), --ghwor_frame_rate=120 or --native_x_renderer=false (the Xenos renderer).
+--user_language=1 (English), --ghwor_frame_rate=120, --native_x_renderer=false (the Xenos renderer) or
+--gpu_adapter=10DE:2782 (a graphics card by its PCI IDs, vendor:device in hexadecimal, as the launcher's
+Settings > Graphics writes it).
 
 
 REPORTING A PROBLEM
