@@ -121,8 +121,10 @@ when you press PLAY.
     (off by default): the game takes your audio device in exclusive mode and the sound comes sooner (about
     55 ms on a USB audio interface); other programs cannot play on that device while the game runs.
     Calibrate the audio again after changing it.
+  - Online (experimental): online play with your Steam friends (see ONLINE PLAY).
 - Updates: the launcher checks for a new version when it starts (you can turn that off) and installs it
-  for you, keeping your saves, settings and game files.
+  for you, keeping your saves, settings and game files. Get beta versions (off by default) offers the betas
+  too.
 
 
 SINGING (EXPERIMENTAL)
@@ -136,6 +138,20 @@ Any microphone connected to the PC works as the game's Xbox 360 USB microphone:
 If the pitch line jumps around, lower the Gain; if the game does not hear you, raise it. Headphones help: with
 speakers, the microphone hears the song too. While a microphone is chosen, Windows shows that the game is using
 it.
+
+
+ONLINE PLAY (EXPERIMENTAL)
+
+The game's online modes with your Steam friends (Quickplay+ bands, the competitive modes and the rest),
+without Xbox Live. Everyone needs Steam running and signed in, and this same version of the game.
+1. In the launcher's Settings > Online, turn on Online play, on every PC (Through Steam turns on with it).
+2. In the game, every band lobby is online, as on a console signed in to Xbox Live. Your Steam friends who
+   have the game open are in the lobby's FRIENDS LIST: invite them from there.
+3. An invite shows at the top of the screen: hold START (or Enter) for 2 seconds to join.
+You can also invite a friend from Steam's friends list (Invite to game), or join a friend there (Join game):
+the game takes you to their party. No port needs opening: Steam carries the game between you. Steam shows you
+playing "Spacewar" (Valve's test app, which games without a Steam page of their own use). The music store,
+leaderboards, Rock Record and Facebook / Twitter sharing needed Activision's servers, which are gone.
 
 
 MORE THAN ONE CONTROLLER
@@ -197,6 +213,8 @@ KNOWN ISSUES
   songs need its "GH:WoR Customs Database" package in your DLC folder too: without it the number of songs can
   change from one start to the next.
 - The first time an effect appears, it may show up a few frames late.
+- Online play is experimental: Quickplay+ and a competitive mode have been played between two copies of the
+  game; RockFest with more players and online Quest have not been tried yet.
 
 
 MORE INFORMATION

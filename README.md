@@ -94,6 +94,9 @@ From then on, the launcher keeps itself up to date: when a new version comes out
 - 👤 **Profiles:** your saves, achievements and playtime in a profile shared by all the ElGus Recomps launchers.
 - 👥 **Play together:** the first controller to press a button plays with your profile; the other controllers join as
   its guests, as on the Xbox 360.
+- 🌐 **Online with your friends (experimental):** the game's online modes through Steam, without Xbox Live: invite your
+  Steam friends who have the game open from the band lobby's friends list, or from Steam
+  ([how it works](docs/online-play.md)).
 - 🎶 **Downloadable content:** point the launcher's DLC tab at the folder where you keep your Xbox 360 packages: the
   game reads them from there (nothing is copied, and the other ElGus Recomps launchers can use the same folder),
   Guitar Hero 5's add their songs to the game's list too, and packages the game cannot read come turned off
@@ -133,8 +136,8 @@ Everything is set up from **GH Warriors of Rock Launcher**, with the mouse, the 
 | 🎶 **DLC** | Your DLC folder: the game reads your packages from there, nothing copied. They are grouped by the game they were made for, each with its switch. |
 | 🏆 **Achievements** | All 50 achievements, the ones you have unlocked and when. |
 | 🎮 **Controls** | Your guitars, controllers and keyboard: what each button or key does, and which controller plays drums (five or four lanes) or sings. The keyboard as a guitar or a drum kit (experimental). Frets that strum as you press them, on a controller or the keyboard. A whammy bar's and a tilt's assignment. Your microphone (experimental): device, gain and level. |
-| ⚙️ **Settings** | **Game:** the game's and the launcher's language, the intro videos shortened (the logos end once the game has loaded, no intro movie), the game's own debug menu. **Audio:** output device, channels, volume, mute in the background, Low latency audio. **Video:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), upscaling (AMD FSR 1, NVIDIA NIS) and sharpness, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too). **Graphics:** renderer, graphics card, frame rate, antialiasing, texture sharpness, the game's screen effects. |
-| 🔄 **Updates** | Your version, and new ones when they come out. |
+| ⚙️ **Settings** | **Game:** the game's and the launcher's language, the intro videos shortened (the logos end once the game has loaded, no intro movie), the game's own debug menu. **Audio:** output device, channels, volume, mute in the background, Low latency audio. **Video:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), upscaling (AMD FSR 1, NVIDIA NIS) and sharpness, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too). **Graphics:** renderer, graphics card, frame rate, antialiasing, texture sharpness, the game's screen effects. **Online** (experimental): online play with your Steam friends. |
+| 🔄 **Updates** | Your version, and new ones when they come out (the betas too, if you choose). |
 | 👤 **Profile** | Your picture at the top right: hours played, streaks, your week, your games and your favorite achievements. |
 
 <p align="center">
@@ -210,7 +213,6 @@ natively on Vulkan.
 ## 🚧 In the works
 
 New features on the way:
-- 🌐 **Online multiplayer:** play with your friends over the internet.
 - 🥁 **MIDI drum kits:** play the drums on an electronic drum kit connected to your PC.
 - 💿 **Guitar Hero: World Tour DLC:** import your World Tour songs and play them here.
 - 🎵 **Custom songs:** play songs made by the community.
