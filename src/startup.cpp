@@ -210,6 +210,10 @@ ghwor_debug_menu = false
 # loaded, and the intro movie after them is not played: the autosave notice and the main menu right after the loading.
 # false = as on the console.
 ghwor_skip_intro = false
+# The online menus as on the PlayStation 3, as online play here is through Steam (src/online_text.cpp): "FIND ONLINE
+# PLAYERS" and the band lobby's other texts that name Xbox LIVE in the game's PS3 words (in the game's language), and
+# no Xbox LIVE Party item in Options (the console's party chat). false = as on the Xbox 360.
+ghwor_online_text = true
 # The mouse cursor hidden over the game after cursor_auto_hide_ms without moving it (shown again when it moves, while
 # another window has the focus, and over the SDK's overlays). false = always shown.
 cursor_auto_hide = true

@@ -312,3 +312,16 @@ address = 0x8239B040   # lbz r11,2(r3) (the entry of sub_8239B040): r3 = the com
 name = "GHWoRGlobalResolveHook"
 registers = ["r3"]
 return_on_true = true
+[[midasm_hook]]
+address = 0x825196CC   # addi r1,r1,112 at the end of sub_82519660 (the online matchmaker's times, read from the settings)
+name = "GHWoRMatchmakerHook"
+registers = ["r31"]
+[[midasm_hook]]
+address = 0x823D7298   # mr r4,r3 in sub_823D7288 (a text's key -> its text in the player's language: r3 = the key)
+name = "GHWoRTextKeyHook"
+registers = ["r3"]
+[[midasm_hook]]
+address = 0x82504670   # lis r11,-32102 (the entry of sub_82504670, the script function IsXENONorWINDX): r4 = the script
+name = "GHWoRPlatformHook"
+registers = ["r3", "r4"]
+return_on_true = true

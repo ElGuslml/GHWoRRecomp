@@ -69,7 +69,9 @@ set(GHWOR_SOURCES
     src/intro.cpp
     src/keyboard.cpp
     src/main.cpp
+    src/matchmaking.cpp
     src/native_x_renderer_ghwor.cpp
+    src/online_text.cpp
     src/options.cpp
     src/players.cpp
     src/quit_prompt.cpp

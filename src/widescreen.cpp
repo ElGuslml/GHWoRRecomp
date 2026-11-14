@@ -92,6 +92,13 @@ class MenuBarsDialog : public rex::ui::ImGuiDialog {
 
 bool SongShown() { return DrawnRecently(g_highway_drawn); }
 
+// The byte the loading screen is drawn while it is set: 1 in sub_82431D08 (shown), 0 in sub_82431EC8 (hidden); read
+// by sub_824C1780 (src/framerate.cpp's loading steps).
+bool LoadingShown() {
+  const uint8_t* base = GuestBase();
+  return base && base[0x829C38A4] != 0;
+}
+
 void SetOutputSize(uint32_t width, uint32_t height) {
   double factor = 1.0;
   if (native_x_renderer::Renders()) {

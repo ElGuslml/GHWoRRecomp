@@ -61,8 +61,8 @@ Guitar.
 
 ## Not ported
 
-- **Online play** (GH Metallica's experimental online modes through Steam): not for this game now. The SDK's
-  `online_play` is off by default and the launcher shows no Online category (`kHasOnline` false).
+- **Online play** (GH Metallica's experimental online modes through Steam): not ported then; ported since (2026-11-14,
+  `kHasOnline` true), see [online-play.md](online-play.md).
 - **The tap notes' trail at ultrawide** (GH Metallica's `GHMetallicaTapTrailHook`): this game draws none, as GH5. Its
   scripts still define `createguitartaptrail` and `destroyguitartaptrail` (`highway_2d.qb`), but no script calls them
   and no code names them (their QBKeys appear nowhere in the executable).

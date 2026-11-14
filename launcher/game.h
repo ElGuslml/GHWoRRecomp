@@ -264,6 +264,12 @@ inline constexpr bool kHasDrums = true;
 // row stays (the default; the changelog's guess that this engine has five lanes only does not hold here either).
 inline constexpr bool kHasFourLaneDrums = true;
 
+// --- Online ---
+
+// Settings > Online (launcher 3.20): online play between friends (the SDK's online_play, its changes 89-103 and 106),
+// through Steam (rexsteam.exe; kOnlineByAddress stays false, as in GH Metallica). docs/online-play.md.
+inline constexpr bool kHasOnline = true;
+
 // --- The controls in the game's words ---
 
 // The game's functions (game_types.h's GameControl) in groups, in the launcher's language (game.cpp); empty: the pages show the Xbox 360 controls

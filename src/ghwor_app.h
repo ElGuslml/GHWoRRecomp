@@ -9,6 +9,7 @@
 #include <rex/kernel/xam/module.h>
 #include <rex/logging.h>
 #include <rex/system/kernel_state.h>
+#include <rex/system/online/session_service.h>
 #include <rex/system/xthread.h>
 #include <rex/ui/imgui_dialog.h>
 
@@ -92,6 +93,12 @@ class GhworApp : public rex::ReXApp {
       ghwor::SetOutputSize(window()->GetActualPhysicalWidth(), window()->GetActualPhysicalHeight());
     }
     ghwor::InitializeKeyboard();
+    // Online play: a friend's invite shows at once (a card, START held to join; rex/ui/overlay/invite_prompt.h), and
+    // an accepted one is told to the game only in the menus: never over the highway, nor while a loading screen is
+    // up. In GH Metallica an invite told while the game loaded its menus after leaving a song joined the party as the
+    // lobby menu was being built and crashed (its local_docs/51).
+    rex::system::online::SessionService::SetDefaultInviteGate(
+        [] { return !ghwor::SongShown() && !ghwor::LoadingShown(); });
   }
   void OnWindowPixelSizeChanged(uint32_t pixel_width, uint32_t pixel_height) override {
     ghwor::SetOutputSize(pixel_width, pixel_height);

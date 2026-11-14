@@ -10,7 +10,8 @@ the symptom, the cause, the fix and how to turn the fix off, so that you can che
 | [Downloadable content](dlc.md) | Working: the player's DLC folder, read in place (0.1.1-beta.2); Guitar Hero 5's Megadeth Track Pack adds its songs to Quickplay+ |
 | [Stutters the first time something is shown](compiling-shaders.md) | Fixed: a pipeline list ships with the game; the launcher compiles it for your graphics card at the first Play ("Compiling shaders"; NativeXRenderer) |
 | [Crackling in songs on slower PCs](audio-crackling.md) | Fixed in the SDK (change 82): the audio callback's spacing counted from its start, so a slower CPU keeps up |
-| [The fixes from GH Metallica of 2026-11-11 to 13](fixes-from-gh-metallica.md) | Built, not tried in the game yet: the game's debug menu, the logos ended once the game has loaded and the intro movie left out, drums on five or four lanes, Settings > Audio and the graphics card; online play and the tap notes' trail not ported (this game draws no trail) |
+| [The fixes from GH Metallica of 2026-11-11 to 13](fixes-from-gh-metallica.md) | Built, not tried in the game yet: the game's debug menu, the logos ended once the game has loaded and the intro movie left out, drums on five or four lanes, Settings > Audio and the graphics card; the tap notes' trail not ported (this game draws no trail); online play since in [its own note](online-play.md) |
 | [The mouse cursor](mouse-cursor.md) | Hidden over the game after 2 s without moving it (SDK change 103) |
+| [Online play](online-play.md) | In testing: two copies on one PC played a Quickplay+ song together (SDK changes 106 and 107: the party's key, socket numbers); Steam between two homes not tried yet |
 
 Building the project, its configuration and how the SDK is changed: [`development.md`](development.md).
