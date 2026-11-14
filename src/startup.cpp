@@ -202,6 +202,18 @@ ghwor_fx_depth_of_field = true
 ghwor_fx_grain = true
 ghwor_fx_color = true
 ghwor_fx_vignette = true
+# The game's own debug menu (Neversoft's, src/debug_menu.cpp): true adds an item named (debug menu) to the main menu
+# and a Debug Menu item to the pause menu (Unlock All, Skip Into Song, Change Venue, Show Song Time, Play Credits, Add
+# 100 Quickplay Stars, ...). Some items need Neversoft's development tools and do nothing. false = as on the console.
+ghwor_debug_menu = false
+# The videos at the start shortened (src/intro.cpp): the logos, played while the game loads, end as soon as the game has
+# loaded, and the intro movie after them is not played: the autosave notice and the main menu right after the loading.
+# false = as on the console.
+ghwor_skip_intro = false
+# The mouse cursor hidden over the game after cursor_auto_hide_ms without moving it (shown again when it moves, while
+# another window has the focus, and over the SDK's overlays). false = always shown.
+cursor_auto_hide = true
+cursor_auto_hide_ms = 2000
 )";
 
 uint32_t Crc32(const std::vector<char>& data) {
