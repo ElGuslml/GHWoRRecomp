@@ -12,6 +12,6 @@ the symptom, the cause, the fix and how to turn the fix off, so that you can che
 | [Crackling in songs on slower PCs](audio-crackling.md) | Fixed in the SDK (change 82): the audio callback's spacing counted from its start, so a slower CPU keeps up |
 | [The fixes from GH Metallica of 2026-11-11 to 13](fixes-from-gh-metallica.md) | Built, not tried in the game yet: the game's debug menu, the logos ended once the game has loaded and the intro movie left out, drums on five or four lanes, Settings > Audio and the graphics card; the tap notes' trail not ported (this game draws no trail); online play since in [its own note](online-play.md) |
 | [The mouse cursor](mouse-cursor.md) | Hidden over the game after 2 s without moving it (SDK change 103) |
-| [Online play](online-play.md) | In testing: two copies on one PC played a Quickplay+ song together (SDK changes 106-108: the party's key, socket numbers, no port without online play); Steam between two homes not tried yet |
+| [Online play](online-play.md) | In testing: two copies on one PC played songs together, joined by an invite (SDK changes 106-109: the party's key, socket numbers, no port without online play, the friends list kept up to date); Steam between two homes not tried yet |
 
 Building the project, its configuration and how the SDK is changed: [`development.md`](development.md).

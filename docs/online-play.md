@@ -1,7 +1,7 @@
 # Online play (experimental)
 
-Status: in testing. Two copies of the game on one PC have played a Quickplay+ song together; not yet tried between
-two homes through Steam.
+Status: in testing. Two copies of the game on one PC have played songs together, joined by an invite from the friends
+list; not yet tried between two homes through Steam.
 
 The game's online modes, played between friends. There are no Xbox Live or game servers. Each player's game
 connects to the others, and everyone needs the same version of this port. The online stack is GH Metallica's (the
@@ -57,6 +57,15 @@ The game does not ask about Facebook or Twitter the first time a profile goes on
   so every start opened UDP port 1000 on the PC (and could bring up the firewall's question) for nothing.
 - **Fix.** Without online play, a VDP socket has no network, as on a console without a cable: nothing is opened on the
   PC. Checked: Warriors of Rock, GH Metallica, Guitar Hero 5 and Band Hero open no port offline.
+
+### 2c. The friends list (SDK change 109)
+
+- **Symptom.** A friend who started their game after yours never showed in your FRIENDS LIST, so you could not
+  invite them.
+- **Cause.** This game reads its friends list once, when it starts, and again only when the console tells it that a
+  friend's state changed. The SDK never told it.
+- **Fix.** The SDK tells the game whenever its friends list changes: a friend connects or leaves, or hosts or leaves a
+  party.
 
 ### 3. The matchmaking's wait (`ghwor_online_host_wait`, 3)
 
