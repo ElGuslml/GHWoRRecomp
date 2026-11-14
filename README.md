@@ -83,6 +83,7 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   graphics card before you play, in a moment, only the first time and after an update.
 - 🔍 **Upscaling:** AMD FSR 1 or NVIDIA NIS, on any graphics card, with their quality and sharpness: for a 4K screen
   or a slower graphics card ([how they compare](https://github.com/ElGuslml/GHMetalRecomp/blob/main/docs/scaling.md)).
+- 🌑 **Sharper shadows:** the **Shadow quality** row draws the shadows at up to four times the original resolution.
 - ⚡ **High frame rates:** 60 FPS as on the console, or 120, 144, 160, 165 or 240 FPS if your monitor supports it
   (experimental). The songs keep their speed and stay in sync. V-Sync is on by default (no tearing, the game in step
   with your monitor, without V-Sync's usual delay); leave it on with a G-Sync or FreeSync monitor too.

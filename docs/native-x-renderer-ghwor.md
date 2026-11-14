@@ -62,12 +62,7 @@ the library's checklist is `native_x_renderer/docs/integrating-a-game.md`.
   the others: a light effect of a frame. NativeXRenderer skips 1D and 3D resolve destinations, so that frame draws its
   light volume from a texture nobody filled.
 - Frame rates above 60 and larger outputs (3440x1440, 160 FPS) with NativeXRenderer, a real play test.
-- **Shadow quality** (the launcher's row, NativeXRenderer's D92; GH5's `cdec72f`): off. GH5's shadow filter fix does not
-  carry over: its nine samples come from `sub_825CCE98`, with a switch on 4, 9 or 16 samples that nothing in this
-  executable has, and the stage that called it is here the light volume's (`sub_825F14C8`). Before the row is turned on
-  the log must show NativeXRenderer finding this game's shadow maps in a song. At startup, with
-  `native_x_renderer_shadow_scale = 4`, it takes a 640x360 depth surface drawn with no color target (EDRAM base 1488)
-  for one: a screen fraction, not a shadow map, which the shadow scale must leave alone.
+- **Shadow quality** (the launcher's row, NativeXRenderer's D92; GH5's `cdec72f`): on since 2026-11-13 (below).
 
 ## Stalls on a first play (NativeXRenderer D126)
 
@@ -103,3 +98,26 @@ the driver new shaders to compile, and its pipeline cache kept a copy of each pi
 serves every scale. The first start after the change compiles every pipeline once. A draw computes what it computed
 (GH Metallica's and the other games' stored translations checked, NativeXRenderer's decisions.md D128).
 **Off:** `--native_x_renderer_scale_in_constants=false` writes the scale into the shaders as before.
+
+## Shadow quality (NativeXRenderer D143, D144, 2026-11-13)
+
+The launcher's Shadow quality row (Original, High, Ultra: `native_x_renderer_shadow_scale` 0, 2, 4; D92) is on. In a
+song NativeXRenderer finds GH5's shadow map, the 400x400 depth surface at EDRAM base 1709 (1600x1600 at Ultra). Two
+things kept the row off before:
+- **The filter.** The characters' shadows are read by pixel shaders that take nine samples of the map at fetch constant
+  5, each compared with the pixel's depth, at offsets from c10-c13 = +-1 / 400 (seven shaders in a song's dump,
+  `5C47D288D8AA5C4E` and six more). With the map four times as large those offsets put the samples four host texels
+  apart: stepped copies of each edge, the lattice GH5 showed on skin. GH5 divides them in its renderer's code
+  (`GH5ShadowFilterHook`); this game has no such function (the map's size and texel, 400.0 and 0.0025, are constants of
+  the image at 0x8200FEF0). The profile lists c10-c13 with fetch constant 5 (`src/native_x_renderer_ghwor.cpp`), and the
+  library divides them by the map's host size over its guest size at each draw (D143; the log: "the pixel shader's
+  c10-c13 hold sample offsets in texels ... (-0.0025 = -1.00 texels of its 400x400): divided by 4.0000").
+  `native_x_renderer_texel_offset_constants = false` keeps the game's offsets (A/B).
+- **A false shadow map.** A 640x360 depth pass drawn with no color target (EDRAM base 1488, from the boot on) was taken
+  for one at the render scale 1 (a 1280x720 window); above it D127 keeps that surface native. D144: a reduced copy of
+  the screen is never a shadow map in a game with `unscaled_screen_fractions`.
+
+Checked: 1280x720 and 2560x1440 with the shadow scale 4, Quickplay+'s first song, no error, the images normal. A
+110x207 depth surface at base 1488 (pitch 160) is also drawn at the shadow scale in songs, as before (what it is not
+known). Not judged on screen: the shadows' edges at Ultra against Original (Quickplay+'s venue is random and dark):
+Gustavo's eye.

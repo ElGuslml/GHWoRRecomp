@@ -99,6 +99,16 @@ const native_x_renderer::Profile& NativeXRendererProfile() {
     // depth of field blurs showed a grid at 3440x1440 (Gustavo, the rocker creator's character screen; its blurred copy of
     // the scene is the 320x180 0x8436000). GH5, whose bloom showed nothing, was checked on its title screen only.
     p.unscaled_screen_fractions = true;
+    // The shadows' filter (library D143): the characters' shadows are read by pixel shaders that take nine samples of
+    // the 400x400 shadow map at fetch constant 5, each compared with the pixel's depth, at offsets from c10-c13 (+-1 /
+    // 400: one texel), as in GH5. GH5 divides them where its renderer builds them (GH5ShadowFilterHook); this game's code
+    // has no such function (no 4/9/16-sample switch), so the library scales them at the draw: with a shadow quality above
+    // Original the map is larger on the host, and the samples stay one host texel apart instead of stepping over three
+    // (a lattice of stepped copies of each edge on skin). The shaders: 5C47D288D8AA5C4E, 656879E214A2A24A,
+    // 8653C51CCD954E66, 886955F0A11C2828, 9B0418D1BFBEFF86, BD541F99770257D2, F05C176ECF0CA307 (a song's dump).
+    static const native_x_renderer::Profile::TexelOffsetConstants kTexelOffsetConstants[] = {{true, 10, 4, 5}};
+    p.texel_offset_constants = kTexelOffsetConstants;
+    p.texel_offset_constant_count = 1;
     // The pipeline list (D129): every shader the game has is in data/compressed/FXFILES/MaterialLibrary.bin.xen, as in GH Metallica (NativeXRenderer's D129, D133).
     static const char* const kShaderFiles[] = {"data/compressed/FXFILES/MaterialLibrary.bin.xen"};
     p.title_id = 0x41560883;
