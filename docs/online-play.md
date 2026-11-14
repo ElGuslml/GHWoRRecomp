@@ -51,6 +51,13 @@ The game does not ask about Facebook or Twitter the first time a profile goes on
   bound its port and sent nothing.
 - **Fix.** The game is given small positive socket numbers, as on the console.
 
+### 2b. No port without online play (SDK change 108)
+
+- **Cause.** With change 107, bdNet also bound its socket with online play off. That socket was a real UDP socket,
+  so every start opened UDP port 1000 on the PC (and could bring up the firewall's question) for nothing.
+- **Fix.** Without online play, a VDP socket has no network, as on a console without a cable: nothing is opened on the
+  PC. Checked: Warriors of Rock, GH Metallica, Guitar Hero 5 and Band Hero open no port offline.
+
 ### 3. The matchmaking's wait (`ghwor_online_host_wait`, 3)
 
 - **Cause.** The matchmaker hosts each match for strangers to fill its empty places: 15 seconds plus up to 4, and up
