@@ -31,8 +31,8 @@ console signed in to Xbox Live. Friends can join at any time:
 The lobby's orange button looks for players outside the party. A friend in the party is shown as a silhouette
 ("Player connected"), as on the console.
 
-The first time a profile goes online, the game asks about sharing on Facebook or Twitter. Those services are gone:
-choose **Back to the main menu**.
+The game does not ask about Facebook or Twitter the first time a profile goes online: those services are gone
+(see 4 below).
 
 ## What was changed for this game
 
@@ -63,9 +63,13 @@ choose **Back to the main menu**.
 - **Fix.** The lobby's "FIND Xbox LIVE PLAYERS" says "FIND ONLINE PLAYERS" ("BUSCAR JUGADORES EN LÍNEA", ...). Five more
   lobby texts that name Xbox LIVE show the game's own PlayStation 3 words, and the Options menu has no Xbox LIVE Party
   item (the console's party chat). See `src/online_text.cpp`.
+- **The sharing question.** At a profile's first online start the game waited up to 6 seconds for Activision's
+  servers, then asked "Do you want to login to your Facebook or Twitter accounts to share?". The developers' own skip
+  for that screen (`g_skip_social_networks`) is turned on, so the game goes straight to the main menu. The Options
+  menu's Share item is unchanged.
 - **What stays.** Texts without a neutral PS3 twin still say Xbox LIVE (the downloadable content warning, sign-in
   messages).
-- **To turn it off.** `false` brings back the console's texts and item.
+- **To turn it off.** `false` brings back the console's texts, the item and the question.
 
 ### 5. Invites during a song
 

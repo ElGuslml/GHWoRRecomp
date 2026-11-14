@@ -20,6 +20,17 @@
 // parameters and r4 = the script object (sub_823A4820: mr r4,r31; bctrl), the running script's name at +244. The
 // band lobby's "INVITE Xbox LIVE PARTY" hint needs nothing: it is shown only when XamPartyGetUserList finds party
 // members, and the SDK answers that there is no party.
+//
+// The sharing prompt: once the boot's save icon notice is accepted, UIstate_social_networks_setup runs
+// ui_create_social_networks_setup (scripts\guitar\menu\states\layouts\ui_social_networks_setup.qb). For a profile
+// signed in to Xbox Live at its first online start (social_networks_is_first_boot), it waits up to 6 s for Demonware's
+// lobby ("connecting"), then asks "Do you want to login to your Facebook or Twitter accounts to share?" (qs 3DD423A8)
+// unless both are registered. Those services are gone. The script's first test is the developers' own skip,
+// `if ($g_skip_social_networks = 1 OR ...)` (its only reader), which goes to the main menu at once: that global reads
+// as 1 inside it (src/debug_menu.cpp's "$name" resolve hook), so the prompt and its wait never come. The Options menu's
+// Share item is left as it is.
+
+#include "online_text.h"
 
 #include <rex/cvar.h>
 #include <rex/logging.h>
@@ -35,7 +46,8 @@
 REXCVAR_DEFINE_BOOL(ghwor_online_text, true, "GHWoR",
                     "The online menus as on the PlayStation 3, as online play here is through Steam: \"FIND ONLINE "
                     "PLAYERS\" and the other lobby texts that name Xbox LIVE in the game's PS3 words (in its language), "
-                    "and no Xbox LIVE Party item in Options (false: as on the Xbox 360)");
+                    "and no Xbox LIVE Party item in Options; with online play, no Facebook / Twitter prompt at a "
+                    "profile's first online start (false: as on the Xbox 360)");
 
 namespace {
 
@@ -57,9 +69,12 @@ constexpr std::array<TextTwin, 7> kTwins{{
 
 constexpr uint32_t kUiCreateOptions = 0xBB979C0C;  // the Options menu's items
 constexpr uint32_t kScriptName = 244;               // the running script's name in the interpreter's script object
+constexpr uint32_t kSkipSocialNetworks = 0x9F4A94FA;          // the script global g_skip_social_networks
+constexpr uint32_t kUiCreateSocialNetworksSetup = 0x66219041;  // the boot's sharing prompt
 
 std::array<std::atomic<bool>, kTwins.size()> g_logged{};
 std::atomic<bool> g_party_logged{false};
+std::atomic<bool> g_social_logged{false};
 
 bool Enabled() {
   static const bool enabled = REXCVAR_GET(ghwor_online_text);
@@ -78,6 +93,26 @@ uint32_t Load32(const uint8_t* base, uint32_t address) {
 }
 
 }  // namespace
+
+namespace ghwor {
+
+bool SocialPromptSkipActive() {
+  static const bool active = Enabled() && rex::cvar::Query<bool>("online_play");
+  return active;
+}
+
+bool OnlineReadsAsOne(uint32_t script_name, uint32_t global) {
+  if (global != kSkipSocialNetworks || script_name != kUiCreateSocialNetworksSetup || !SocialPromptSkipActive()) {
+    return false;
+  }
+  if (!g_social_logged.exchange(true)) {
+    REXLOG_INFO("[online_text] the Facebook / Twitter sharing prompt skipped (g_skip_social_networks read as 1 in "
+                "ui_create_social_networks_setup; ghwor_online_text)");
+  }
+  return true;
+}
+
+}  // namespace ghwor
 
 // [[midasm_hook]] at 0x823D7298 (mr r4,r3) in sub_823D7288, a text's key -> its text in the player's language: r3 =
 // the key.

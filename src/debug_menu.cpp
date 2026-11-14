@@ -1,5 +1,5 @@
 // ghwor - the game's own debug menu, offered in the main menu and the pause menu; and the script interpreter's hooks
-// that src/intro.cpp shares.
+// that src/intro.cpp and src/online_text.cpp share.
 //
 // The game ships Neversoft's debug menu (scripts\guitar\debug_menu_data.qb and debug_menu_funcs.qb): UIstate_debug
 // (its layout in ui_debug.pak) opens debug_submenus' "main" menu: In Game (Play Song, Skip Into Song, Change Venue,
@@ -38,6 +38,7 @@
 #include <set>
 
 #include "intro.h"
+#include "online_text.h"
 
 REXCVAR_DEFINE_BOOL(ghwor_debug_menu, false, "GHWoR",
                     "The game's own debug menu (Neversoft's): an item in the main menu and the pause menu that opens "
@@ -59,8 +60,9 @@ bool DebugMenu() {
   return enabled;
 }
 
-// Whether the hooks have anything to do: the debug menu, or the intro's skip until the boot's intro movie.
-bool Active() { return DebugMenu() || ghwor::IntroSkipPending(); }
+// Whether the hooks have anything to do: the debug menu, the intro's skip until the boot's intro movie, or the sharing
+// prompt's skip with online play.
+bool Active() { return DebugMenu() || ghwor::IntroSkipPending() || ghwor::SocialPromptSkipActive(); }
 
 uint8_t* GuestBase() {
   auto* kernel = rex::system::kernel_state();
@@ -140,7 +142,8 @@ void GHWoRScriptEvalLeaveHook() {
 // [[midasm_hook]] 0x8239B040 (the entry of sub_8239B040: a "$name" component resolved to the global's value),
 // return_on_true: r3 = the component. enable_button_cheats read by the menus' scripts, enable_debug_menus by the main
 // menu's (with ghwor_debug_menu), and autolaunch_go and g_skip_intro_movie by the boot's scripts (with
-// ghwor_skip_intro, src/intro.cpp) become the integer 1.
+// ghwor_skip_intro, src/intro.cpp), and g_skip_social_networks by the boot's sharing prompt (with ghwor_online_text and
+// online play, src/online_text.cpp) become the integer 1.
 bool GHWoRGlobalResolveHook(PPCRegister& r3) {
   if (!Active()) {
     return false;
@@ -160,7 +163,8 @@ bool GHWoRGlobalResolveHook(PPCRegister& r3) {
   }
   const uint32_t global = Load32(base, component + 8);
   const uint32_t script = Load32(base, e.scripts[e.depth - 1] + kScriptName);
-  if (!DebugMenuReadsAsOne(script, global) && !ghwor::IntroReadsAsOne(script, global)) {
+  if (!DebugMenuReadsAsOne(script, global) && !ghwor::IntroReadsAsOne(script, global) &&
+      !ghwor::OnlineReadsAsOne(script, global)) {
     return false;
   }
   base[component + 2] = kTypeInteger;
