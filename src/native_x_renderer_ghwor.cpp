@@ -15,6 +15,16 @@
 
 #include <native_x_renderer/hooks.h>
 
+#include <rex/cvar.h>
+
+REXCVAR_DEFINE_BOOL(ghwor_upscale_after_effects, false, "GHWoR",
+                    "With DLSS, DLAA or FSR 3.1: the upscaler's view ends at the composite's copy after the bloom and "
+                    "the depth of field (< 0x82641558) instead of the 3D scene's copy before them (< 0x8264C1B8), so "
+                    "those passes and the composite's first run at the upscaler's input resolution and the upscaler "
+                    "takes their image; the composite's second pass, the note highway and the HUD stay at the "
+                    "output's. Faster at a high output resolution, and the bloom and the depth of field look "
+                    "different. Read at startup");
+
 // Draws. DrawVerticesUP (sub_822D1D38) commits its packets with an inlined EndVertices ([dev+48] = [dev+13652]); the
 // engine's three BeginVertices / EndVertices pairs (sub_822C3F78, sub_822C53A0, sub_822C9948) call EndVertices
 // (sub_822D1890), which is that same store. EndVertices is not hooked: inline_draw_end commits all of them. GH5's
@@ -113,7 +123,10 @@ const native_x_renderer::Profile& NativeXRendererProfile() {
     // vote in all of those views but 2 (114-240 offers each), 214-346 draws matched per application (D48). The
     // camera's cuts start the history again (src/camera_cuts.cpp, D158).
     p.upscale_resolve_caller = 0x8255AD1C;
-    p.upscale_resolve_outer_caller = 0x8264C1B8;
+    // ghwor_upscale_after_effects: the composite's copy after the bloom and the depth of field instead (measured on an
+    // RTX A2000 at 3840x2160: the composite's first pass, 0x826414DC, is the frame's most expensive at the output's
+    // size).
+    p.upscale_resolve_outer_caller = REXCVAR_GET(ghwor_upscale_after_effects) ? 0x82641558 : 0x8264C1B8;
     p.view_pause_outer_caller = 0x8255A994;
     // The bloom draws the stage's lit parts again after the upscale point (from 0x826387C4 on: the lit windows, the
     // lights' sprites), testing the scene's depth, and blurs them into its glow: without the view's jitter those draws
