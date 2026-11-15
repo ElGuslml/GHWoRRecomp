@@ -131,3 +131,12 @@ the old behaviour). Measured in GH Metallica first (captures, a pyro song: GHMet
 main menu's animated background at 2560x1440 (~900 draws, 160 FPS, SMAA): the GPU 3.61-3.69 -> 2.75-2.83 ms a frame
 (-23 %), peaks 4.0-4.3 -> 2.9-3.4 ms, every draw on its variant (224 pipelines from 114 specialized shaders), the
 images the same; Test-Games (`runs/2026-11-15_ghwor_d146`): both renderers OK, the observer 115/115, no error.
+
+## Old texture and resolve memory watched as any other (NativeXRenderer D147, 2026-11-15)
+
+The game reuses memory that held textures or its bloom chain's resolves (allocated anew each frame) for vertex
+buffers, and SetStreamSource stamps a buffer's fence there at every unbind. NativeXRenderer kept such pages always
+watched (D97), so in a busy song with the scene every frame each stamp faulted and each request protected the page
+again: ~240 faults and ~295 re-protections a frame. D147 watches them as any other page once no texture asks for them
+and no resolved texture covers them. Gustavo's Quest song (How You Remind Me) at 160 FPS, 3440x1440: faults 239 -> 45
+a frame, NativeXRenderer's thread 5.70 -> 4.76 us a draw, the slowest stretch 146 -> 156 FPS; Test-Games OK.
