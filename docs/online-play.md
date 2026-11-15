@@ -1,11 +1,11 @@
 # Online play (experimental)
 
-Status: in testing. Two copies of the game on one PC have played songs together, joined by an invite from the friends
-list; not yet tried between two homes through Steam.
+Status: in testing. Two copies of the game on one PC, and two PCs through Steam, have played songs together, joined by
+invites.
 
 The game's online modes, played between friends. There are no Xbox Live or game servers. Each player's game
 connects to the others, and everyone needs the same version of this port. The online stack is GH Metallica's (the
-SDK's online changes 89-103), with two more SDK changes and four hooks for this game.
+SDK's online changes 89-103), with more SDK changes and four hooks for this game.
 
 ## Setting it up
 
@@ -66,6 +66,15 @@ The game does not ask about Facebook or Twitter the first time a profile goes on
   friend's state changed. The SDK never told it.
 - **Fix.** The SDK tells the game whenever its friends list changes: a friend connects or leaves, or hosts or leaves a
   party.
+
+### 2d. After the host quits a song (SDK change 111)
+
+- **Symptom.** The host quit a song, and a friend who had joined by an invite went back to a lobby of their own, then
+  into the host's new party, with nobody pressing anything.
+- **Cause.** The SDK takes a friend who joined without an invite to the host's party once. An accepted invite did not
+  count as that once, so it happened later, at the host's next party.
+- **Fix.** An accepted invite counts. After the host's party is gone, each player stays in their own lobby until
+  invited again, as before.
 
 ### 3. The matchmaking's wait (`ghwor_online_host_wait`, 3)
 

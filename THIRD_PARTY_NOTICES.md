@@ -23,6 +23,14 @@ for online play through Steam (`online_steam`, off by default), and loaded only 
 Steamworks SDK Access Agreement; it is not built from this repository (Valve's Steamworks SDK). Steam and the Steam
 logo are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries.
 
+## Microsoft GameInput
+
+The SDK and the launcher are built with GameInput's public header (`thirdparty/rexglue-sdk/thirdparty/gameinput`, from
+Microsoft's NuGet package Microsoft.GameInput 3.5.283; Copyright Microsoft Corporation, MIT License, in the header
+itself). `GameInputRedist.msi`, Microsoft GameInput's redistributable from the same package, is shipped beside the
+launcher, which offers it to a PC without GameInput (Xbox One guitars are read through it); it is Microsoft's, under
+its license terms (`licenses/Microsoft-GameInput-Redistributable.txt`), and is not built from this repository.
+
 ## GH Warriors of Rock Launcher
 
 The launcher (the RecompLauncher submodule, `recomp_launcher/`, and this game's `launcher/`) uses SDL 3, Dear ImGui,
