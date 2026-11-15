@@ -121,3 +121,13 @@ Checked: 1280x720 and 2560x1440 with the shadow scale 4, Quickplay+'s first song
 110x207 depth surface at base 1488 (pitch 160) is also drawn at the shadow scale in songs, as before (what it is not
 known). Not judged on screen: the shadows' edges at Ultra against Original (Quickplay+'s venue is random and dark):
 Gustavo's eye.
+
+## Pixel shaders specialized per draw (NativeXRenderer D146, 2026-11-15)
+
+The translated pixel shaders read each texture's sign modes, swizzle and render-scale bit (and the flags) from the
+system constants at run time and sample every texture twice to pick one view. D146 compiles, behind each pipeline, a
+variant with those values made constants and draws with it once ready (`native_x_renderer_specialize`, on; false for
+the old behaviour). Measured in GH Metallica first (captures, a pyro song: GHMetalRecomp's `local_docs/54`). Here, the
+main menu's animated background at 2560x1440 (~900 draws, 160 FPS, SMAA): the GPU 3.61-3.69 -> 2.75-2.83 ms a frame
+(-23 %), peaks 4.0-4.3 -> 2.9-3.4 ms, every draw on its variant (224 pipelines from 114 specialized shaders), the
+images the same; Test-Games (`runs/2026-11-15_ghwor_d146`): both renderers OK, the observer 115/115, no error.
