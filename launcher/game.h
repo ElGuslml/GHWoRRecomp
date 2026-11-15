@@ -237,6 +237,11 @@ inline constexpr const char* kKeyboardTapTarget = "dpad_down";
 // The whammy bar's row on each controller playing guitar (page_controls.cpp): how far the game reads the bar, and its
 // calibration (the SDK's gamepad_whammy_calibration, recomp change 60: the axis it is on, at rest and all the way).
 inline constexpr bool kHasWhammy = true;
+// Guitar Hero III's controller layout for a controller playing guitar, on by default (src/startup.cpp's
+// gamepad_guitar_layout = "gh3"; the SDK's change 112): this game gives a plain controller the vocals, so it is told
+// a controller is a guitar, and in a song the controller plays as Guitar Hero III's did, on buttons of its own (the
+// launcher's "In a song" rows, the SDK's gamepad_song_binds, change 113).
+inline constexpr bool kHasGh3PadLayout = true;
 
 // --- Singing ---
 

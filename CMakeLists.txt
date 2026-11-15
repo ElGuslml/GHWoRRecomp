@@ -65,6 +65,7 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${GHWOR_SOURCES_
 # Sources
 set(GHWOR_SOURCES
     src/debug_menu.cpp
+    src/controller_layout.cpp
     src/framerate.cpp
     src/intro.cpp
     src/keyboard.cpp

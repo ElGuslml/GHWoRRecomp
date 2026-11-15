@@ -203,6 +203,60 @@ name = "GHWoRMainFrameHook"
 [[midasm_hook]]
 address = 0x82180BA0   # mflr r12 (sub_82180BA0: a player's update in a song, every frame; src/keyboard.cpp)
 name = "GHWoRSongFrameHook"
+# A controller on Guitar Hero III's layout (gamepad_guitar_layout = "gh3"): the gameplay's functions take it for a
+# controller, not a guitar, so the game's own controller code plays it (src/controller_layout.cpp). Each right after
+# `bl sub_8217F110` (its answer in r3, the port still in r4).
+[[midasm_hook]]
+address = 0x82185CD8   # lwz r10,24(r30) (sub_82185C60: the frets and the strum; the player in r28)
+name = "GHWoRControllerReadHook"
+registers = ["r3", "r4", "r28"]
+[[midasm_hook]]
+address = 0x821810F0   # stb r3,99(r1) (sub_82180BA0: the input logic's controller rules)
+name = "GHWoRControllerLayoutHook"
+registers = ["r3", "r4"]
+[[midasm_hook]]
+address = 0x821E7AB8   # clrlwi r11,r3,24 (check_for_star_power_CFunc: Star Power on the D-pad)
+name = "GHWoRControllerLayoutHook"
+registers = ["r3", "r4"]
+[[midasm_hook]]
+address = 0x8218CA20   # clrlwi r11,r29,24 (sub_8218C8A8, ControlWhammyPitchShift's: the whammy bar on a stick)
+name = "GHWoRControllerLayoutHook"
+registers = ["r3", "r4"]
+[[midasm_hook]]
+address = 0x8216D518   # clrlwi r11,r3,24 (sub_8216D480, ButtonCheckerPerFrame's)
+name = "GHWoRControllerLayoutHook"
+registers = ["r3", "r4"]
+[[midasm_hook]]
+address = 0x821880C0   # clrlwi r11,r3,24 (sub_82188020, ButtonCheckerPerFrame's and the input logic's)
+name = "GHWoRControllerLayoutHook"
+registers = ["r3", "r4"]
+[[midasm_hook]]
+address = 0x8217FBE4   # clrlwi r11,r11,24 (sub_8217FA40, GetHeldPattern's: its inline guitar check, the port in r31)
+name = "GHWoRControllerLayoutHeldHook"
+registers = ["r11", "r31"]
+# Extended sustains on the controller code (src/controller_layout.cpp): the frets held at each read, a hit, the chord
+# rule's flag (every fret let go since the last hit) asked of the chord's own frets only, and the sustain's check (some
+# of the note's frets held count as all while an earlier note's fret still sustains).
+[[midasm_hook]]
+address = 0x82185F64   # cmpwi cr6,r25,0 (sub_82185C60's controller path: the player in r28, the frets held in r29)
+name = "GHWoRControllerFretsHook"
+registers = ["r28", "r29"]
+[[midasm_hook]]
+address = 0x82181AB4   # li r11,0 (sub_82180BA0: a gem hit; the player in r27)
+name = "GHWoRControllerHitHook"
+registers = ["r27"]
+[[midasm_hook]]
+address = 0x82181BD8   # cmpwi cr6,r11,1 (sub_82180BA0: a controller's chord, the player's flag +0x180E0 in r11)
+name = "GHWoRControllerChordHook"
+registers = ["r11", "r26", "r27"]
+[[midasm_hook]]
+address = 0x8218F1E4   # li r11,1 (sub_8218ED00: a sustain's frame, its frets let go ended; the whole sustain's check)
+name = "GHWoRControllerSustainHook"
+registers = ["r24", "r25", "r26", "r31"]
+[[midasm_hook]]
+address = 0x821870B4   # clrlwi r11,r3,24 (sub_82186FF8, the whammy's movement: IsGuitarController's answer in r3)
+name = "GHWoRControllerWhammyHook"
+registers = ["r3", "r31"]
 [[midasm_hook]]
 address = 0x82187120   # fsubs f0,f30,f0 (sub_82186FF8, a guitar: the bar's position minus the previous frame's)
 name = "GHWoRWhammyHook"

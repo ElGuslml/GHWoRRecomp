@@ -19,7 +19,9 @@ REQUIREMENTS
   https://aka.ms/vs/17/release/vc_redist.x64.exe
 - Your Guitar Hero: Warriors of Rock disc as an ISO file (tested with the disc sold in the USA; about 5.9 GB
   once installed).
-- An Xbox 360 guitar. Any other controller works as a guitar too, and so does the keyboard.
+- An Xbox 360 guitar. Any other controller works as a guitar too, and so does the keyboard. An Xbox One
+  guitar (such as the PDP Riffmaster for Xbox) needs Microsoft GameInput: the installer offers it, and so does
+  the launcher's Controls page while it is missing (Windows asks for permission to install it).
 - To sing (experimental): any microphone connected to the PC, and a controller for the singer.
 
 
@@ -80,8 +82,13 @@ when you press PLAY.
     side) and Star Power Back. A controller's Instrument: Guitar, Drums, or Vocals for the singer (see
     SINGING). With Drums, Drum kit chooses 5 lanes (Guitar Hero) or 4 lanes (the game's Rock Band highway, as
     with a Rock Band drum kit on the console); a real drum kit has the same choice.
-    "Strum when a fret is pressed" makes the frets of every controller playing guitar strum as you press
-    them, in songs. Each controller keeps its own assignments. Whammy bar: how far the game reads the bar.
+    "Guitar Hero III layout" (on by default): in songs a controller plays as in Guitar Hero III, with the
+    frets on LT, LB, RB, RT and A and the open note (bass) on B, no strum (pressing a fret plays its note),
+    Star Power on the D-pad or Back, and the whammy bar on either stick; the game plays it with Guitar Hero
+    III's own controller rules. Its buttons in a song are its own ("In a song": each fret, the open note,
+    Star Power and the whammy bar on up to two buttons; a whammy bar on a button is all or nothing), apart
+    from the menus' ("Navigation"). Off, a controller plays as an Xbox 360 guitar, and "Strum when a fret is
+    pressed" makes its frets strum as you press them, in songs. Each controller keeps its own assignments. Whammy bar: how far the game reads the bar.
     If it reads pressed with the bar at rest, or does nothing (some third-party guitars), press Assign,
     push the bar all the way and hold it, then let it go; X clears the assignment. Tilt: the same, if tilting
     gives you no Star Power (a Wii or PS3 guitar): press Assign, tilt the neck up as for Star Power and hold it,
@@ -213,6 +220,8 @@ KNOWN ISSUES
   songs need its "GH:WoR Customs Database" package in your DLC folder too: without it the number of songs can
   change from one start to the next.
 - The first time an effect appears, it may show up a few frames late.
+- Xbox One guitars (PDP Riffmaster, PDP Jaguar, Mad Catz Stratocaster) have not been played with yet: tell us
+  how yours goes, with the game's latest log.
 - Online play is experimental: Quickplay+ and a competitive mode have been played between two copies of the
   game; RockFest with more players and online Quest have not been tried yet.
 

@@ -125,10 +125,15 @@ vblank_timer_spin_us = 700
 # ~92,000 times a second; with this ~31,000 (its docs/cpu-usage.md). 0 = the SDK default.
 critical_section_spin_us = 20
 # Report a controller (and the keyboard's emulated one) as a guitar: the game gives a plain gamepad
-# the vocals, which need a microphone. Frets on A (green), B (red), Y (yellow), X (blue) and LB
-# (orange), strumming on the D-pad, the whammy bar on the right stick, Star Power on Back. A real
-# guitar or drum kit keeps its own kind. 8 = drum kit, 0 = the SDK default (a gamepad).
+# the vocals, which need a microphone. A real guitar or drum kit keeps its own kind. 8 = drum kit, 0 = the
+# SDK default (a gamepad).
 gamepad_subtype = 6
+# A controller plays a song as in Guitar Hero III, which had a layout for one (the menus stay as they are: A, B, the
+# D-pad): the frets on LT (green), LB (red), RB (yellow), RT (blue) and A (orange), no strum (a change of the frets
+# held plays, while one is held: a fret pressed, or one released while another is held), Star Power on the D-pad or
+# Back, the whammy bar on either stick. "guitar": an Xbox 360 guitar's controls, frets on A, B, Y, X and LB,
+# strumming on the D-pad, the whammy bar on the right stick, the tilt on its Y, Star Power on Back.
+gamepad_guitar_layout = "gh3"
 # A PS3 Guitar Hero guitar (a CRKD guitar on its P3 setting too): yellow and blue, swapped on that protocol, put right,
 # and its whammy bar, which rests at the middle of its axis, at rest there.
 guitar_ps3_protocol = true

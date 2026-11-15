@@ -72,9 +72,13 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   controller is a guitar too, and the keyboard can be one (experimental: turn it on in the launcher's Keyboard page;
   frets on D F J K L). Each controller's buttons can be reassigned in the launcher, and a whammy bar that reads
   pressed at rest or does nothing, or a tilt that gives no Star Power (some third-party guitars), can be assigned there.
-- 🎮 **Auto-strum, GH2 / GH3 style:** on a controller or the keyboard, each fret strums as you press it, so you play
-  with the frets alone (a chord is one strum). Turn it on in the launcher's Controls tab; it only acts during a song,
-  so the menus work as usual. The whammy bar is the right stick, pushed to either side.
+- 🎮 **A controller plays as in Guitar Hero III:** in a song the frets are LT, LB, RB, RT and A (B the bass's open
+  note), and there is no strum: pressing a fret plays its note. The game plays it with Guitar Hero III's own controller
+  code, still inside Warriors of Rock. Star Power is on the D-pad or Back, and the whammy bar on either stick. Its
+  buttons in a song are its own (the launcher's **In a song**: each fret, the open note, Star Power and the whammy bar on
+  up to two buttons), apart from the menus' (**Navigation**). It is on by default; turn it off on the controller's
+  page in the launcher's Controls tab to play a controller as an Xbox 360 guitar. On the keyboard, each fret can strum
+  as you press it (the Keyboard page's switch).
 - 🎤 **Sing (experimental):** any microphone on your PC is the game's USB microphone. Choose it in the launcher, and
   choose which controller sings.
 - 🖥️ **Sharp, native graphics:** the game is drawn by your graphics card at your screen's resolution, with smooth
