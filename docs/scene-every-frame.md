@@ -1,6 +1,6 @@
 # The venue at the full frame rate
 
-**Status: built, off by default (2026-11-15); a player's look to come.**
+**Status: built, off by default (2026-11-15); at 160 FPS busy songs can drop to about 130 (below).**
 
 **What the console does:** Guitar Hero: Warriors of Rock (and Guitar Hero 5, the same engine; not GH Metallica, GH Van
 Halen or GH Aerosmith) draws its 3D scene over two frames. In one frame the render stages up to the "split" one run and
@@ -22,5 +22,12 @@ frame`.
 on both scene copies of each frame (1200 in 600 frames, was 900). At 160 FPS and a 3440x1440 internal resolution:
 155-159 FPS, the process 2.60 cores (1.74 with the split), NativeXRenderer's thread 80 % of a core (44 %), the GPU about
 65 % (about 42 %). About twice the 3D work a frame: on a slower PC the frame rate can fall, hence off by default.
+
+**At 160 FPS in a busy song** (2026-11-15, Gustavo's song on an i7-13700K and an RTX 4070 Ti, 3440x1440, SMAA): with
+the option the song's frames held 973 draws (1,498 at most) and NativeXRenderer's thread took 5.5 ms a frame (7.2 at
+most, ~5 us a draw) of the 6.25 ms a frame at 160 FPS: 11 of 31 ten-second stretches fell below 156 FPS, the worst to
+132. The same song without it: 484 draws (665), 2.9 ms (3.8), 158-160 FPS throughout. The GPU had room both times
+(3.5 and 1.9 ms). The limit is the processor's thread that draws, not the graphics card: at 120 FPS a frame has 8.33 ms,
+more than the heaviest stretch took (not measured at 120). The launcher's help and the players' README say so.
 
 **Off:** the launcher's switch, or `ghwor_scene_every_frame = false` in `ghwor.toml` (the default).
