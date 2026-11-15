@@ -139,15 +139,17 @@ inline constexpr std::array<Language, 5> kLanguages{{
 // The screen effects (src/screen_fx.cpp, docs/fixes-from-gh-van-halen.md), all on as on the console: the grain only
 // with the color correction (GH Van Halen's rule: without that pass its grain was far stronger). GH Van Halen's ink
 // blotches are not part of GH5's composite, nor of this game's (the same as GH5's): no switch. Then two in Settings >
-// Game, off as on the console (GH Metallica's, docs/fixes-from-gh-metallica.md): the boot's videos shortened (the logos
-// ended once the game has loaded, the intro movie not played; src/intro.cpp) and the game's debug menu
-// (src/debug_menu.cpp).
-inline constexpr std::array<Toggle, 7> kToggles{{
+// Game, off as on the console: the 3D scene drawn in every frame (the engine's split render mode off,
+// src/split_render.cpp, docs/scene-every-frame.md); then GH Metallica's two (docs/fixes-from-gh-metallica.md): the
+// boot's videos shortened (the logos ended once the game has loaded, the intro movie not played; src/intro.cpp) and the
+// game's debug menu (src/debug_menu.cpp).
+inline constexpr std::array<Toggle, 8> kToggles{{
     {"ghwor_fx_bloom", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_depth_of_field", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_color", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_grain", true, ToggleGroup::kScreenEffects, "ghwor_fx_color"},
     {"ghwor_fx_vignette", true, ToggleGroup::kScreenEffects},
+    {"ghwor_scene_every_frame", false},
     {"ghwor_skip_intro", false},
     {"ghwor_debug_menu", false},
 }};

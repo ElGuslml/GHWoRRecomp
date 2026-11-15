@@ -207,6 +207,11 @@ ghwor_fx_depth_of_field = true
 ghwor_fx_grain = true
 ghwor_fx_color = true
 ghwor_fx_vignette = true
+# The 3D scene drawn in every frame (src/split_render.cpp): the game draws the venue and the crowd in one frame and the
+# band and the screen effects in the next, so its 3D image changes at half the frame rate (30 times a second on the
+# console; the note highway and the HUD every frame). true turns that split off: the whole scene in every frame, for
+# about twice the 3D work a frame (CPU and GPU). false = as on the console.
+ghwor_scene_every_frame = false
 # The game's own debug menu (Neversoft's, src/debug_menu.cpp): true adds an item named (debug menu) to the main menu
 # and a Debug Menu item to the pause menu (Unlock All, Skip Into Song, Change Venue, Show Song Time, Play Credits, Add
 # 100 Quickplay Stars, ...). Some items need Neversoft's development tools and do nothing. false = as on the console.

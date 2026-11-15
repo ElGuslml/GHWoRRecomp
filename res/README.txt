@@ -120,7 +120,10 @@ when you press PLAY.
     can be turned off one by one.
   - Game: the launcher's language and the game's (English, French, German, Italian or Spanish; the game
     has no language menu of its own). Debug keys (off by default): F3, F4 and ` open the developer's windows
-    in the game (frame times, settings, console). Skip the intro videos (off by default): at the start the
+    in the game (frame times, settings, console). Venue at the full frame rate (off by default): the game
+    draws its venue and its band in turns, each at half the frame rate (30 times a second on the console),
+    while the note highway uses the full rate; on, the whole scene is drawn in every frame, for about twice
+    the work for the processor and the graphics card. Skip the intro videos (off by default): at the start the
     logos end as soon as the game has loaded and the intro movie is not played, so the main menu comes
     sooner. Game debug menu (off by default): the debug menu its developers used, in the main menu and the
     pause menu (its texts in English; Unlock All and Add 100 Quickplay Stars change your save).

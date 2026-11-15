@@ -197,6 +197,11 @@ name = "GHWoRButtonPollEndHook"
 [[midasm_hook]]
 address = 0x8242C57C   # addi r1,r1,128 (sub_8242C450: the main thread's frame, at its end; GH5's 0x82413BCC)
 name = "GHWoRMainFrameHook"
+# The 3D scene drawn every frame (src/split_render.cpp, ghwor_scene_every_frame, off by default): the engine's split
+# render mode written to 0 in both copies of the render state before the main thread counts the frame's kind.
+[[midasm_hook]]
+address = 0x8242C46C   # lwz r11,1896(r31) (sub_8242C450: the main thread's frame, the split render mode)
+name = "GHWoRSplitRenderHook"
 # The whammy on a sustain is told by the frame (the bar's movement since the previous frame, a countdown of 5 frames,
 # 5 frames in a row to turn a star power sustain blue or back): above 60 Hz over a 60th of a second and 5 / 60 s, in
 # frames of their measured length.
