@@ -429,3 +429,33 @@ registers = ["r8"]
 [[midasm_hook]]
 address = 0x8255343C   # stw r9,140(r31) (sub_825533F8: the render thread takes the frame handed over)
 name = "GHWoRFrameTakenHook"
+
+# Guitar Hero World Tour's Star Power sound (src/star_power_reverb.cpp, ghwor_star_power_reverb, off: every hook returns
+# at once). World Tour sent the player's instrument to a send stack of its own (echo, sfxreverb, highpass) while his
+# Star Power was on; this game keeps the scripts and the structs but only raises the send to the venue's reverb. The
+# boot creates World Tour's stack on the engine's free slot 2, right after the venue's on slot 1, and Star Power sends
+# the player's tracks there with World Tour's settings. The engine's send applied at once read the next slot's volume
+# (harmless while slot 2 was always 0): read from the slot being set, for slot 2, and for slot 1 while slot 2 sends.
+# The song player's clean-up cuts slot 2's sends of the tracks still there (at a song's load, before the stems' are
+# destroyed) and mutes the stack's tail, a track's destruction removes its own; the pause mutes slot 2 with slot 1.
+[[midasm_hook]]
+address = 0x82512980   # b 0x82512988 (sub_82512900, CreateEffectSendStack: the stack created, r30 = its slot)
+name = "GHWoRStarPowerStackHook"
+registers = ["r1", "r30"]
+[[midasm_hook]]
+address = 0x820D7148   # mflr r12 (entry of sub_820D7148: r3 = the SAP, r4 = the player, f1 = the send's volume)
+name = "GHWoRStarPowerSendHook"
+registers = ["r1", "r3", "r4", "f1"]
+return_on_true = true
+[[midasm_hook]]
+address = 0x820D9688   # lfs f1,76(r11) (sub_820D95C0, a send applied at once: r11 = the track r31 + 32 * slot r29)
+name = "GHWoRTrackSendFixHook"
+registers = ["r11", "r29", "r31"]
+[[midasm_hook]]
+address = 0x820D6B30   # mflr r12 (entry of sub_820D6B30: the song player's clean-up, at init, load and deinit)
+name = "GHWoRStarPowerCleanupHook"
+registers = ["r1"]
+[[midasm_hook]]
+address = 0x823BECF0   # mflr r12 (entry of sub_823BECF0, MuteEffectSend / UnMuteEffectSend: r3 = slot, r4 = mute)
+name = "GHWoRStarPowerMuteHook"
+registers = ["r1", "r3", "r4"]

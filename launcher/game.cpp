@@ -25,6 +25,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Even frame times with DLSS", "DLSS's work moved to the next frame; the venue shows a pair of frames later.",
           "Skip the intro videos", "The logos end once loaded; no intro movie.",
           "Game debug menu", "Neversoft's debug menu in the main menu and the pause menu.",
+          "World Tour's Star Power sound", "Star Power with World Tour's echo and reverb.",
       },
       .toggle_help = {
           "The halo of light around the stage's lights, the pyrotechnics and the brightest surfaces. Off, the image is sharper and flatter.",
@@ -37,6 +38,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "The game draws the venue over two frames, and DLSS falls in the second, so a long frame follows a short one. With this on, DLSS runs at the start of the next frame: both frames take about the same time and the motion looks steadier. The venue, the crowd and the band show a pair of frames later (17 ms at 120 FPS); the note highway and the HUD are not delayed. Only with DLSS or DLAA, and not with frame generation or with \"Venue at the full frame rate\" on.",
           "At each start the game shows its logos while it loads, then its intro movie. With this on, the logos end as soon as the game has loaded and the intro movie is not played: the autosave notice and the main menu come right away.",
           "Adds a \"(debug menu)\" item to the main menu and a Debug Menu item to the pause menu: the menu the game's developers used (Unlock All, Skip Into Song, Change Venue, Show Song Time, Play Credits, Add 100 Quickplay Stars, ...). Its texts are in English, some items do nothing without the developers' tools, and Unlock All and Add 100 Quickplay Stars change your save as playing does.",
+          "In Guitar Hero World Tour, Star Power sent your instrument through an echo timed to the song, a reverb and a high pass, set for each instrument and for one player or several, until Star Power ended. Warriors of Rock kept those settings but only raises the venue's reverb. With this on, Star Power sounds as in World Tour; the band, the crowd and the vocals do not change.",
       },
       .done_title = "The stage is yours!",
       .done_text = "The game was installed. Go play now, or first review the video, graphics and instrument settings; "
@@ -64,6 +66,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Gleichmäßige Bildzeiten mit DLSS", "Die Arbeit von DLSS rückt ins nächste Bild; die Bühne erscheint ein Bildpaar später.",
           "Intro-Videos überspringen", "Die Logos enden nach dem Laden; kein Intro-Film.",
           "Debug-Menü des Spiels", "Das Debug-Menü von Neversoft im Hauptmenü und im Pausenmenü.",
+          "Star-Power-Klang aus World Tour", "Star Power mit dem Echo und dem Hall aus World Tour.",
       },
       .toggle_help = {
           "Der Lichtschein um die Bühnenlichter, die Pyrotechnik und die hellsten Flächen. Aus wirkt das Bild schärfer und flacher.",
@@ -76,6 +79,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Das Spiel zeichnet die Bühne über zwei Bilder, und DLSS fällt ins zweite, sodass auf ein kurzes Bild ein langes folgt. Eingeschaltet läuft DLSS zu Beginn des nächsten Bildes: Beide Bilder dauern etwa gleich lang, und die Bewegung wirkt gleichmäßiger. Auftrittsort, Publikum und Band erscheinen ein Bildpaar später (17 ms bei 120 FPS); Notenbahn und HUD werden nicht verzögert. Nur mit DLSS oder DLAA, und nicht mit Bildgenerierung oder mit eingeschalteter \"Bühne mit voller Bildrate\".",
           "Das Spiel zeigt bei jedem Start seine Logos, während es lädt, und danach seinen Intro-Film. Eingeschaltet enden die Logos, sobald das Spiel geladen ist, und der Intro-Film wird nicht gezeigt: der Hinweis zum automatischen Speichern und das Hauptmenü kommen sofort.",
           "Fügt dem Hauptmenü den Eintrag \"(debug menu)\" und dem Pausenmenü den Eintrag Debug Menu hinzu: das Menü der Entwickler des Spiels (Unlock All, Skip Into Song, Change Venue, Show Song Time, Play Credits, Add 100 Quickplay Stars, ...). Seine Texte sind englisch, manche Einträge tun ohne die Werkzeuge der Entwickler nichts, und Unlock All und Add 100 Quickplay Stars ändern deinen Spielstand wie das Spielen.",
+          "In Guitar Hero World Tour schickte Star Power dein Instrument durch ein Echo im Takt des Songs, einen Hall und einen Hochpass, eingestellt für jedes Instrument und für einen oder mehrere Spieler, bis Star Power endete. Warriors of Rock behielt diese Einstellungen, verstärkt aber nur den Hall des Auftrittsortes. Eingeschaltet klingt Star Power wie in World Tour; die Band, das Publikum und der Gesang ändern sich nicht.",
       },
       .done_title = "Die Bühne gehört dir!",
       .done_text = "Das Spiel wurde installiert. Leg gleich los oder sieh dir zuerst die Video-, Grafik- und "
@@ -103,6 +107,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Temps d'image réguliers avec DLSS", "Le travail de DLSS passe à l'image suivante ; la salle s'affiche une paire d'images plus tard.",
           "Passer les vidéos d'intro", "Les logos s'arrêtent une fois chargé ; pas de film d'intro.",
           "Menu de débogage du jeu", "Le menu de débogage de Neversoft dans le menu principal et le menu pause.",
+          "Son du Star Power de World Tour", "Le Star Power avec l'écho et la réverbération de World Tour.",
       },
       .toggle_help = {
           "Le halo autour des lumières de la scène, de la pyrotechnie et des surfaces les plus claires. Désactivé, l'image est plus nette et plus plate.",
@@ -115,6 +120,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Le jeu dessine la salle sur deux images, et DLSS tombe dans la seconde : une image longue suit donc une image courte. Activé, DLSS s'exécute au début de l'image suivante : les deux images durent à peu près autant et le mouvement paraît plus régulier. La salle, le public et le groupe s'affichent une paire d'images plus tard (17 ms à 120 FPS) ; la piste de notes et l'interface ne sont pas retardées. Seulement avec DLSS ou DLAA, et pas avec la génération d'images ni avec « Scène à pleine fréquence » activée.",
           "À chaque démarrage, le jeu montre ses logos pendant qu'il charge, puis son film d'intro. Activée, les logos s'arrêtent dès que le jeu est chargé et le film d'intro n'est pas joué : l'avis de sauvegarde automatique et le menu principal arrivent aussitôt.",
           "Ajoute l'entrée « (debug menu) » au menu principal et l'entrée Debug Menu au menu pause : le menu des développeurs du jeu (Unlock All, Skip Into Song, Change Venue, Show Song Time, Play Credits, Add 100 Quickplay Stars, ...). Ses textes sont en anglais, certaines entrées ne font rien sans les outils des développeurs, et Unlock All et Add 100 Quickplay Stars modifient votre sauvegarde comme le jeu.",
+          "Dans Guitar Hero World Tour, le Star Power faisait passer votre instrument par un écho calé sur le tempo de la chanson, une réverbération et un passe-haut, réglés pour chaque instrument et pour un ou plusieurs joueurs, jusqu'à la fin du Star Power. Warriors of Rock a gardé ces réglages mais ne fait que monter la réverbération de la salle. Activé, le Star Power sonne comme dans World Tour ; le groupe, le public et le chant ne changent pas.",
       },
       .done_title = "La scène est à vous !",
       .done_text = "Le jeu a été installé. Allez jouer tout de suite, ou vérifiez d'abord les réglages vidéo, "
@@ -143,6 +149,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Tiempos de cuadro parejos con DLSS", "El trabajo de DLSS pasa al cuadro siguiente; el escenario se muestra un par de cuadros después.",
           "Saltar los videos de introducción", "Los logos terminan al cargar; sin película de intro.",
           "Menú de depuración del juego", "El menú de depuración de Neversoft en el menú principal y en el de pausa.",
+          "Sonido del Star Power de World Tour", "El Star Power con el eco y la reverberación de World Tour.",
       },
       .toggle_help = {
           "El halo de luz alrededor de las luces del escenario, la pirotecnia y las superficies más brillantes. Desactivado, la imagen se ve más nítida y plana.",
@@ -155,6 +162,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "El juego dibuja el escenario en dos cuadros y DLSS cae en el segundo, así que a un cuadro corto le sigue uno largo. Activado, DLSS se ejecuta al inicio del cuadro siguiente: los dos cuadros tardan más o menos lo mismo y el movimiento se ve más parejo. El escenario, el público y la banda se muestran un par de cuadros después (17 ms a 120 FPS); el highway de notas y el HUD no se retrasan. Solo con DLSS o DLAA, y no con generación de cuadros ni con «Escenario a cuadros completos» activado.",
           "En cada inicio el juego muestra sus logos mientras carga y después su película de introducción. Activado, los logos terminan en cuanto el juego cargó y la película de introducción no se reproduce: el aviso de guardado automático y el menú principal llegan enseguida.",
           "Añade la opción «(debug menu)» al menú principal y Debug Menu al de pausa: el menú que usaban los desarrolladores del juego (Unlock All, Skip Into Song, Change Venue, Show Song Time, Play Credits, Add 100 Quickplay Stars, ...). Sus textos están en inglés, algunas opciones no hacen nada sin las herramientas de los desarrolladores, y Unlock All y Add 100 Quickplay Stars cambian tu partida guardada como jugar.",
+          "En Guitar Hero World Tour, el Star Power pasaba tu instrumento por un eco al tempo de la canción, una reverberación y un filtro pasa altos, ajustados para cada instrumento y para uno o varios jugadores, hasta que terminaba el Star Power. Warriors of Rock conservó esos ajustes pero solo sube la reverberación del escenario. Activado, el Star Power suena como en World Tour; la banda, el público y la voz no cambian.",
       },
       .done_title = "¡El escenario es tuyo!",
       .done_text = "El juego se instaló correctamente. Puedes salir a tocar ya o revisar primero los ajustes de video, "
@@ -182,6 +190,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Tempi dei fotogrammi regolari con DLSS", "Il lavoro di DLSS passa al fotogramma successivo; il locale appare una coppia di fotogrammi dopo.",
           "Salta i video introduttivi", "I loghi finiscono a caricamento finito; niente filmato.",
           "Menu di debug del gioco", "Il menu di debug di Neversoft nel menu principale e nel menu di pausa.",
+          "Suono dello Star Power di World Tour", "Lo Star Power con l'eco e il riverbero di World Tour.",
       },
       .toggle_help = {
           "L'alone di luce attorno alle luci del palco, alla pirotecnica e alle superfici più luminose. Disattivato, l'immagine è più nitida e piatta.",
@@ -194,6 +203,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Il gioco disegna il locale su due fotogrammi e DLSS cade nel secondo, così a un fotogramma breve ne segue uno lungo. Attivato, DLSS viene eseguito all'inizio del fotogramma successivo: i due fotogrammi durano più o meno lo stesso e il movimento appare più regolare. Il locale, il pubblico e la band appaiono una coppia di fotogrammi dopo (17 ms a 120 FPS); la pista delle note e l'HUD non vengono ritardati. Solo con DLSS o DLAA, e non con la generazione di fotogrammi né con «Palco a frequenza piena» attivato.",
           "A ogni avvio il gioco mostra i suoi loghi mentre carica e poi il suo filmato introduttivo. Attivato, i loghi finiscono appena il gioco è caricato e il filmato introduttivo non viene riprodotto: l'avviso di salvataggio automatico e il menu principale arrivano subito.",
           "Aggiunge la voce «(debug menu)» al menu principale e Debug Menu al menu di pausa: il menu degli sviluppatori del gioco (Unlock All, Skip Into Song, Change Venue, Show Song Time, Play Credits, Add 100 Quickplay Stars, ...). I suoi testi sono in inglese, alcune voci non fanno nulla senza gli strumenti degli sviluppatori, e Unlock All e Add 100 Quickplay Stars cambiano il tuo salvataggio come giocare.",
+          "In Guitar Hero World Tour lo Star Power faceva passare il tuo strumento in un'eco a tempo con il brano, un riverbero e un filtro passa alto, regolati per ogni strumento e per uno o più giocatori, fino alla fine dello Star Power. Warriors of Rock ha conservato quelle regolazioni ma alza solo il riverbero del locale. Attivato, lo Star Power suona come in World Tour; la band, il pubblico e la voce non cambiano.",
       },
       .done_title = "Il palco è tuo!",
       .done_text = "Il gioco è stato installato. Vai a suonare subito o controlla prima le impostazioni video, grafiche e "

@@ -240,6 +240,13 @@ ghwor_skip_intro = false
 # no Xbox LIVE Party item in Options (the console's party chat); with online play, no question about Facebook and
 # Twitter (services that are gone) at a profile's first online start. false = as on the Xbox 360.
 ghwor_online_text = true
+# Guitar Hero World Tour's Star Power sound (src/star_power_reverb.cpp): while a player's Star Power is on, his
+# instrument goes through World Tour's echo timed to the song, reverb and high pass, with World Tour's settings for each
+# instrument and for one or more players, instead of the venue's reverb. The band, the crowd and the vocals do not
+# change. false = as on the console. With it on, ghwor_star_power_reverb_send_db (dB added to World Tour's send, 0)
+# and ghwor_star_power_reverb_multi_preset (true: World Tour's settings for several players for one player too) can
+# be added here to tune it (docs/star-power-reverb.md).
+ghwor_star_power_reverb = false
 # The mouse cursor hidden over the game after cursor_auto_hide_ms without moving it (shown again when it moves, while
 # another window has the focus, and over the SDK's overlays). false = always shown.
 cursor_auto_hide = true
