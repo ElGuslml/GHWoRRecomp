@@ -82,12 +82,13 @@ when you press PLAY.
     side) and Star Power Back. A controller's Instrument: Guitar, Drums, or Vocals for the singer (see
     SINGING). With Drums, Drum kit chooses 5 lanes (Guitar Hero) or 4 lanes (the game's Rock Band highway, as
     with a Rock Band drum kit on the console); a real drum kit has the same choice.
-    "Guitar Hero III layout" (on by default): in songs a controller plays as in Guitar Hero III, with the
+    Play style, each controller its own: "Controller · GH III" (the default) plays songs as in Guitar Hero III, with the
     frets on LT, LB, RB, RT and A and the open note (bass) on B, no strum (pressing a fret plays its note),
     Star Power on the D-pad or Back, and the whammy bar on either stick; the game plays it with Guitar Hero
     III's own controller rules. Its buttons in a song are its own ("In a song": each fret, the open note,
     Star Power and the whammy bar on up to two buttons; a whammy bar on a button is all or nothing), apart
-    from the menus' ("Navigation"). Off, a controller plays as an Xbox 360 guitar, and "Strum when a fret is
+    from the menus' ("Navigation"). "Guitar · Xbox 360" plays it as an Xbox 360 guitar (for a guitar Windows
+    sees as a controller, through an adapter), and "Strum when a fret is
     pressed" makes its frets strum as you press them, in songs. Each controller keeps its own assignments. Whammy bar: how far the game reads the bar.
     If it reads pressed with the bar at rest, or does nothing (some third-party guitars), press Assign,
     push the bar all the way and hold it, then let it go; X clears the assignment. Tilt: the same, if tilting

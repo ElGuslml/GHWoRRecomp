@@ -76,8 +76,9 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   note), and there is no strum: pressing a fret plays its note. The game plays it with Guitar Hero III's own controller
   code, still inside Warriors of Rock. Star Power is on the D-pad or Back, and the whammy bar on either stick. Its
   buttons in a song are its own (the launcher's **In a song**: each fret, the open note, Star Power and the whammy bar on
-  up to two buttons), apart from the menus' (**Navigation**). It is on by default; turn it off on the controller's
-  page in the launcher's Controls tab to play a controller as an Xbox 360 guitar. On the keyboard, each fret can strum
+  up to two buttons), apart from the menus' (**Navigation**). It is the default **Play style**; each controller's page
+  in the launcher's Controls tab can choose **Guitar · Xbox 360** instead, for a guitar that Windows sees as a
+  controller (through an adapter), while another controller keeps this one. On the keyboard, each fret can strum
   as you press it (the Keyboard page's switch).
 - 🎤 **Sing (experimental):** any microphone on your PC is the game's USB microphone. Choose it in the launcher, and
   choose which controller sings.

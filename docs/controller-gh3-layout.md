@@ -39,16 +39,19 @@ that is not in the note still ends everything.
 **Not affected:** real guitars and drum kits, the keyboard, a controller set to Drums or Vocals, and a controller
 whose whammy bar was calibrated in the launcher (the SDK takes it for a guitar).
 
-**The launcher** (3.23): each controller playing guitar has a **Guitar Hero III layout** switch on its Controls page.
-While it is on, the strum switch and the whammy bar's and tilt's rows are hidden, and the page has two groups:
+**The launcher** (3.23): each controller playing guitar has a **Play style** selector on its Controls page, its own
+(SDK change 115, `gamepad_device_guitar_layout`): **Controller · GH III** (the default) or **Guitar · Xbox 360**. As a
+controller, the strum switch and the whammy bar's and tilt's rows are hidden, and the page has two groups:
 - **In a song**: the five frets, the open note, Star Power and the whammy bar. Each can go on up to two of the
   controller's buttons, triggers, D-pad directions or sticks. A whammy bar on a button is either all the way or not at
   all. These are the SDK's `gamepad_song_binds` (change 113), used only while a song plays.
 - **Navigation**: the Xbox 360 buttons of the menus and the pause menu, as before. An orange fret moved to Triangle
   leaves the menus' Accept where it was.
 
-**Turning it off:** the switch, or `gamepad_guitar_layout = "guitar"` in `ghwor.toml`. The controller then plays as an
-Xbox 360 guitar again, as before.
+**Playing as a guitar:** **Guitar · Xbox 360** on that controller's page: it plays as an Xbox 360 guitar again, as
+before this layout. That is the choice for a guitar that Windows sees as a controller (a PlayStation guitar through an
+adapter), while another controller keeps Guitar Hero III's layout. `gamepad_guitar_layout = "guitar"` in `ghwor.toml`
+makes every controller not named in `gamepad_device_guitar_layout` play as a guitar.
 
 **Before the hooks** the SDK imitated the layout from outside the game. It strummed on a release and waited 20 ms to
 group a chord, so chords sometimes strummed once too often. That emulation is gone.
@@ -58,6 +61,6 @@ group a chord, so chords sometimes strummed once too often. That emulation is go
   - A lit the orange fret (the guitar's code would light the green one).
   - LT and RB lit the green and yellow frets.
   - A note played by pressing its fret alone.
-- Checked in the launcher: the switch, and both lists of buttons.
+- Checked in the launcher: the play style selector (each controller its own), and both lists of buttons.
 - Gustavo played it with a DualSense: "almost as in GH III". A chord over an extended sustain never counted, and
   pressing it again ended the long note. Both are fixed as above, and he checked them in the same song.

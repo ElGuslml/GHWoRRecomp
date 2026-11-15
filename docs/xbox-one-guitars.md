@@ -23,10 +23,20 @@ it is built with GameInput's API 3, and the SDK built it with the Windows SDK's 
   PC lacks it. The launcher's Controls page lists "Xbox One guitars · GameInput missing · Install" while it is
   missing. Windows asks for an administrator's permission to install it.
 
-**Every other controller once.** With GameInput's raw reports on, SDL also lists a plain controller through
-GameInput, so the same controller came twice, in two slots (a virtual Xbox 360 controller in slots 0 and 1). The SDK
-and the launcher leave out a controller read through GameInput unless SDL types it a guitar or a drum kit; the game's
-log says "through GameInput left alone".
+**Only with one connected** (SDK change 114). GameInput's raw reports are turned on only when an Xbox One guitar or
+drum kit is connected as the game or the launcher starts. With them on, SDL's GameInput driver, which comes before its
+XInput one, also took Xbox 360 instruments and controllers:
+- A wired X-plorer connected before the start came as a controller, played on Guitar Hero III's layout with two frets
+  held.
+- A wireless guitar came twice, once through each driver with different USB IDs, so every strum moved a menu twice.
+
+**Connect an Xbox One guitar before starting** the launcher or the game: one connected later is read from the next
+start. The log says which way it went (`GameInput 3: on: its raw reports for the Xbox One instruments connected` or
+`no Xbox One guitar or drum kit is connected`).
+
+**Every other controller once.** While the raw reports are on, SDL also lists a plain controller through GameInput. The
+SDK and the launcher leave such a copy out while another driver reads a controller of the same USB IDs; the game's log
+says "through GameInput: left out".
 
 The game's log says at the start whether GameInput 3 answers (`GameInput 3: on` / `not available`). When such a
 guitar connects, the log names it, and it notes the tilt's values as they widen.
