@@ -288,6 +288,15 @@ void GHWoRFrameWaitCountHook(PPCRegister& r3, PPCRegister& r11) {
 // audio calibration polls the same way). Each script is given the presses of the updates since its previous run that
 // it did not see, once, from the last 60th of a second and a frame (of the frames' recent length): they are added to the
 // state's pressed bits while its ControllerMake runs, then the bits are put back.
+// Star Power by Select (Back) is read the same way, not through ControllerMake: start_gem_scroller (script 0xEF72FEDF)
+// spawns for each local player the script check_for_star_power (0xB1330633, interpreted), a loop that calls
+// check_for_star_power_CFunc (sub_821E77B0) once a pass and waits 1 game frame. Its check of Select is
+// sub_824D5480(pad, 0xB40D153F = 'select') at 0x821E7BE4, bit 0x100 of the pressed bits at +52, the same one-frame
+// edge. That wait is held too, so at 120 FPS the script runs every second frame and about half of the presses fell in a
+// frame it did not look at (the Star Power needed several presses of Select; derived from the code and a simulation of
+// these hooks, 50 % of the frames looked at at 120 Hz, 42 % at 144, 25 % at 240, not measured in a run). It is given
+// the skipped presses the same way while sub_821E77B0 runs, with its own record of what was patched. Tried in songs
+// at 120 FPS: each press started Star Power.
 namespace {
 
 constexpr int kKeptUpdates = 8;
@@ -314,6 +323,8 @@ InputUpdates g_input[4];
 std::unordered_map<uint64_t, ScriptPolls> g_script_polls;  // by script << 32 | state
 thread_local PatchedState g_patched[4];
 thread_local int g_patched_count = 0;
+thread_local PatchedState g_star_patched[4];
+thread_local int g_star_patched_count = 0;
 
 uint8_t* GuestBase() {
   auto* kernel = rex::system::kernel_state();
@@ -351,12 +362,16 @@ void GHWoRInputUpdateHook(PPCRegister& r30, PPCRegister& r9) {
   }
 }
 
-// [[midasm_hook]] at the entry of sub_824D58C8 (ControllerMake): r4 = the script.
-void GHWoRButtonPollHook(PPCRegister& r4) {
-  g_patched_count = 0;
+namespace {
+
+// A script polling the pressed bits (r4 at its script function's entry) is given the presses of the updates since its
+// previous run that it did not see: they are added to the states' bits at +52 and recorded in patched. Returns the bits
+// given.
+uint32_t GiveSkippedPresses(uint32_t script, PatchedState* patched, int& count) {
+  count = 0;
   uint8_t* base = GuestBase();
   if (!HighRate() || !base) {
-    return;
+    return 0;
   }
   const auto now = std::chrono::steady_clock::now();
   const auto window = std::chrono::duration<double>(1.0 / 60.0 + FrameInterval());
@@ -364,11 +379,12 @@ void GHWoRButtonPollHook(PPCRegister& r4) {
   if (g_script_polls.size() > 256) {
     std::erase_if(g_script_polls, [&](const auto& entry) { return now - entry.second.last > std::chrono::seconds(1); });
   }
+  uint32_t given = 0;
   for (const InputUpdates& input : g_input) {
     if (input.state == 0) {
       continue;
     }
-    ScriptPolls& polls = g_script_polls[uint64_t(r4.u32) << 32 | input.state];
+    ScriptPolls& polls = g_script_polls[uint64_t(script) << 32 | input.state];
     if (polls.last == std::chrono::steady_clock::time_point{} || now - polls.last > window * 4) {
       polls.run_seq = polls.prev_seq = input.seq;  // a script new to polling: only the current update
     } else if (polls.run_seq != input.seq) {
@@ -387,22 +403,44 @@ void GHWoRButtonPollHook(PPCRegister& r4) {
     const uint32_t original = LoadWord(base, input.state + 52);
     if (missed & ~original) {
       StoreWord(base, input.state + 52, original | missed);
-      g_patched[g_patched_count++] = {input.state, original | missed, original};
+      patched[count++] = {input.state, original | missed, original};
+      given |= missed & ~original;
     }
+  }
+  return given;
+}
+
+// At the script function's exit: the pressed bits recorded in patched put back.
+void TakeBackPresses(const PatchedState* patched, int& count) {
+  uint8_t* base = GuestBase();
+  for (int i = 0; i < count && base; ++i) {
+    if (LoadWord(base, patched[i].state + 52) == patched[i].written) {
+      StoreWord(base, patched[i].state + 52, patched[i].original);
+    }
+  }
+  count = 0;
+}
+
+}  // namespace
+
+// [[midasm_hook]] at the entry of sub_824D58C8 (ControllerMake): r4 = the script.
+void GHWoRButtonPollHook(PPCRegister& r4) { GiveSkippedPresses(r4.u32, g_patched, g_patched_count); }
+
+// [[midasm_hook]] 0x824D5988 (sub_824D58C8's exit, every path): the pressed bits put back.
+void GHWoRButtonPollEndHook() { TakeBackPresses(g_patched, g_patched_count); }
+
+// [[midasm_hook]] at the entry of sub_821E77B0 (check_for_star_power_CFunc): r4 = the script. Its own record, so a
+// ControllerMake between its entry and its exit would not lose it.
+void GHWoRStarPowerPollHook(PPCRegister& r4) {
+  const uint32_t given = GiveSkippedPresses(r4.u32, g_star_patched, g_star_patched_count);
+  static std::atomic<int> logged{0};
+  if ((given & 0x100) && logged.fetch_add(1) < 20) {
+    REXLOG_INFO("[frame rate] star power: a Back press from a frame check_for_star_power skipped was given to it");
   }
 }
 
-// [[midasm_hook]] 0x824D5988 (sub_824D58C8's exit, every path): the pressed bits put back.
-void GHWoRButtonPollEndHook() {
-  uint8_t* base = GuestBase();
-  for (int i = 0; i < g_patched_count && base; ++i) {
-    const PatchedState& patched = g_patched[i];
-    if (LoadWord(base, patched.state + 52) == patched.written) {
-      StoreWord(base, patched.state + 52, patched.original);
-    }
-  }
-  g_patched_count = 0;
-}
+// [[midasm_hook]] 0x821E7DC8 and 0x821E7F10 (sub_821E77B0's two exits, addi r1,r1,1568): the pressed bits put back.
+void GHWoRStarPowerPollEndHook() { TakeBackPresses(g_star_patched, g_star_patched_count); }
 
 // The whammy on a sustain (the note hold update sub_8218ED00 -> sub_8218E9A0, run every frame for each player:
 // sub_82180BA0 -> sub_82190058 -> sub_8218F988, 120 calls a second at 120 FPS): sub_82186FF8 (the whammy bar;
