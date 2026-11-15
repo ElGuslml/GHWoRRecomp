@@ -110,6 +110,12 @@ registers = ["r7"]
 address = 0x823D02A0   # mflr r12 (entry of sub_823D02A0: a controller port's update; r3 = the port)
 name = "GHWoRControllerPortHook"
 registers = ["r3"]
+# A drum kit on five lanes unless the launcher marks it four-lane (src/drums.cpp): the game made a kit five-lane only
+# while it held the left stick's click (a Guitar Hero kit's sign), so every other kit played on four.
+[[midasm_hook]]
+address = 0x823CFEB8   # cmpwi cr6,r11,11 (sub_823CF980, the port's state: r11 = the port's type, r30 = the port)
+name = "GHWoRDrumKitLanesHook"
+registers = ["r11", "r30"]
 
 # Ultrawide (src/widescreen.cpp), with ghwor_ultrawide: the projection of every 16:9 view is widened (Hor+: the 3D views
 # see more at the sides; their aspect ratio is the view's size, not the SetScreen aspect), and the screen elements'

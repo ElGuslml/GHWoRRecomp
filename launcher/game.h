@@ -261,8 +261,9 @@ inline constexpr int kMicrophoneGainDefault = -12;
 // A controller or the keyboard playing drums (launcher 3.19.1, the Instrument row): the SDK's gamepad_device_subtypes
 // gives it XInput's drum kit subtype, 8. This game has GH Metallica's and GH5's code for it
 // (docs/fixes-from-gh-metallica.md): sub_823CF718 makes a drum kit the game's type 11 (and remembers its capability
-// flags' bit 0 as 128 at +120 of the controller port), sub_823CF980 turns 11 into 10 (Guitar Hero's five lanes) at its
-// first state read unless that flag is set (or RB is held), and the script function UseFourLaneHighway (sub_8217F7F0 ->
+// flags' bit 0 as 128 at +120 of the controller port), src/drums.cpp turns 11 into 10 (Guitar Hero's five lanes) at its
+// first state read unless that flag is set (the game itself only while the kit held the left stick's click, a Guitar
+// Hero kit's sign, so every other kit played on four lanes), and the script function UseFourLaneHighway (sub_8217F7F0 ->
 // sub_8217F6C8) plays type 11 on the game's own four-lane highway, a Rock Band kit's (generate_pos_table's four lanes,
 // setup_button_up_models' 4d materials, touch_glow_props_rb_drum). So the Drum kit row chooses five lanes, or four with
 // the SDK's change 87 ("8:1").

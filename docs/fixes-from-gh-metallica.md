@@ -41,13 +41,20 @@ their values. The log says "[intro] the game has loaded: the logos end" and "[in
 GH Metallica's of 2026-11-11 (SDK change 87, launcher 3.19.1; its `docs/drums.md`): Controls → a controller or the
 keyboard → Instrument: Drums, then Drum kit: 5 lanes (Guitar Hero) or 4 lanes (the game's Rock Band highway, as with a
 Rock Band drum kit on the console). This game has the same code as GH5: `sub_823CF718` makes a drum kit (XInput subtype
-8) the game's type 11 and keeps its capability flags' bit 0, `sub_823CF980` turns 11 into 10 (five lanes) at its first
-state read unless that bit was set, and the script function `UseFourLaneHighway` (`sub_8217F7F0` / `sub_8217F6C8`)
-plays type 11 on a four-lane highway (its four-lane positions in `generate_pos_table`, the `4d` gems in
-`setup_button_up_models`, `touch_glow_props_rb_drum`). So launcher 3.21.1's `kHasFourLaneDrums` stays true here, though
-its changelog guessed this engine had five lanes only. The keyboard's drum keys are its own (D F J K L, four lanes K
-green; Space the kick, Backspace Star Power; `launcher/game.h`). Not played through a song yet. **Off:** Instrument:
-Guitar.
+8) the game's type 11 and keeps its capability flags' bit 0, and the script function `UseFourLaneHighway`
+(`sub_8217F7F0` / `sub_8217F6C8`) plays type 11 on a four-lane highway (its four-lane positions in `generate_pos_table`,
+the `4d` gems in `setup_button_up_models`, `touch_glow_props_rb_drum`). So launcher 3.21.1's `kHasFourLaneDrums` stays
+true here, though its changelog guessed this engine had five lanes only. The keyboard's drum keys are its own (D F J K
+L, four lanes K green; Space the kick, Backspace Star Power; `launcher/game.h`). **Off:** Instrument: Guitar.
+
+**Five lanes chosen, four shown (2026-11-15, a player's PS3 kit through a MIDI Pro Adapter, and the keyboard;
+reproduced here with the keyboard in Party Play).** `sub_823CF980` turns 11 into 10 (five lanes) only while the kit
+holds the left stick's click (its buttons packed PS2-style and active-low: the bit 0x200 read there is L3, not RB as
+first read), a Guitar Hero kit's own sign; and back to 11 if L3 is let go within its first 300 reads. Nothing but a
+Guitar Hero kit gives it, so every other kit, the keyboard and a controller as drums played on four lanes. **Fix:**
+`src/drums.cpp`, a hook at `0x823CFEB8`: a drum kit without the four-lane mark becomes type 10 at its first read, for
+good; four lanes stays the SDK's flag (`8:1`). Checked in Party Play with the keyboard: five lanes with "5 lanes",
+four with "4 lanes". **Off:** `ghwor_drum_kit_five_lanes = false` (the game's own test).
 
 ## Other things that came with the move
 
