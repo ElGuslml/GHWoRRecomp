@@ -140,3 +140,11 @@ watched (D97), so in a busy song with the scene every frame each stamp faulted a
 again: ~240 faults and ~295 re-protections a frame. D147 watches them as any other page once no texture asks for them
 and no resolved texture covers them. Gustavo's Quest song (How You Remind Me) at 160 FPS, 3440x1440: faults 239 -> 45
 a frame, NativeXRenderer's thread 5.70 -> 4.76 us a draw, the slowest stretch 146 -> 156 FPS; Test-Games OK.
+
+## Textures loaded again for their packed tail's free space (NativeXRenderer D148, 2026-11-15)
+
+After D147, ~22 textures a frame were still loaded again in that song, each with its image unchanged: the game keeps
+objects in the unused blocks of a texture's packed mip tail (the 32x32-block tile that holds its smallest levels), and
+SetStreamSource stamps their fences there, so the hash of the whole mip range changed every frame. D148 hashes only the
+bytes the image is made of: loads 22.4 -> 1.0 a frame, NativeXRenderer's thread 4.92 -> 4.56 us a draw (-7.3 %), the
+slowest stretch 156 -> 159 FPS; Test-Games OK.
