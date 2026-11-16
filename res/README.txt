@@ -133,7 +133,12 @@ when you press PLAY.
     or the venue at the full frame rate. Skip the intro videos (off by default): at the start the logos end as
     soon as the game has loaded and the intro movie is not played, so the main menu comes sooner. Game debug
     menu (off by default): the debug menu its developers used, in the main menu and the pause menu (its texts
-    in English; Unlock All and Add 100 Quickplay Stars change your save).
+    in English; Unlock All and Add 100 Quickplay Stars change your save). World Tour's
+    Star Power sound (off by default): Star Power puts your instrument through Guitar Hero World Tour's echo,
+    reverb and high pass instead of the venue's reverb. Two more settings in ghwor.toml raise it:
+    ghwor_star_power_reverb_send_db (dB added to its send, 0 by default) and
+    ghwor_star_power_reverb_multi_preset (true: World Tour's settings for several players, a large reverb
+    with no echo, for one player too).
   - Audio: the output device (Windows default, or another one), the channels (Automatic, Stereo or Mono:
     the same sound on both sides), the volume, mute while another window is in front, and Low latency audio
     (off by default): the game takes your audio device in exclusive mode and the sound comes sooner (about

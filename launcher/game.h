@@ -157,8 +157,10 @@ inline constexpr std::array<Language, 5> kLanguages{{
 // kinds of frame the split render alternates. The two are independent of each other: src/options.cpp logs what the
 // second does with and without the first. Then GH Metallica's two (docs/fixes-from-gh-metallica.md): the
 // boot's videos shortened (the logos ended once the game has loaded, the intro movie not played; src/intro.cpp) and the
-// game's debug menu (src/debug_menu.cpp).
-inline constexpr std::array<Toggle, 10> kToggles{{
+// game's debug menu (src/debug_menu.cpp). Last, off as on the console: Guitar Hero World Tour's Star Power sound, the
+// player's instrument through World Tour's echo, reverb and high pass while his Star Power is on
+// (src/star_power_reverb.cpp, docs/star-power-reverb.md).
+inline constexpr std::array<Toggle, 11> kToggles{{
     {"ghwor_fx_bloom", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_depth_of_field", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_color", true, ToggleGroup::kScreenEffects},
@@ -169,6 +171,7 @@ inline constexpr std::array<Toggle, 10> kToggles{{
     {"native_x_renderer_upscale_late", false},
     {"ghwor_skip_intro", false},
     {"ghwor_debug_menu", false},
+    {"ghwor_star_power_reverb", false},
 }};
 
 // --- Downloadable content ---
