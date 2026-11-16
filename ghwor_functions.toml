@@ -402,3 +402,18 @@ address = 0x82504670   # lis r11,-32102 (the entry of sub_82504670, the script f
 name = "GHWoRPlatformHook"
 registers = ["r3", "r4"]
 return_on_true = true
+
+# The camera's cuts (src/camera_cuts.cpp, ghwor_camera_cut_reset): with NativeXRenderer's DLAA, DLSS or FSR 3.1 their
+# history starts again at each new shot of a song (NativeXRenderer's D158). The cut is marked where the cut script
+# CameraCuts_StartCallback (0xA5BB57BB) tells the band of it, carried with the frame the main thread hands over, and the
+# reset asked for as the render thread takes that frame, before its draws.
+[[midasm_hook]]
+address = 0x8215F4F8   # mflr r12 (entry of sub_8215F4F8, the script function BandManager_NotifyAllOfCameraCut)
+name = "GHWoRCameraCutHook"
+[[midasm_hook]]
+address = 0x8255A0FC   # stw r8,136(r31) (sub_82559FD0: the frame handed to the render thread, r8; 0 = none)
+name = "GHWoRFrameHandOffHook"
+registers = ["r8"]
+[[midasm_hook]]
+address = 0x8255343C   # stw r9,140(r31) (sub_825533F8: the render thread takes the frame handed over)
+name = "GHWoRFrameTakenHook"

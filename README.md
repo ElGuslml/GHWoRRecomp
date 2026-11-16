@@ -88,6 +88,8 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   graphics card before you play, in a moment, only the first time and after an update.
 - 🔍 **Upscaling:** AMD FSR 1 or NVIDIA NIS, on any graphics card, with their quality and sharpness: for a 4K screen
   or a slower graphics card ([how they compare](https://github.com/ElGuslml/GHMetalRecomp/blob/main/docs/scaling.md)).
+  AMD FSR 3.1 and NVIDIA DLSS (on an RTX card) rebuild the 3D from several frames, DLSS with its Transformer model or
+  the lighter CNN.
 - 🌑 **Sharper shadows:** the **Shadow quality** row draws the shadows at up to four times the original resolution.
 - ⚡ **High frame rates:** 60 FPS as on the console, or 120, 144, 160, 165 or 240 FPS if your monitor supports it
   (experimental). The songs keep their speed and stay in sync. V-Sync is on by default (no tearing, the game in step
@@ -141,7 +143,7 @@ Everything is set up from **GH Warriors of Rock Launcher**, with the mouse, the 
 | 🎶 **DLC** | Your DLC folder: the game reads your packages from there, nothing copied. They are grouped by the game they were made for, each with its switch. |
 | 🏆 **Achievements** | All 50 achievements, the ones you have unlocked and when. |
 | 🎮 **Controls** | Your guitars, controllers and keyboard: what each button or key does, and which controller plays drums (five or four lanes) or sings. The keyboard as a guitar or a drum kit (experimental). Frets that strum as you press them, on a controller or the keyboard. A whammy bar's and a tilt's assignment. Your microphone (experimental): device, gain and level. |
-| ⚙️ **Settings** | **Game:** the game's and the launcher's language, the venue at the full frame rate (the console draws it at half the rate of the note highway), the intro videos shortened (the logos end once the game has loaded, no intro movie), the game's own debug menu. **Audio:** output device, channels, volume, mute in the background, Low latency audio. **Video:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), upscaling (AMD FSR 1, NVIDIA NIS) and sharpness, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too). **Graphics:** renderer, graphics card, frame rate, antialiasing, texture sharpness, the game's screen effects. **Online** (experimental): online play with your Steam friends. |
+| ⚙️ **Settings** | **Game:** the game's and the launcher's language, the venue at the full frame rate (the console draws it at half the rate of the note highway), the intro videos shortened (the logos end once the game has loaded, no intro movie), the game's own debug menu. **Audio:** output device, channels, volume, mute in the background, Low latency audio. **Video:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), upscaling (AMD FSR 1, NVIDIA NIS, AMD FSR 3.1, NVIDIA DLSS with its Transformer or CNN model) and sharpness, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too). **Graphics:** renderer, graphics card, frame rate, antialiasing, texture sharpness, the game's screen effects. **Online** (experimental): online play with your Steam friends. |
 | 🔄 **Updates** | Your version, and new ones when they come out (the betas too, if you choose). |
 | 👤 **Profile** | Your picture at the top right: hours played, streaks, your week, your games and your favorite achievements. |
 

@@ -89,10 +89,20 @@ inline constexpr bool kHasNativeXRenderer = GAME_HAS_NATIVE_X_RENDERER;
 // full play test has gone through it (as in POTCAWE, its D56), the Xenos path until then. NativeXRenderer, as in GH5
 // (its 575136e), with SMAA on the scene's copy.
 inline constexpr bool kNativeXRendererDefault = true;
-// The antialiasing row's DLAA (NativeXRenderer's D47: NVIDIA DLSS on the main 3D view, jittered): only for a game whose
-// hooks mark its views (native_x_renderer::BeginView and EndViewGeometry, as POTCAWE's). This one does not: DLAA would
-// turn SMAA and FXAA off and DLSS never run. The row offers SMAA, FXAA and none.
-inline constexpr bool kHasDlaa = false;
+// The antialiasing row's DLAA (NativeXRenderer's D47: NVIDIA DLSS on the main 3D view, jittered), and with it the Video
+// page's AMD FSR 3.1 and NVIDIA DLSS. The game's split render stays on with them (src/options.cpp, as on the console)
+// and they run once a pair of frames, the view paused in the stage's frame and finished in the band's, at the whole
+// scene's copy before the screen effects (NativeXRenderer's D159; each camera cut starts their history again,
+// src/camera_cuts.cpp, D158). Played in a song (2026-11-10, docs/native-x-renderer-ghwor.md's DLAA, DLSS and FSR 3.1):
+// DLSS Quality and Performance at 3840x2160, the motion as smooth as SMAA's, no ghosting on the band, 60 FPS held with
+// the CNN model on an RTX A2000; DLAA and FSR 3.1 the same. Far lit windows that flickered with all of them, drawn
+// again by the bloom after the upscale point, no longer do (NativeXRenderer's D161). Before D159 DLSS needed the split
+// off, where the 3D looked less smooth.
+inline constexpr bool kHasDlaa = true;
+// The Video page's DLSS model row, after the upscaling quality while the upscaler is NVIDIA DLSS (RecompLauncher
+// 3.24.0): Transformer, NVIDIA's own default, or CNN (NativeXRenderer's native_x_renderer_dlss_model), lighter: on
+// the RTX A2000 at 3840x2160 CNN held 60 FPS where the Transformer model did not.
+inline constexpr bool kHasDlssModel = true;
 
 // The Graphics page's shadow quality row: NativeXRenderer draws the game's shadow maps at a scale of their own
 // (native_x_renderer_shadow_scale, its D92): at least twice or four times the game's resolution. Only where it
