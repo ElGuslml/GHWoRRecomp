@@ -100,8 +100,10 @@ inline constexpr bool kNativeXRendererDefault = true;
 // off, where the 3D looked less smooth.
 inline constexpr bool kHasDlaa = true;
 // The Video page's DLSS model row, after the upscaling quality while the upscaler is NVIDIA DLSS (RecompLauncher
-// 3.24.0): Transformer, NVIDIA's own default, or CNN (NativeXRenderer's native_x_renderer_dlss_model), lighter: on
-// the RTX A2000 at 3840x2160 CNN held 60 FPS where the Transformer model did not.
+// 3.24.0): Transformer, NVIDIA's own default, Transformer K, the first Transformer model in every mode (3.26.0,
+// lighter than the default in Performance and Ultra Performance), or CNN (NativeXRenderer's
+// native_x_renderer_dlss_model), lighter: on the RTX A2000 at 3840x2160 CNN held 60 FPS where the Transformer model
+// did not.
 inline constexpr bool kHasDlssModel = true;
 
 // The Graphics page's shadow quality row: NativeXRenderer draws the game's shadow maps at a scale of their own
