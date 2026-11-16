@@ -148,3 +148,14 @@ objects in the unused blocks of a texture's packed mip tail (the 32x32-block til
 SetStreamSource stamps their fences there, so the hash of the whole mip range changed every frame. D148 hashes only the
 bytes the image is made of: loads 22.4 -> 1.0 a frame, NativeXRenderer's thread 4.92 -> 4.56 us a draw (-7.3 %), the
 slowest stretch 156 -> 159 FPS; Test-Games OK.
+
+## 240 FPS: the renderer thread (NativeXRenderer D149-D151, 2026-11-15)
+
+At 240 FPS in ultrawide with the scene every frame, NativeXRenderer's thread was the limit in busy songs (4-5.4 ms a
+frame against 4.17). A third of it went to checking the memory pages the game rewrites every frame (vertex data, and
+pages holding the fences SetStreamSource stamps) and copying the changed ones. D149 drops the barrier DiligentCore put
+between every two of those copies, D150 splits the checks with up to three worker threads
+(`native_x_renderer_memory_check_threads`), D151 skips a draw's vertex requests its batch already made. Gustavo's
+Quest song at 240 FPS: 220.7 -> 232.4 FPS average, the slowest stretch 174.5 -> 201.6, no stretch under 200; the
+results screen at 239; at 160 FPS the song holds 160. Test-Games OK. What is left is mostly DiligentCore's and the
+driver's cost per draw.
