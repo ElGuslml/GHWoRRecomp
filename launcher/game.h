@@ -153,9 +153,9 @@ inline constexpr std::array<Language, 5> kLanguages{{
 // render mode off, src/split_render.cpp, docs/scene-every-frame.md). Two for DLSS, DLAA and FSR 3.1
 // (docs/native-x-renderer-ghwor.md): the upscaler's view ended after the bloom and the depth of field, which are then
 // drawn at its input size (src/native_x_renderer_ghwor.cpp's ghwor_upscale_after_effects), and NativeXRenderer's DLSS
-// evaluation one frame late (its D164, native_x_renderer_upscale_late, DLSS and DLAA only), which evens out the two
-// kinds of frame the split render alternates. The two are independent of each other: src/options.cpp logs what the
-// second does with and without the first. Then GH Metallica's two (docs/fixes-from-gh-metallica.md): the
+// evaluation one frame late (its D164, native_x_renderer_upscale_late, DLSS's upscaling modes only, not DLAA), which
+// evens out the two kinds of frame the split render alternates. The two are independent of each other: src/options.cpp
+// logs what the second does with and without the first. Then GH Metallica's two (docs/fixes-from-gh-metallica.md): the
 // boot's videos shortened (the logos ended once the game has loaded, the intro movie not played; src/intro.cpp) and the
 // game's debug menu (src/debug_menu.cpp). Last, off as on the console: Guitar Hero World Tour's Star Power sound, the
 // player's instrument through World Tour's echo, reverb and high pass while his Star Power is on

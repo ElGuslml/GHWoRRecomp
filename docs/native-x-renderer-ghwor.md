@@ -202,17 +202,26 @@ graded, where without the option it got the scene before both.
 
 **The launcher's rows (2026-11-15).** Settings > Game has two rows, both off by default: "Screen effects before the
 upscaler" (`ghwor_upscale_after_effects`) and "Even frame times with DLSS" (NativeXRenderer's D164,
-`native_x_renderer_upscale_late`: DLSS evaluated at the start of the next frame, DLSS and DLAA only, not with frame
+`native_x_renderer_upscale_late`: DLSS evaluated at the start of the next frame, DLSS upscaling only, not with frame
 generation; with both on at 3840x2160 and the 120 FPS cap the RTX A2000's band and stage frames took 7.0 and 6.7 ms of
 GPU instead of 9.4 and 4.8). The two are independent switches: the late evaluation does not need
 `ghwor_upscale_after_effects`, and `src/options.cpp` logs an `[options]` line saying which way it runs. With an
-antialiasing other than DLSS or DLAA it logs that the setting is ignored, and with `ghwor_scene_every_frame = true` (or
-frame generation, which sets it) it turns it off. Without `ghwor_upscale_after_effects` the bloom and the depth of field
-are drawn from the newer frame over the 3D image of the pair before, so by the reasoning the glow around lights and the
-blurred background can sit off the objects while the camera moves, and a camera cut shows one pair of the old shot under
-the new shot's glow. Played on 2026-11-15 on the RTX A2000 at 3840x2160 with DLSS Performance (CNN) and the 120 FPS
-setting, each row on and off: the gain is visible, and the late evaluation alone looked right, that offset was not
-noticed.
+antialiasing other than DLSS upscaling it logs that the setting is ignored, and with `ghwor_scene_every_frame = true`
+(or frame generation, which sets it) it turns it off. Without `ghwor_upscale_after_effects` the bloom and the depth of
+field are drawn from the newer frame over the 3D image of the pair before, so by the reasoning the glow around lights
+and the blurred background can sit off the objects while the camera moves, and a camera cut shows one pair of the old
+shot under the new shot's glow. Played on 2026-11-15 on the RTX A2000 at 3840x2160 with DLSS Performance (CNN) and the
+120 FPS setting, each row on and off: the gain is visible, and the late evaluation alone looked right, that offset was
+not noticed.
+
+**DLAA left out (2026-11-16, NativeXRenderer 0237995).** With DLAA and the late evaluation on, the 3D image fed back on
+itself within seconds: in a song at 3840x2160 with the 120 FPS setting on the RTX A2000 it went to flat colors about
+three seconds in and then to a flat light grey that never came back, with either model and with the record thread on or
+off. DLAA has no reduced targets, so its input is the scene's own target, also its output, which the frame draws into
+after the upscale point, and the late evaluation read the frame's last image instead of the view (a diagnostic build
+counted a clear and about 225 draws into the held color after every upscale point). No run before had DLAA with the late
+evaluation on (the rows were played with DLSS Performance), and NativeXRenderer now applies it only to a DLSS mode that
+upscales and logs that it is not applied with DLAA.
 
 ## Checked (2026-11-02, Game.ps1, keyboard)
 
