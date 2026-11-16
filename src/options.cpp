@@ -202,6 +202,34 @@ void LoadLauncherOptions(const std::filesystem::path& options_path,
     }
   }
 
+  // NativeXRenderer's DLSS evaluation one frame late (D164, native_x_renderer_upscale_late, DLSS and DLAA only) shows
+  // the upscaled image a pair later. With ghwor_upscale_after_effects the bloom and the depth of field come before the
+  // upscale point, so they are delayed with the 3D image. Without it they stay after it, drawn from the newer frame
+  // over the 3D image of the pair before: while the camera moves their glow and blur can sit off the objects, and a
+  // camera cut shows one pair of the old shot under the new shot's glow. The two are independent launcher switches,
+  // both off by default. Played on 2026-11-15 on an RTX A2000 at 3840x2160 with DLSS Performance (CNN) and the 120 FPS
+  // setting, the late evaluation alone looked right: that offset was not noticed. With ghwor_scene_every_frame = true
+  // (read after the split render's block above, which sets it for frame generation) the upscaler runs in every frame,
+  // with no alternating frames to even out, so it is turned off then.
+  if (rex::cvar::Query<bool>("native_x_renderer_upscale_late")) {
+    const std::string aa = rex::cvar::Query<std::string>("native_x_renderer_antialiasing");
+    if (aa != "dlaa" && aa.rfind("dlss_", 0) != 0) {
+      REXLOG_INFO("[options] native_x_renderer_upscale_late ignored: it applies to DLSS and DLAA only, not {}", aa);
+    } else if (rex::cvar::Query<bool>("ghwor_scene_every_frame")) {
+      rex::cvar::SetFlagByName("native_x_renderer_upscale_late", "false");
+      REXLOG_INFO("[options] native_x_renderer_upscale_late ignored: with ghwor_scene_every_frame = true the upscaler "
+                  "runs in every frame, and the late evaluation only evens out frames that alternate");
+    } else if (!rex::cvar::Query<bool>("ghwor_upscale_after_effects")) {
+      REXLOG_INFO("[options] native_x_renderer_upscale_late without ghwor_upscale_after_effects: the bloom and the "
+                  "depth of field are drawn from the newer frame over the 3D image of the pair before (their glow "
+                  "and blur can sit off the objects while the camera moves, and a camera cut shows one pair of the "
+                  "old shot under the new shot's glow)");
+    } else {
+      REXLOG_INFO("[options] native_x_renderer_upscale_late with ghwor_upscale_after_effects: the bloom and the depth "
+                  "of field come before the upscaler and are shown a pair later with the 3D image");
+    }
+  }
+
   // Ultrawide on the Xenos path (src/widescreen.cpp): the cameras see with the window's aspect ratio, so the
   // presenter must stretch the frame over the window instead of showing it 16:9 with bars. The launcher
   // writes both; this covers the ultrawide cvar given alone (the command line). NativeXRenderer fills the

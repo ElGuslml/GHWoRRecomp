@@ -125,10 +125,15 @@ when you press PLAY.
     draws its venue and its band in turns, each at half the frame rate (30 times a second on the console),
     while the note highway uses the full rate; on, the whole scene is drawn in every frame, for about twice
     the work for the processor and the graphics card: at 160 FPS even a fast PC can drop to about 130 in busy
-    songs, while 120 FPS or lower leaves it room. Skip the intro videos (off by default): at the start the
-    logos end as soon as the game has loaded and the intro movie is not played, so the main menu comes
-    sooner. Game debug menu (off by default): the debug menu its developers used, in the main menu and the
-    pause menu (its texts in English; Unlock All and Add 100 Quickplay Stars change your save).
+    songs, while 120 FPS or lower leaves it room. Screen effects before the upscaler (off by default): with
+    DLSS, DLAA or FSR 3.1 the glow and the blurred backgrounds are drawn at the upscaler's input resolution,
+    faster at a high resolution and a little softer. Even frame times with DLSS (off by default): DLSS runs at
+    the start of the next frame, so the venue's frames take about the same time, and the venue shows a pair of
+    frames later (the note highway and the HUD are not delayed); DLSS or DLAA only, not with frame generation
+    or the venue at the full frame rate. Skip the intro videos (off by default): at the start the logos end as
+    soon as the game has loaded and the intro movie is not played, so the main menu comes sooner. Game debug
+    menu (off by default): the debug menu its developers used, in the main menu and the pause menu (its texts
+    in English; Unlock All and Add 100 Quickplay Stars change your save).
   - Audio: the output device (Windows default, or another one), the channels (Automatic, Stereo or Mono:
     the same sound on both sides), the volume, mute while another window is in front, and Low latency audio
     (off by default): the game takes your audio device in exclusive mode and the sound comes sooner (about

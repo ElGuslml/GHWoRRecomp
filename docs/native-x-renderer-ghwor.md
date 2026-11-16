@@ -165,6 +165,55 @@ the cause is open: the time each frame is shown at is the leading suspect (the n
 the 3D a fixed step per frame). Hence D159 (above): DLSS with the split on, the console's motion, which Panchovix
 played as smooth (`ghwor_027`, `ghwor_028`), and which the launcher now offers.
 
+**The upscaler after the bloom and the depth of field (2026-11-15, `ghwor_upscale_after_effects`, off by default).**
+At 3840x2160 with DLSS Performance (CNN) on the RTX A2000 the GPU holds the frame (uncapped, about 113 FPS, the renderer
+blocked in Present), and NativeXRenderer's pass timer (D162, `--native_x_renderer_gpu_passes=true`) puts the band
+frame's composite (`sub_82641110`) first: its pass before the copy `< 0x82641558` (the rectangle drawn from
+`0x826414DC`, pixel shader `08C299A3FD3AB2B0`) takes 2.7 ms at 3840x2160, once a pair, and the one after it
+(`0x8264161C`, `24980613F7EE48A3`, the color pass) 1.4 ms; DLSS itself 3.1 ms a pair. With
+`ghwor_upscale_after_effects = true` the profile's view ends at `< 0x82641558` instead of `< 0x8264C1B8`: the bloom,
+the depth of field and that first pass are drawn at DLSS's input size inside the view, DLSS takes their image, and the
+color pass, the note highway and the HUD stay at the output's size. Measured in Flyleaf's Again with the bot, uncapped,
+one binary (2026-11-15, `ghwor_082` off, `ghwor_083` on): 112.9 FPS off, 129.7 on; the first pass 1.32 ms a frame at
+3840x2160, 0.34 at 1920x1080; DLSS still once a pair. What it changes in the picture: DLSS now takes the image after
+the bloom, the depth of field and the composite's first pass, instead of before them; the pass after the copy stays
+after DLSS. Which of the effects each pass applies was not read. No artifact was seen in screenshots, but none were
+of the same frame. Played on 2026-11-15 on the RTX A2000 at 3840x2160 with DLSS Performance (CNN) and the 120 FPS
+setting, on and off: the gain is visible, and the bloom and the depth of field, drawn at the upscaler's input size,
+look different, which is why it is a switch, off by default. Off: as before.
+
+What the composite's two passes do (read from their microcode, dumped with `--dump_shaders`, 2026-11-15; screen_fx.cpp
+names the passes' variants as GH5's `_Uber_ScreenFX` Pass0 and Pass1):
+- The first, `08C299A3FD3AB2B0` (drawn from `0x826414DC`, before the copy `< 0x82641558`): a motion blur of three taps
+  of the scene's copy (fetch constant 4) along the velocity read from fetch constant 9, the depth of field (the blurred
+  copy at fetch constant 3 mixed in by a factor from the depth at fetch constant 1, the focus range in c9 and c10), the
+  bloom added (fetch constant 2) and the color grading through a 3D lookup texture (fetch constant 7, `tfetch3D`).
+  With the bloom, the depth of field, the grain and the vignette off (`E382DF5F7770B581`) only the motion blur and the
+  3D lookup are left.
+- The second, `24980613F7EE48A3` (from `0x8264161C`, after the copy, reading it): the motion blur again (three taps of
+  the copy along the same velocity) and the film grain, a hash of the screen position (`dp2add` with c110, `frcs`)
+  mixed in with the color and amount in c3; it also fetches fetch constant 0 into a register it overwrites before use.
+  With the grain and the vignette off (`1686D6EB88E37034`) only the motion blur is left. No vignette term was seen in
+  this variant (the shot had none on).
+So with `ghwor_upscale_after_effects` DLSS is given the image after the first motion blur pass, the depth of field, the
+bloom and the color grading, and the film grain and the second motion blur pass come after it, at the output's size:
+DLSS does not smooth the grain. It does see the motion blur (NVIDIA advises it after the upscaler) and an image already
+graded, where without the option it got the scene before both.
+
+**The launcher's rows (2026-11-15).** Settings > Game has two rows, both off by default: "Screen effects before the
+upscaler" (`ghwor_upscale_after_effects`) and "Even frame times with DLSS" (NativeXRenderer's D164,
+`native_x_renderer_upscale_late`: DLSS evaluated at the start of the next frame, DLSS and DLAA only, not with frame
+generation; with both on at 3840x2160 and the 120 FPS cap the RTX A2000's band and stage frames took 7.0 and 6.7 ms of
+GPU instead of 9.4 and 4.8). The two are independent switches: the late evaluation does not need
+`ghwor_upscale_after_effects`, and `src/options.cpp` logs an `[options]` line saying which way it runs. With an
+antialiasing other than DLSS or DLAA it logs that the setting is ignored, and with `ghwor_scene_every_frame = true` (or
+frame generation, which sets it) it turns it off. Without `ghwor_upscale_after_effects` the bloom and the depth of field
+are drawn from the newer frame over the 3D image of the pair before, so by the reasoning the glow around lights and the
+blurred background can sit off the objects while the camera moves, and a camera cut shows one pair of the old shot under
+the new shot's glow. Played on 2026-11-15 on the RTX A2000 at 3840x2160 with DLSS Performance (CNN) and the 120 FPS
+setting, each row on and off: the gain is visible, and the late evaluation alone looked right, that offset was not
+noticed.
+
 ## Checked (2026-11-02, Game.ps1, keyboard)
 
 - The observer (`--native_x_renderer_verify`, F10): the main menu, 522 of 522 draw calls match the rebuilt state; a

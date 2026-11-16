@@ -217,6 +217,16 @@ ghwor_fx_vignette = true
 # console; the note highway and the HUD every frame). true turns that split off: the whole scene in every frame, for
 # about twice the 3D work a frame (CPU and GPU). false = as on the console.
 ghwor_scene_every_frame = false
+# With DLSS, DLAA or FSR 3.1 (src/native_x_renderer_ghwor.cpp): the upscaler's view ends after the bloom and the depth
+# of field, so those are drawn at its input resolution and enlarged with the rest of the 3D image (much less GPU work
+# at a high output resolution, their glow and blur a little softer). false = drawn after the upscaler, at the screen's.
+ghwor_upscale_after_effects = false
+# NativeXRenderer's DLSS evaluation one frame late (its D164, DLSS and DLAA only, not with frame generation nor with
+# ghwor_scene_every_frame): DLSS runs at the start of the next frame, which evens out the split render's short and long
+# frames, and the venue, the crowd and the band show a pair of frames later (the note highway and the HUD do not).
+# Independent of ghwor_upscale_after_effects: without it the bloom and the depth of field are drawn from the newer
+# frame over the older 3D image. false = DLSS in the frame that draws the view.
+native_x_renderer_upscale_late = false
 # The game's own debug menu (Neversoft's, src/debug_menu.cpp): true adds an item named (debug menu) to the main menu
 # and a Debug Menu item to the pause menu (Unlock All, Skip Into Song, Change Venue, Show Song Time, Play Credits, Add
 # 100 Quickplay Stars, ...). Some items need Neversoft's development tools and do nothing. false = as on the console.
