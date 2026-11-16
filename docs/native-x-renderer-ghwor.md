@@ -159,3 +159,10 @@ between every two of those copies, D150 splits the checks with up to three worke
 Quest song at 240 FPS: 220.7 -> 232.4 FPS average, the slowest stretch 174.5 -> 201.6, no stretch under 200; the
 results screen at 239; at 160 FPS the song holds 160. Test-Games OK. What is left is mostly DiligentCore's and the
 driver's cost per draw.
+
+## 240 FPS: the index requests and the fence stamps (2026-11-15, branch `perf-240`)
+
+The game's fence stamps are written where the page watches do not see them ([fence-stamps.md](fence-stamps.md)):
+the song at 240 holds 239 FPS on average, its slowest stretch 225. NativeXRenderer D152 (SDK change 116) skips a
+draw's index request when its batch made it: +4.7 % FPS at 480 with V-Sync off (measured inside one run). With V-Sync
+off the song runs at 310-330 FPS (260 before these changes); the renderer thread is still the limit, the GPU at ~70 %.
