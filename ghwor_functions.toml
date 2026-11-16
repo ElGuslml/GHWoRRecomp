@@ -198,6 +198,18 @@ registers = ["r4"]
 [[midasm_hook]]
 address = 0x824D5988   # addi r1,r1,112 (sub_824D58C8's exit, every path)
 name = "GHWoRButtonPollEndHook"
+# The same for Star Power by Select: the script check_for_star_power (0xB1330633) tests the press in its CFunc, not
+# through ControllerMake.
+[[midasm_hook]]
+address = 0x821E77B0   # entry of sub_821E77B0 (the script function check_for_star_power_CFunc: r4 = the script)
+name = "GHWoRStarPowerPollHook"
+registers = ["r4"]
+[[midasm_hook]]
+address = 0x821E7DC8   # addi r1,r1,1568 (sub_821E77B0's exit after its state 2)
+name = "GHWoRStarPowerPollEndHook"
+[[midasm_hook]]
+address = 0x821E7F10   # addi r1,r1,1568 (sub_821E77B0's other exit, a branch target: every other path)
+name = "GHWoRStarPowerPollEndHook"
 # The frames' real length (src/framerate.cpp: what is counted in frames above 60 Hz keeps the console's time by it when
 # the frame rate falls below the chosen one), measured once a frame on the main thread.
 [[midasm_hook]]

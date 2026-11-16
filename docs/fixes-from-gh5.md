@@ -102,6 +102,26 @@ that speeds the scroll up, so every frame they would speed up 2.67 times as soon
 failed with no player at the same point (11 %) as at 60.
 **Off:** 60 in the launcher.
 
+**Star Power by Select (2026-11-14, this game's own finding).** At 120 FPS Star Power needed several presses of Select
+(Back) to start (at 60 the script looks at every frame, so one press should be enough: not tried). The script
+`check_for_star_power` (`0xB1330633`, spawned for each local player by `start_gem_scroller`) calls
+`check_for_star_power_CFunc` (`sub_821E77B0`) once a pass and waits a game frame. The CFunc reads Select as the
+one-frame pressed bit (`sub_824D5480` with `'select'`, bit `0x100` at `+52` of the controller's input state), as
+ControllerMake does, but not through it, so it had no share of the presses given to scripts. Held to 60 passes a
+second, at 120 FPS the script looks at every second frame and about half of the presses fell in a frame it skipped
+(derived from the code and a simulation of the hooks: 50 % of the frames looked at at 120 FPS, 42 % at 144, 25 % at
+240; not measured in a run). The fix gives it the presses of the frames it skipped, as ControllerMake's scripts are
+given them: `GHWoRStarPowerPollHook` at the CFunc's entry adds them to the pressed bits and `GHWoRStarPowerPollEndHook`
+at its two exits (`0x821E7DC8`, `0x821E7F10`) puts the bits back, with a record of their own. The script stays at 60
+passes a second, so the tilt's 8 passes keep the console's time. In the log: "[frame rate] star power: a Back press from
+a frame check_for_star_power skipped was given to it" (the first 20). It shows for any Back press of a skipped frame
+while the scripts run, whether Star Power could start or not (`star_power_amount` under 50, not usable, net pause), and
+as each script is given the presses of every controller, with two local players once for each player's script and also
+for the other player's Back. GH5, GH Metallica and GH Van Halen share the engine and the held waits, so they likely have
+the same gap (not checked). Tried in songs at 120 FPS with a guitar controller on 2026-11-15: each press of Select
+started Star Power, and five of the six activations came from a press of a frame the script had skipped (the log
+line). **Off:** `ghwor_frame_rate_fix = false`, or 60 in the launcher.
+
 **Camera cuts (2026-11-07, GH5's fix).** The game draws the stage and the crowd in one frame and the band in the next
 (`IsPrimaryFrame`; both in every frame with [`ghwor_scene_every_frame = true`](#the-split-render)), and two scripts
 align what follows to one kind of frame: `0xCAD261DF` and `0x6506F6C8` (GH5 has only the first).
