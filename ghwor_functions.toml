@@ -208,6 +208,18 @@ name = "GHWoRMainFrameHook"
 [[midasm_hook]]
 address = 0x8242C46C   # lwz r11,1896(r31) (sub_8242C450: the main thread's frame, the split render mode)
 name = "GHWoRSplitRenderHook"
+# D3D's fence stamps in the header of the vertex or index buffer SetStreamSource or SetIndices unbinds, written through
+# the view of physical memory the page watches do not protect (src/fence_stamps.cpp); true skips the game's store.
+[[midasm_hook]]
+address = 0x822D4D50   # stw r11,8(r28) (sub_822D4CC0, SetStreamSource), then b 0x822D4DA8
+name = "GHWoRStreamFenceHook"
+registers = ["r11", "r28"]
+jump_address_on_true = 0x822D4DA8
+[[midasm_hook]]
+address = 0x822D4E94   # stw r11,8(r30) (sub_822D4E68, SetIndices), then b 0x822D4EEC
+name = "GHWoRIndicesFenceHook"
+registers = ["r11", "r30"]
+jump_address_on_true = 0x822D4EEC
 # The whammy on a sustain is told by the frame (the bar's movement since the previous frame, a countdown of 5 frames,
 # 5 frames in a row to turn a star power sustain blue or back): above 60 Hz over a 60th of a second and 5 / 60 s, in
 # frames of their measured length.

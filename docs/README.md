@@ -15,6 +15,7 @@ the symptom, the cause, the fix and how to turn the fix off, so that you can che
 | [Xbox One guitars (PDP Riffmaster)](xbox-one-guitars.md) | Built, a player's test to come: read through Microsoft GameInput (SDK change 110), the tilt as an Xbox 360 guitar's, the launcher offering GameInput when it is missing (3.23) |
 | [Online play](online-play.md) | In testing: two copies on one PC and two PCs through Steam played songs together, joined by invites (SDK changes 106-109 and 111: the party's key, socket numbers, no port without online play, the friends list kept up to date, an invite's join spent) |
 | [The venue at the full frame rate](scene-every-frame.md) | Built, off by default: the engine's split of the 3D scene over two frames turned off (the venue and the band drawn in every frame, about twice the 3D work); checked in Party Play on both renderers |
+| [D3D's fence stamps and the page watches](fence-stamps.md) | Branch `perf-240`, in testing: the stamps written where the watches do not see them; 240 FPS held in a busy song with the venue every frame |
 | [A controller plays as in Guitar Hero III](controller-gh3-layout.md) | Played with a DualSense: the game's own GH III controller code, chosen by hooks (SDK change 112, the default; a switch in the launcher), extended sustains, and its own buttons in a song (SDK change 113: the launcher's "In a song" and "Navigation") |
 
 Building the project, its configuration and how the SDK is changed: [`development.md`](development.md).

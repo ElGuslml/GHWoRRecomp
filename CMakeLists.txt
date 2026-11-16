@@ -67,6 +67,7 @@ set(GHWOR_SOURCES
     src/debug_menu.cpp
     src/controller_layout.cpp
     src/drums.cpp
+    src/fence_stamps.cpp
     src/framerate.cpp
     src/intro.cpp
     src/keyboard.cpp
