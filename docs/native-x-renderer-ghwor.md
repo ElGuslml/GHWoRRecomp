@@ -169,8 +169,9 @@ off the song runs at 310-330 FPS (260 before these changes); the renderer thread
 
 ## The renderer in two threads (NativeXRenderer D153, D154, 2026-11-15, branch `perf-240`)
 
-NativeXRenderer's calls to DiligentCore go through an ordered queue (D153), and with
-`native_x_renderer_record_thread = true` in `ghwor.toml` a thread of their own records them while the renderer's
-thread prepares the next commands (D154). Off by default until played. Gustavo's Quest song with the venue every
+NativeXRenderer's calls to DiligentCore go through an ordered queue (D153), and a thread of their own records them
+while the renderer's thread prepares the next commands (D154, D155: larger batches, the frame's Present on that
+thread). On by default in this game since 2026-11-16 (`src/startup.cpp`, after Gustavo played with it at 160 and 420);
+`native_x_renderer_record_thread = false` in `ghwor.toml` turns it off. Gustavo's Quest song with the venue every
 frame at 3440x1440: at 240 FPS every stretch at 230 or more (the slowest 233.6, 225.7 without it); with V-Sync off at
 480, 319 -> 370 FPS on average, the GPU then 88 % busy. Test-Games OK with it on and off.
