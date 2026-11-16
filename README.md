@@ -88,14 +88,29 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   graphics card before you play, in a moment, only the first time and after an update.
 - 🔍 **Upscaling:** AMD FSR 1 or NVIDIA NIS, on any graphics card, with their quality and sharpness: for a 4K screen
   or a slower graphics card ([how they compare](https://github.com/ElGuslml/GHMetalRecomp/blob/main/docs/scaling.md)).
-  AMD FSR 3.1 and NVIDIA DLSS (on an RTX card) rebuild the 3D from several frames, DLSS with its Transformer model or
-  the lighter CNN.
+- 🧠 **DLSS, DLAA and FSR 3.1:** NVIDIA DLSS and DLAA (on an RTX card) and AMD FSR 3.1 rebuild the 3D from several
+  frames, in step with the way the game draws its stage over two frames: as smooth as on the console, no ghosting on
+  the band, and a clean start at every camera cut. DLSS comes with NVIDIA's DLSS 310.9.16 and lets you choose its
+  Transformer model or the lighter CNN. *(By [Panchovix](https://github.com/Panchovix).)*
+- 🏎️ **Faster with an upscaler (optional):** two switches in **Settings → Game** for slower graphics cards, off by
+  default. **Screen effects before the upscaler** draws the glow around lights and the blurred backgrounds at the
+  upscaler's resolution: much less work for the graphics card (an RTX A2000 at 4K with DLSS Performance went from
+  113 to 130 FPS), with a slightly softer glow and blur. **Even frame times with DLSS** moves DLSS's work to the start
+  of the next frame, so that every frame takes about the same time; the stage shows a pair of frames later, while the
+  note highway and the HUD are not delayed. *(By [Panchovix](https://github.com/Panchovix).)*
 - 🌑 **Sharper shadows:** the **Shadow quality** row draws the shadows at up to four times the original resolution.
 - ⚡ **High frame rates:** 60 FPS as on the console, or 120, 144, 160, 165 or 240 FPS if your monitor supports it
   (experimental). The songs keep their speed and stay in sync. V-Sync is on by default (no tearing, the game in step
-  with your monitor, without V-Sync's usual delay); leave it on with a G-Sync or FreeSync monitor too.
+  with your monitor, without V-Sync's usual delay); leave it on with a G-Sync or FreeSync monitor too. Star Power
+  answers every press of Back (Select) or the D-pad at any frame rate. *(Star Power fix by
+  [Panchovix](https://github.com/Panchovix).)*
 - 🔊 **Low latency audio:** optional, in the launcher's Settings: the game takes your audio device in exclusive mode,
   and the sound comes up to about 55 ms sooner (measured in GHMetalRecomp on a USB audio interface).
+- 🔈 **Louder when you need it:** the volume goes up to 200 % in **Settings → Audio**, for a game that sounds quiet next
+  to the rest of your PC (above 100 % its loudest moments can distort). *(By [Panchovix](https://github.com/Panchovix).)*
+- 🌟 **World Tour's Star Power sound (optional):** while your Star Power is on, your instrument goes through Guitar
+  Hero World Tour's echo, timed to the song, and its reverb, as it did in that game. A switch in **Settings → Game**,
+  off by default. *(By [Panchovix](https://github.com/Panchovix).)*
 - 📺 **Wide and ultrawide screens:** the stage fills 16:9, 21:9 and wider screens, while the note highway, the HUD and
   the menus keep their shape in the center.
 - 👤 **Profiles:** your saves, achievements and playtime in a profile shared by all the ElGus Recomps launchers.
@@ -143,7 +158,7 @@ Everything is set up from **GH Warriors of Rock Launcher**, with the mouse, the 
 | 🎶 **DLC** | Your DLC folder: the game reads your packages from there, nothing copied. They are grouped by the game they were made for, each with its switch. |
 | 🏆 **Achievements** | All 50 achievements, the ones you have unlocked and when. |
 | 🎮 **Controls** | Your guitars, controllers and keyboard: what each button or key does, and which controller plays drums (five or four lanes) or sings. The keyboard as a guitar or a drum kit (experimental). Frets that strum as you press them, on a controller or the keyboard. A whammy bar's and a tilt's assignment. Your microphone (experimental): device, gain and level. |
-| ⚙️ **Settings** | **Game:** the game's and the launcher's language, the venue at the full frame rate (the console draws it at half the rate of the note highway), the intro videos shortened (the logos end once the game has loaded, no intro movie), the game's own debug menu. **Audio:** output device, channels, volume (up to 200 %), mute in the background, Low latency audio. **Video:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), upscaling (AMD FSR 1, NVIDIA NIS, AMD FSR 3.1, NVIDIA DLSS with its Transformer or CNN model) and sharpness, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too). **Graphics:** renderer, graphics card, frame rate, antialiasing, texture sharpness, the game's screen effects. **Online** (experimental): online play with your Steam friends. |
+| ⚙️ **Settings** | **Game:** the game's and the launcher's language, the venue at the full frame rate (the console draws it at half the rate of the note highway), the intro videos shortened (the logos end once the game has loaded, no intro movie), two switches that make DLSS, DLAA and FSR 3.1 faster (the screen effects before the upscaler, even frame times with DLSS), World Tour's Star Power sound, the game's own debug menu. **Audio:** output device, channels, volume (up to 200 %), mute in the background, Low latency audio. **Video:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), upscaling (AMD FSR 1, NVIDIA NIS, AMD FSR 3.1, NVIDIA DLSS with its Transformer or CNN model) and sharpness, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too). **Graphics:** renderer, graphics card, frame rate, antialiasing (SMAA, FXAA or NVIDIA DLAA), texture sharpness, the game's screen effects. **Online** (experimental): online play with your Steam friends. |
 | 🔄 **Updates** | Your version, and new ones when they come out (the betas too, if you choose). |
 | 👤 **Profile** | Your picture at the top right: hours played, streaks, your week, your games and your favorite achievements. |
 
@@ -253,6 +268,13 @@ it will get fixed. Thanks for giving this game a try! 🧡
 - [GH5Recomp](https://github.com/ElGuslml/GH5Recomp), [GHVanHRecomp](https://github.com/ElGuslml/GHVanHRecomp) and
   [GHMetalRecomp](https://github.com/ElGuslml/GHMetalRecomp), whose fixes this game shares.
 - [extract-xiso](https://github.com/XboxDev/extract-xiso), for extracting game files.
+- [Panchovix](https://github.com/Panchovix), who contributed:
+  - DLSS, DLAA and FSR 3.1 in step with the game's two-frame drawing, and DLSS's model choice;
+  - the two switches that make them faster;
+  - World Tour's Star Power sound;
+  - the volume up to 200 %;
+  - Star Power answering every press above 60 FPS;
+  - work on NativeXRenderer's speed (a one-pass present, per-pass GPU timings).
 - Developed by Gustavo Garcia with the help of Claude (Anthropic): see [the note about AI](#-a-note-about-ai).
 
 ## 📜 License
