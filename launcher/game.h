@@ -105,6 +105,13 @@ inline constexpr bool kHasDlaa = true;
 // native_x_renderer_dlss_model), lighter: on the RTX A2000 at 3840x2160 CNN held 60 FPS where the Transformer model
 // did not.
 inline constexpr bool kHasDlssModel = true;
+// Resolutions below the game's 720 lines (RecompLauncher 3.27.0, NativeXRenderer's D174 and D175), for weaker graphics
+// cards: the internal resolution also offers 540, 480 and 360 lines, FSR 1's and NIS's Quality goes below 720 too (on a
+// 1080p screen Performance draws 540 lines, Ultra Performance 360), and "Lower resolution for" chooses what they lower:
+// the 3D scene only (the venue, the band and the crowd, enlarged at the scene's copy before the screen effects, where
+// DLSS runs; the note highway, the HUD and the effects at the screen's resolution) or the whole image (the lightest:
+// at 3440x1440 the GPU's frame 2.3 -> 1.05 ms at 360 lines, against 2.05 ms for the scene alone at half).
+inline constexpr bool kLowResolutions = true;
 
 // The Graphics page's shadow quality row: NativeXRenderer draws the game's shadow maps at a scale of their own
 // (native_x_renderer_shadow_scale, its D92): at least twice or four times the game's resolution. Only where it

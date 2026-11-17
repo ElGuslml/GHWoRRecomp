@@ -370,3 +370,45 @@ thread). On by default in this game since 2026-11-16 (`src/startup.cpp`, after G
 `native_x_renderer_record_thread = false` in `ghwor.toml` turns it off. Gustavo's Quest song with the venue every
 frame at 3440x1440: at 240 FPS every stretch at 230 or more (the slowest 233.6, 225.7 without it); with V-Sync off at
 480, 319 -> 370 FPS on average, the GPU then 88 % busy. Test-Games OK with it on and off.
+
+## Below the game's 720 lines: the 3D scene or the whole image (NativeXRenderer D174, D175, 2026-11-17)
+
+RecompLauncher 3.27.0 with `game::kLowResolutions` (`launcher/game.h`). Internal resolution also offers 540, 480 and
+360 lines, and "Lower resolution for" chooses what a lower resolution lowers.
+
+**The 3D scene only** (the default; D174). AMD FSR 1's and NVIDIA Image Scaling's Quality, or a lower internal
+resolution without them (bilinear, CAS with a sharpness), writes `native_x_renderer_scene_scale` (1 / AMD's ratio: 0.769, 0.667, 0.588, 0.5, 0.333) with the internal
+resolution at the screen's. The main 3D view (the venue, the band, the crowd) is drawn at that fraction through the
+reduced targets DLSS uses, from the frame's start (D121) and over the split's two frames (D159). It is enlarged at the
+same upscale point (`0x8255AD1C`, the scene's copy from `0x8264C1B8`; from `0x82641558` with
+`ghwor_upscale_after_effects`). The note highway, the HUD, the menus and the screen effects stay at the screen's
+resolution. Below the game's own 720 lines too: on a 1080p screen Performance draws 960x540 and Ultra Performance
+640x360. SMAA runs on the reduced image before the filter, since the upscale point is also the copy the profile
+antialiases.
+
+Checked on Gustavo's ultrawide (3440x1440, 160 FPS, V-Sync, the Quest song;
+`local_docs/43-scene-below-720.md`):
+- FSR 1 Performance (1720x720, one EASU pass and RCAS) with the split on and off, and with the upscale point after the
+  effects. It ran once per pair of frames with the split and every frame without it.
+- NIS Ultra Performance (1147x480, two NVScaler passes).
+- 0 errors and frames steady at 160.
+- The highway and the HUD were sharp, and the scene softer as expected.
+
+GPU time per frame at 3440x1440 (an RTX 4070 Ti, the venue every frame), from D162's per-pass timers:
+
+| | SMAA | FSR 1 Performance |
+|---|---|---|
+| The 3D view | 0.78 ms (402 draws at 3440x1440) | 0.36 ms (261 draws at 1720x720) |
+| The upscale (SMAA on the reduced image, EASU, RCAS) | | 0.27 ms |
+| The scene copies' SMAA (two at 3440x1440 / one) | 0.32 ms | 0.15 ms |
+| The frame | 2.29 ms | 2.05 ms |
+
+On this GPU the 3D view is a third of the frame, and resolves, the screen effects and the composites at the screen's
+size do not shrink, so the saving is about a tenth. A slower card spends more of its frame on the 3D view. The
+renderer thread's CPU is about 0.1 ms a frame higher, because the draws' vertex constants are kept to find the view.
+
+**The whole image** (D175): `native_x_renderer_resolution_scale` below 1. The game's 1280x720 targets are drawn at
+it, every smaller one at least at its own size, and the shadow maps at least at scale 1. The presentation enlarges
+the front buffer with FSR 1, NIS or bilinear. At 360 lines on the ultrawide (860x360, "2 EASU passes, RCAS") the
+GPU's frame was 1.0-1.1 ms, against 2.0-2.6 at the full resolution, with 0 errors. Everything is softer, the
+highway and the HUD's text included.

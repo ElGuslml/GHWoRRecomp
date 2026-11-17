@@ -88,6 +88,9 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   graphics card before you play, in a moment, only the first time and after an update.
 - 🔍 **Upscaling:** AMD FSR 1 or NVIDIA NIS, on any graphics card, with their quality and sharpness: for a 4K screen
   or a slower graphics card ([how they compare](https://github.com/ElGuslml/GHMetalRecomp/blob/main/docs/scaling.md)).
+  They, or a lower internal resolution, can go down to 540, 480 or 360 lines. Either the stage, the band and the
+  crowd alone are drawn smaller, with the note highway, the HUD and the menus kept sharp at the screen's resolution;
+  or the whole image is drawn smaller, the lightest for the graphics card.
 - 🧠 **DLSS, DLAA and FSR 3.1:** NVIDIA DLSS and DLAA (on an RTX card) and AMD FSR 3.1 rebuild the 3D from several
   frames, in step with the way the game draws its stage over two frames: as smooth as on the console, no ghosting on
   the band, and a clean start at every camera cut. DLSS comes with NVIDIA's DLSS 310.9.16 and lets you choose its
