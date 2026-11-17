@@ -18,5 +18,6 @@ the symptom, the cause, the fix and how to turn the fix off, so that you can che
 | [D3D's fence stamps and the page watches](fence-stamps.md) | Branch `perf-240`, in testing: the stamps written where the watches do not see them; 240 FPS held in a busy song with the venue every frame |
 | [A controller plays as in Guitar Hero III](controller-gh3-layout.md) | Played with a DualSense: the game's own GH III controller code, chosen by hooks (SDK change 112, the default; a switch in the launcher), extended sustains, and its own buttons in a song (SDK change 113: the launcher's "In a song" and "Navigation") |
 | [Guitar Hero World Tour's Star Power sound](star-power-reverb.md) | Played, off by default: Star Power puts the player's instrument through World Tour's echo, reverb and high pass, and the echo sounded right in songs (2026-11-15). Two settings in `ghwor.toml` raise it |
+| [Uneven frame times after a hitch](uneven-frames-after-a-hitch.md) | Fixed in NativeXRenderer (D172), a player's test to come: with V-Sync and the record thread, a frame left waiting for the display after a hitch is taken away by not showing one frame |
 
 Building the project, its configuration and how the SDK is changed: [`development.md`](development.md).
