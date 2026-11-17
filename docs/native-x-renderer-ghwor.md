@@ -308,6 +308,15 @@ Checked: 1280x720 and 2560x1440 with the shadow scale 4, Quickplay+'s first song
 known). Not judged on screen: the shadows' edges at Ultra against Original (Quickplay+'s venue is random and dark):
 Gustavo's eye.
 
+**The floor's shadows gone above Original (2026-11-17, a player's report; NativeXRenderer D173).** The 400x400 depth
+surface at EDRAM base 1709 is used twice a frame: the characters' shadow map (depth-only) and then, with a 400x400 color
+target, the band's silhouettes seen from above, black on white, which the floor's shadows read. Above Original these
+have two host copies: the shadow map at the shadow scale, the silhouettes' depth at the render scale. The game's clear
+reached the first only, so the silhouettes' depth was never cleared and its LessEqual test let fewer and fewer through.
+In RenderDoc captures of the Quest song at 3440x1440, both silhouette targets were white at the scale 4. D173 clears
+both copies; the capture again shows the band's silhouettes. The characters' own shadows (the shadow map) were right
+throughout. GH5 uses the same surface.
+
 ## Pixel shaders specialized per draw (NativeXRenderer D146, 2026-11-15)
 
 The translated pixel shaders read each texture's sign modes, swizzle and render-scale bit (and the flags) from the
