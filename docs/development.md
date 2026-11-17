@@ -72,9 +72,10 @@ by its PCI vendor and device IDs in hexadecimal, `"VVVV:DDDD"`, as the launcher'
 which then count only when no card has those IDs, and NativeXRenderer reads only `gpu_adapter` (its D141) and logs
 `[native_x_renderer] gpu_adapter VVVV:DDDD: <name>`, or warns `not found among the Vulkan devices: the default one`;
 two identical cards share their IDs, and the first is taken), `--native_x_renderer_dlss_model=cnn` (DLSS's CNN
-model instead of the Transformer, NVIDIA's default; `transformer` or empty) and `--native_x_renderer_dlss_log=true`
-(NGX's own log, verbose, in the game's: which DLSS preset it used). The DLSS ones need DLSS: the launcher's
-Upscaling row (`launcher/game.h`, `kHasDlaa`), or `--native_x_renderer_antialiasing=dlss_quality` and the other modes.
+model instead of the Transformer, NVIDIA's default; `transformer` or empty; `k`, Transformer K, the first Transformer
+model in every mode) and `--native_x_renderer_dlss_log=true` (NGX's own log, verbose, in the game's: which DLSS preset
+it used). The DLSS ones need DLSS: the launcher's Upscaling row (`launcher/game.h`, `kHasDlaa`), or
+`--native_x_renderer_antialiasing=dlss_quality` and the other modes.
 
 ## The launcher
 
