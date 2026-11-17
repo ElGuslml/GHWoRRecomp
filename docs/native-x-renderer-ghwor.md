@@ -200,7 +200,8 @@ bloom and the color grading, and the film grain and the second motion blur pass 
 DLSS does not smooth the grain. It does see the motion blur (NVIDIA advises it after the upscaler) and an image already
 graded, where without the option it got the scene before both.
 
-**The launcher's rows (2026-11-15).** Settings > Game has two rows, both off by default: "Screen effects before the
+**The launcher's rows (2026-11-15; since launcher 3.28 under Settings > Graphics > Upscaling, each shown only where
+it does something).** Two rows, both off by default: "Screen effects before the
 upscaler" (`ghwor_upscale_after_effects`) and "Even frame times with DLSS" (NativeXRenderer's D164,
 `native_x_renderer_upscale_late`: DLSS evaluated at the start of the next frame, DLSS upscaling only, not with frame
 generation; with both on at 3840x2160 and the 120 FPS cap the RTX A2000's band and stage frames took 7.0 and 6.7 ms of

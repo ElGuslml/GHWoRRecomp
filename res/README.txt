@@ -105,49 +105,52 @@ when you press PLAY.
   - Microphone (experimental): the microphone you sing with, its channel and gain, and its level (see
     SINGING).
 - Settings:
-  - Video: the monitor, fullscreen, borderless or window, the resolution, the image format (fill a screen
+  - Display: the monitor, fullscreen, borderless or window, the resolution, the image format (fill a screen
     wider than 16:9, where the stage is seen wider while the note highway, the HUD and the menus stay 16:9
-    in the center, or keep 16:9 with bars), the internal resolution the game is drawn at (down to 360
-    lines), upscaling (AMD FSR 1 or NVIDIA NIS, down to 360 lines on a 1080p screen; a lower resolution
-    lowers the stage, the band and the crowd only, keeping the note highway, the HUD and the menus at the
-    screen's resolution, or the whole image, the lightest: "Lower resolution for"; or AMD FSR 3.1
-    and NVIDIA DLSS, which rebuild the 3D from several frames; DLSS with its Transformer model, Transformer K
-    (the first Transformer model in every mode, lighter in Performance and Ultra Performance) or the lighter
-    CNN) and sharpness, the shadows' quality (up to four times the original resolution), and V-Sync (on by
-    default: no tearing, and no extra delay; leave it on with a G-Sync or FreeSync monitor too).
-  - Graphics: the renderer, the graphics card, the frame rate, antialiasing and anisotropic filtering.
-    NativeXRenderer (the default) draws the game natively with Vulkan; Xenos emulates the Xbox 360 GPU
-    instead (DirectX 12 or Vulkan): choose it if something looks wrong with NativeXRenderer, and tell us
-    where. Graphics card: on a PC with two (a laptop's integrated and dedicated ones), the one the game draws
-    with. Frame rate: 60 FPS (original), and 120, 144, 160, 165 or 240 FPS where your monitor reaches them
-    (experimental). The songs keep their speed and stay in sync at every frame rate. The game's screen effects
-    can be turned off one by one.
-  - Game: the launcher's language and the game's (English, French, German, Italian or Spanish; the game
-    has no language menu of its own). Debug keys (off by default): F3, F4 and ` open the developer's windows
-    in the game (frame times, settings, console). Venue at the full frame rate (off by default): the game
-    draws its venue and its band in turns, each at half the frame rate (30 times a second on the console),
-    while the note highway uses the full rate; on, the whole scene is drawn in every frame, for about twice
-    the work for the processor and the graphics card: at 160 FPS even a fast PC can drop to about 130 in busy
-    songs, while 120 FPS or lower leaves it room. Screen effects before the upscaler (off by default): with
-    DLSS, DLAA or FSR 3.1 the glow and the blurred backgrounds are drawn at the upscaler's input resolution,
-    faster at a high resolution and a little softer. Even frame times with DLSS (off by default): DLSS runs at
-    the start of the next frame, so the venue's frames take about the same time, and the venue shows a pair of
-    frames later (the note highway and the HUD are not delayed); DLSS upscaling only, not with DLAA, frame
-    generation or the venue at the full frame rate. Skip the intro videos (off by default): at the start
-    the logos end as soon as the game has loaded and the intro movie is not played, so the main menu comes
-    sooner. Game debug menu (off by default): the debug menu its developers used, in the main menu and the
-    pause menu (its texts in English; Unlock All and Add 100 Quickplay Stars change your save). World Tour's
-    Star Power sound (off by default): Star Power puts your instrument through Guitar Hero World Tour's echo,
-    reverb and high pass instead of the venue's reverb. Two more settings in ghwor.toml raise it:
-    ghwor_star_power_reverb_send_db (dB added to its send, 0 by default) and
-    ghwor_star_power_reverb_multi_preset (true: World Tour's settings for several players, a large reverb
-    with no echo, for one player too).
+    in the center, or keep 16:9 with bars). Smoothness: the frame rate, 60 FPS (original), and 120, 144, 160,
+    165 or 240 FPS where your monitor reaches them (experimental; the songs keep their speed and stay in sync
+    at every frame rate), V-Sync (on by default: no tearing, and no extra delay; leave it on with a G-Sync or
+    FreeSync monitor too), and Venue at the full frame rate (off by default): the game draws its venue and its
+    band in turns, each at half the frame rate (30 times a second on the console), while the note highway uses
+    the full rate; on, the whole scene is drawn in every frame, for about twice the work for the processor and
+    the graphics card: at 160 FPS even a fast PC can drop to about 130 in busy songs, while 120 FPS or lower
+    leaves it room.
+  - Graphics: the renderer and the graphics card. NativeXRenderer (the default) draws the game natively with
+    Vulkan; Xenos emulates the Xbox 360 GPU instead (DirectX 12 or Vulkan): choose it if something looks wrong
+    with NativeXRenderer, and tell us where. Graphics card: on a PC with two (a laptop's integrated and
+    dedicated ones), the one the game draws with. Upscaling: AMD FSR 1 or NVIDIA NIS, down to 360 lines on a
+    1080p screen, or AMD FSR 3.1 and NVIDIA DLSS, which rebuild the 3D from several frames (DLSS with its
+    Transformer model, Transformer K, the first Transformer model in every mode, lighter in Performance and
+    Ultra Performance, or the lighter CNN); under it its quality, the internal resolution the game is drawn at
+    (down to 360 lines), and "Lower resolution for": the stage, the band and the crowd only, keeping the note
+    highway, the HUD and the menus at the screen's resolution, or the whole image, the lightest. Two more
+    switches there, each shown where it does something. Screen effects before the upscaler (off by default):
+    with DLSS, DLAA, FSR 3.1 or a lower resolution on the 3D scene only, the glow and the blurred backgrounds
+    are drawn at the upscaler's input resolution, faster at a high resolution and a little softer. Even frame
+    times with DLSS (off by default): DLSS runs at the start of the next frame, so the venue's frames take
+    about the same time, and the venue shows a pair of frames later (the note highway and the HUD are not
+    delayed); DLSS upscaling only, not with DLAA, frame generation or the venue at the full frame rate. Image:
+    antialiasing, sharpness, anisotropic filtering and the shadows' quality (up to four times the original
+    resolution).
+  - Effects: the game's screen effects (bloom, depth of field, color correction, film grain, vignette), each
+    on by default; off, the grain goes with the color correction.
   - Audio: the output device (Windows default, or another one), the channels (Automatic, Stereo or Mono:
     the same sound on both sides), the volume (0 to 200 %: above 100 % the game is louder than its own
     mix and its loudest moments can distort), mute while another window is in front, and Low latency audio
     (off by default): the game takes your audio device in exclusive mode and the sound comes sooner (about
     55 ms on a USB audio interface); other programs cannot play on that device while the game runs.
     Calibrate the audio again after changing it.
+  - Game: the launcher's language and the game's (English, French, German, Italian or Spanish; the game
+    has no language menu of its own). Skip the intro videos (off by default): at the start the logos end as
+    soon as the game has loaded and the intro movie is not played, so the main menu comes sooner.
+  - Mods: World Tour's Star Power sound (off by default): Star Power puts your instrument through Guitar Hero
+    World Tour's echo, reverb and high pass instead of the venue's reverb. Two more settings in ghwor.toml
+    raise it: ghwor_star_power_reverb_send_db (dB added to its send, 0 by default) and
+    ghwor_star_power_reverb_multi_preset (true: World Tour's settings for several players, a large reverb
+    with no echo, for one player too). Game debug menu (off by default): the debug menu its developers used,
+    in the main menu and the pause menu (its texts in English; Unlock All and Add 100 Quickplay Stars change
+    your save). Debug keys (off by default): F3, F4 and ` open the developer's windows in the game (frame
+    times, settings, console).
   - Online (experimental): online play with your Steam friends (see ONLINE PLAY).
 - Updates: the launcher checks for a new version when it starts (you can turn that off) and installs it
   for you, keeping your saves, settings and game files. Get beta versions (off by default) offers the betas

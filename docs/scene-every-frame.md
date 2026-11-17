@@ -10,7 +10,7 @@ calls this the split render mode (`SetSplitRenderMode`, `IsPrimaryFrame`). So th
 the console at 60 FPS, while the note highway and the HUD are drawn in every frame. Here the split counts frames too:
 at 120 FPS the venue moves at 60, at 160 at 80.
 
-**The option:** Settings > Game > "Venue at the full frame rate" (`ghwor_scene_every_frame`, off by default). On, a hook
+**The option:** Settings > Display > Smoothness > "Venue at the full frame rate" (`ghwor_scene_every_frame`, off by default). On, a hook
 at the start of the main thread's frame (`src/split_render.cpp`, `0x8242C46C` in `sub_8242C450`) writes the mode to 0
 in both copies of the render state (`0x829C0FD8`, the main thread's; `0x829BBAB8`, the render thread's; 1 from the
 renderer's init, `sub_8242B988`). The engine then takes its own path without the split: every render stage of every

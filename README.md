@@ -96,7 +96,7 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   the band, and a clean start at every camera cut. DLSS comes with NVIDIA's DLSS 310.9.16 and lets you choose its
   Transformer model, Transformer K (the first Transformer model in every mode, lighter in Performance and Ultra
   Performance) or the lighter CNN. *(By [Panchovix](https://github.com/Panchovix).)*
-- 🏎️ **Faster with an upscaler (optional):** two switches in **Settings → Game** for slower graphics cards, off by
+- 🏎️ **Faster with an upscaler (optional):** two switches in **Settings → Graphics**, under Upscaling, for slower graphics cards, off by
   default. **Screen effects before the upscaler** draws the glow around lights and the blurred backgrounds at the
   upscaler's resolution: much less work for the graphics card (an RTX A2000 at 4K with DLSS Performance went from 113 to
   130 FPS), with a slightly softer glow and blur. **Even frame times with DLSS** (DLSS upscaling, not DLAA) moves DLSS's
@@ -113,7 +113,7 @@ From then on, the launcher keeps itself up to date: when a new version comes out
 - 🔈 **Louder when you need it:** the volume goes up to 200 % in **Settings → Audio**, for a game that sounds quiet next
   to the rest of your PC (above 100 % its loudest moments can distort). *(By [Panchovix](https://github.com/Panchovix).)*
 - 🌟 **World Tour's Star Power sound (optional):** while your Star Power is on, your instrument goes through Guitar
-  Hero World Tour's echo, timed to the song, and its reverb, as it did in that game. A switch in **Settings → Game**,
+  Hero World Tour's echo, timed to the song, and its reverb, as it did in that game. A switch in **Settings → Mods**,
   off by default. *(By [Panchovix](https://github.com/Panchovix).)*
 - 📺 **Wide and ultrawide screens:** the stage fills 16:9, 21:9 and wider screens, while the note highway, the HUD and
   the menus keep their shape in the center.
@@ -141,11 +141,11 @@ off (the [notes](docs/README.md) say how):
   later ones' does not. Here the game's clock runs at the right rate, and whole songs stay in sync
   ([details](docs/fixes-from-gh5.md#the-audio-drifts-out-of-sync-during-a-song)).
 - 🎛️ **Screen effects you can turn off.** Bloom, depth of field, film grain, color correction and vignette each have
-  a switch in the launcher's **Settings → Graphics** (all on by default, as on the console; with the color correction
+  a switch in the launcher's **Settings → Effects** (all on by default, as on the console; with the color correction
   off, the grain is off too) ([details](docs/fixes-from-gh5.md#turning-off-the-screen-effects)).
 
 <p align="center">
-  <img src="docs/images/launcher-screen-effects.png" width="70%" alt="Settings, Graphics: the screen effects' switches">
+  <img src="docs/images/launcher-screen-effects.png" width="70%" alt="Settings, Effects: the screen effects' switches">
 </p>
 
 ## 🧭 GH Warriors of Rock Launcher
@@ -162,7 +162,7 @@ Everything is set up from **GH Warriors of Rock Launcher**, with the mouse, the 
 | 🎶 **DLC** | Your DLC folder: the game reads your packages from there, nothing copied. They are grouped by the game they were made for, each with its switch. |
 | 🏆 **Achievements** | All 50 achievements, the ones you have unlocked and when. |
 | 🎮 **Controls** | Your guitars, controllers and keyboard: what each button or key does, and which controller plays drums (five or four lanes) or sings. The keyboard as a guitar or a drum kit (experimental). Frets that strum as you press them, on a controller or the keyboard. A whammy bar's and a tilt's assignment. Your microphone (experimental): device, gain and level. |
-| ⚙️ **Settings** | **Game:** the game's and the launcher's language, the venue at the full frame rate (the console draws it at half the rate of the note highway), the intro videos shortened (the logos end once the game has loaded, no intro movie), two switches that make the upscalers faster (the screen effects before the upscaler with DLSS, DLAA and FSR 3.1, even frame times with DLSS upscaling), World Tour's Star Power sound, the game's own debug menu. **Audio:** output device, channels, volume (up to 200 %), mute in the background, Low latency audio. **Video:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), upscaling (AMD FSR 1, NVIDIA NIS, AMD FSR 3.1, NVIDIA DLSS with its Transformer, Transformer K or CNN model) and sharpness, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too). **Graphics:** renderer, graphics card, frame rate, antialiasing (SMAA, FXAA or NVIDIA DLAA), texture sharpness, the game's screen effects. **Online** (experimental): online play with your Steam friends. |
+| ⚙️ **Settings** | **Display:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), frame rate, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too), the venue at the full frame rate (the console draws it at half the rate of the note highway). **Graphics:** renderer, graphics card, upscaling (AMD FSR 1, NVIDIA NIS, AMD FSR 3.1, NVIDIA DLSS with its Transformer, Transformer K or CNN model) with its quality and the internal resolution, two switches that make the upscalers faster (the screen effects before the upscaler, even frame times with DLSS upscaling), antialiasing (SMAA, FXAA or NVIDIA DLAA), sharpness, texture sharpness, shadow quality. **Effects:** the game's screen effects. **Audio:** output device, channels, volume (up to 200 %), mute in the background, Low latency audio. **Game:** the game's and the launcher's language, the intro videos shortened (the logos end once the game has loaded, no intro movie). **Mods:** World Tour's Star Power sound, the game's own debug menu, the developer's keys. **Online** (experimental): online play with your Steam friends. |
 | 🔄 **Updates** | Your version, and new ones when they come out (the betas too, if you choose). |
 | 👤 **Profile** | Your picture at the top right: hours played, streaks, your week, your games and your favorite achievements. |
 
@@ -172,10 +172,10 @@ Everything is set up from **GH Warriors of Rock Launcher**, with the mouse, the 
 </p>
 <p align="center"><sub>Controls: what each fret of your guitar does, and the microphone you sing with.</sub></p>
 <p align="center">
-  <img src="docs/images/launcher-video.png" width="49%" alt="Settings: Video">
+  <img src="docs/images/launcher-display.png" width="49%" alt="Settings: Display">
   <img src="docs/images/launcher-achievements.png" width="49%" alt="Achievements">
 </p>
-<p align="center"><sub>Settings (Video: your screen, window or fullscreen, the image format, upscaling) and the achievements.</sub></p>
+<p align="center"><sub>Settings (Display: your screen, window or fullscreen, the image format, the frame rate) and the achievements.</sub></p>
 <p align="center">
   <img src="docs/images/launcher-dlc.png" width="70%" alt="DLC: your DLC folder and its packages">
 </p>

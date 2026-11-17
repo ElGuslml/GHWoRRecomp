@@ -154,33 +154,37 @@ inline constexpr std::array<Language, 5> kLanguages{{
 }};
 
 // Switches of the game's own (src/), each a boolean cvar with a row in the Settings tab (game_types.h's Toggle); their
-// titles, hints and help are game.cpp's (GameTexts::toggles and toggle_help, in this order).
-// The screen effects (src/screen_fx.cpp, docs/fixes-from-gh-van-halen.md), all on as on the console: the grain only
-// with the color correction (GH Van Halen's rule: without that pass its grain was far stronger). GH Van Halen's ink
-// blotches are not part of GH5's composite, nor of this game's (the same as GH5's): no switch. Then the rows of
-// Settings > Game, all off by default. The 3D scene drawn in every frame, off as on the console (the engine's split
-// render mode off, src/split_render.cpp, docs/scene-every-frame.md). Two for DLSS, DLAA and FSR 3.1
-// (docs/native-x-renderer-ghwor.md): the upscaler's view ended after the bloom and the depth of field, which are then
-// drawn at its input size (src/native_x_renderer_ghwor.cpp's ghwor_upscale_after_effects), and NativeXRenderer's DLSS
-// evaluation one frame late (its D164, native_x_renderer_upscale_late, DLSS's upscaling modes only, not DLAA), which
-// evens out the two kinds of frame the split render alternates. The two are independent of each other: src/options.cpp
-// logs what the second does with and without the first. Then GH Metallica's two (docs/fixes-from-gh-metallica.md): the
-// boot's videos shortened (the logos ended once the game has loaded, the intro movie not played; src/intro.cpp) and the
-// game's debug menu (src/debug_menu.cpp). Last, off as on the console: Guitar Hero World Tour's Star Power sound, the
-// player's instrument through World Tour's echo, reverb and high pass while his Star Power is on
-// (src/star_power_reverb.cpp, docs/star-power-reverb.md).
+// titles, hints and help are game.cpp's (GameTexts::toggles and toggle_help, in this order). Their places are launcher
+// 3.28's (Gustavo's "propuesta A v2"), all but the screen effects off by default:
+// - Effects: the screen effects (src/screen_fx.cpp, docs/fixes-from-gh-van-halen.md), all on as on the console: the
+//   grain only with the color correction, under it (GH Van Halen's rule: without that pass its grain was far
+//   stronger). GH Van Halen's ink blotches are not part of GH5's composite, nor of this game's (the same as GH5's): no
+//   switch.
+// - Display > Smoothness: the 3D scene drawn in every frame, off as on the console (the engine's split render mode off,
+//   src/split_render.cpp, docs/scene-every-frame.md).
+// - Graphics > Upscaling, two for DLSS, DLAA and FSR 3.1 (docs/native-x-renderer-ghwor.md), each shown only where it
+//   does something: the upscaler's view ended after the bloom and the depth of field, which are then drawn at its input
+//   size (src/native_x_renderer_ghwor.cpp's ghwor_upscale_after_effects; also the 3D scene drawn smaller, NativeXRenderer's
+//   D174), and NativeXRenderer's DLSS evaluation one frame late (its D164, native_x_renderer_upscale_late, DLSS's
+//   upscaling modes only, not DLAA), which evens out the two kinds of frame the split render alternates. The two are
+//   independent of each other: src/options.cpp logs what the second does with and without the first.
+// - Game > Starting the game: GH Metallica's boot videos shortened (the logos ended once the game has loaded, the intro
+//   movie not played; src/intro.cpp, docs/fixes-from-gh-metallica.md).
+// - Mods > Sound: Guitar Hero World Tour's Star Power sound, the player's instrument through World Tour's echo, reverb
+//   and high pass while their Star Power is on (src/star_power_reverb.cpp, docs/star-power-reverb.md).
+// - Mods > Tools: the game's debug menu (src/debug_menu.cpp), before the launcher's Debug keys.
 inline constexpr std::array<Toggle, 11> kToggles{{
     {"ghwor_fx_bloom", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_depth_of_field", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_color", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_grain", true, ToggleGroup::kScreenEffects, "ghwor_fx_color"},
     {"ghwor_fx_vignette", true, ToggleGroup::kScreenEffects},
-    {"ghwor_scene_every_frame", false},
-    {"ghwor_upscale_after_effects", false},
-    {"native_x_renderer_upscale_late", false},
-    {"ghwor_skip_intro", false},
-    {"ghwor_debug_menu", false},
-    {"ghwor_star_power_reverb", false},
+    {"ghwor_scene_every_frame", false, ToggleGroup::kSmoothness},
+    {"ghwor_upscale_after_effects", false, ToggleGroup::kUpscaling, nullptr, ToggleShown::kSceneUpscaled},
+    {"native_x_renderer_upscale_late", false, ToggleGroup::kUpscaling, nullptr, ToggleShown::kDlssUpscales},
+    {"ghwor_skip_intro", false, ToggleGroup::kStart},
+    {"ghwor_debug_menu", false, ToggleGroup::kModsTools},
+    {"ghwor_star_power_reverb", false, ToggleGroup::kModsSound},
 }};
 
 // --- Downloadable content ---

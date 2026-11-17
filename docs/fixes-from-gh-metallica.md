@@ -8,7 +8,7 @@ by `dbg.pak.xen`). Where this game differs from GH5, the section says how.
 
 ## The game's debug menu
 
-**Option, off by default:** the launcher's Settings → Game → "Game debug menu", or `ghwor_debug_menu = true`. The main
+**Option, off by default:** the launcher's Settings → Mods → "Game debug menu", or `ghwor_debug_menu = true`. The main
 menu gets a "(debug menu)" item after Options and the pause menu a "Debug Menu" item (not in the tutorials):
 Neversoft's debug menu (In Game: Play Song, Skip Into Song, Change Venue, Select Camera Cut, the lag tests, Force Score,
 Character Select, Complete All Current Challenges; HUD & UI: Show Measures, Show Song Stars, Show Song Time, the band's,
@@ -26,7 +26,7 @@ compiled to native code. The log says "[debug menu] script ... offers the debug 
 
 ## Shorter videos at the start
 
-**Option, off by default:** Settings → Game → "Skip the intro videos", or `ghwor_skip_intro = true`. This game's start
+**Option, off by default:** Settings → Game → Starting the game → "Skip the intro videos", or `ghwor_skip_intro = true`. This game's start
 is neither GH Metallica's chain of videos nor GH5's single loading video: it plays its logos (`logo_intro`, 19.4 s) as
 the loading screen while it loads, waits for them to end (no button ends them), then plays its intro movie
 (`initial_boot_movie`, 53.1 s, Start skips it) unless the developers' global `g_skip_intro_movie` is set, and goes on

@@ -76,7 +76,7 @@ Moved on 2026-11-05 to GH Metallica's versions: SDK `0a7c86c` (changes 69-72, on
   kind, a hook at the entry of the port's update (`sub_823D02A0`) has the game ask again, outside a song
   (`src/players.cpp`). Not tried with a second controller here. **Off:** `ghwor_kind_follows_controller = false`.
 - **The keyboard's controls**: Shift, Ctrl and Alt as keys of their own, F1-F12 too; the SDK's developer keys are off
-  (`debug_hotkeys = false`; the launcher's Settings > Game > Debug keys turns them on).
+  (`debug_hotkeys = false`; the launcher's Settings > Mods > Debug keys turns them on).
 - **Guitars**: `guitar_ps3_protocol = true` (a PS3 Guitar Hero guitar, a CRKD guitar on its P3 setting); the launcher
   keeps every controller open and assigns any axis to the whammy bar and the tilt (SDK changes 71 and 72, launcher 3.12
   and 3.13). Not tried with those guitars here.

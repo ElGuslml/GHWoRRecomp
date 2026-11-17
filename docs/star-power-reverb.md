@@ -3,7 +3,7 @@
 **Status: played, off by default (2026-11-15).** On 2026-11-15 songs were played with the option on and the Star
 Power echo sounded right by ear. Before that it was checked in the game (see "What was checked"): the stack works as
 World Tour's, and with World Tour's settings its sound is about 13 dB under the mix. Two settings raise it (see
-"Settings to try"). **Option, off by default:** the launcher's Settings → Game → "World Tour's Star Power sound", or
+"Settings to try"). **Option, off by default:** the launcher's Settings → Mods → "World Tour's Star Power sound", or
 `ghwor_star_power_reverb = true` (read once at the start).
 
 **Symptom:** in Guitar Hero World Tour, a player's Star Power puts his own instrument through an echo timed to the
