@@ -247,6 +247,40 @@ ghwor_online_text = true
 # and ghwor_star_power_reverb_multi_preset (true: World Tour's settings for several players for one player too) can
 # be added here to tune it (docs/star-power-reverb.md).
 ghwor_star_power_reverb = false
+# The launcher's Mods (src/mods.cpp, docs/mods.md), changes of the game's own script data when it starts. The note
+# highway's size with one player in percent (the launcher offers 80-120; from the strike line, the gems, sidebars and
+# meters with it); its length in time in percent (100, 125, 150, 170: the notes seen that much earlier, the console's
+# highway continued in its own perspective, at the same speed at the strike line, for every player); its perspective in
+# percent of the console's (25-150: flatter or steeper); its look, "original" or "dark" (the community's black highway);
+# the crowd, false to hide it during songs (the game's soundcheck cheat). 100, 100, 100, "original" and true = as on
+# the console.
+ghwor_highway_scale = 100
+ghwor_highway_length = 100
+ghwor_highway_perspective = 100
+ghwor_highway_style = "original"
+ghwor_crowd = true
+# The whammy bar's bend of a held sustain (true, as on the console; false keeps the pitch, the bar still wobbles the
+# note and fills Star Power), and how much of your instrument's track stays on a miss or a strum without a note, in
+# percent (0, as on the console: muted until the next hit; 100 = never muted; guitar and bass). src/mods.cpp.
+ghwor_whammy_sound = true
+ghwor_miss_lower = true
+ghwor_miss_volume = 0
+# The note highway's opacity in percent: below 100 the venue shows through it (src/mods.cpp). 100 = as on the console.
+ghwor_highway_opacity = 100
+# Images that replace the game's textures (NativeXRenderer's D176, docs/mods.md): a folder next to the executable, each
+# image named by the texture's hash (16 hexadecimal digits, then anything; .png, .jpg or .jpeg; subfolders too); the
+# note highway's is 38E266C86DB5FC0C. native_x_renderer_texture_log = true logs every texture's hash as it loads.
+native_x_renderer_texture_replacements = "textures"
+# The note highway's picture from a folder (src/highway_images.cpp; the launcher's Mods > Highway gallery writes them):
+# the folder, the picture (a file of it, "<random>" for a random one at each song, empty for the game's own), where a
+# random one comes from ("all" or "favorites"), the favorites (names separated by |), and how bright pictures are
+# darkened toward black for all ("off", "auto" or a percent) and for some (name:value separated by |).
+ghwor_highway_folder = ""
+ghwor_highway_image = ""
+ghwor_highway_random_from = "all"
+ghwor_highway_favorites = ""
+ghwor_highway_dim = "off"
+ghwor_highway_image_dims = ""
 # The mouse cursor hidden over the game after cursor_auto_hide_ms without moving it (shown again when it moves, while
 # another window has the focus, and over the SDK's overlays). false = always shown.
 cursor_auto_hide = true

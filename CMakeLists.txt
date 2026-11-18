@@ -70,16 +70,19 @@ set(GHWOR_SOURCES
     src/drums.cpp
     src/fence_stamps.cpp
     src/framerate.cpp
+    src/highway_images.cpp
     src/intro.cpp
     src/keyboard.cpp
     src/main.cpp
     src/matchmaking.cpp
+    src/mods.cpp
     src/native_x_renderer_ghwor.cpp
     src/online_text.cpp
     src/options.cpp
     src/players.cpp
     src/quit_prompt.cpp
     src/screen_fx.cpp
+    src/script_globals.cpp
     src/split_render.cpp
     src/star_power_reverb.cpp
     src/startup.cpp

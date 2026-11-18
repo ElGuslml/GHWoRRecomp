@@ -1,5 +1,5 @@
 // ghwor - the game's own debug menu, offered in the main menu and the pause menu; and the script interpreter's hooks
-// that src/intro.cpp and src/online_text.cpp share.
+// that src/intro.cpp, src/online_text.cpp and the mods (src/mods.cpp, through src/script_globals.cpp) share.
 //
 // The game ships Neversoft's debug menu (scripts\guitar\debug_menu_data.qb and debug_menu_funcs.qb): UIstate_debug
 // (its layout in ui_debug.pak) opens debug_submenus' "main" menu: In Game (Play Song, Skip Into Song, Change Venue,
@@ -38,7 +38,9 @@
 #include <set>
 
 #include "intro.h"
+#include "mods.h"
 #include "online_text.h"
+#include "script_globals.h"
 
 REXCVAR_DEFINE_BOOL(ghwor_debug_menu, false, "GHWoR",
                     "The game's own debug menu (Neversoft's): an item in the main menu and the pause menu that opens "
@@ -60,9 +62,19 @@ bool DebugMenu() {
   return enabled;
 }
 
-// Whether the hooks have anything to do: the debug menu, the intro's skip until the boot's intro movie, or the sharing
-// prompt's skip with online play.
-bool Active() { return DebugMenu() || ghwor::IntroSkipPending() || ghwor::SocialPromptSkipActive(); }
+// Whether a mod has a global read as another value by one script, or needs to know which script read last (src/mods.cpp,
+// src/script_globals.cpp). The mods are configured here, at the hooks' first run, before any read.
+bool ModReads() {
+  static const bool reads = (ghwor::mods::Configure(), ghwor::script::NeedsScriptNames());
+  return reads;
+}
+
+// Whether the hooks must know each read's script: a mod's read, the debug menu, the intro's skip until the boot's intro
+// movie, or the sharing prompt's skip with online play. ModReads first, so the mods are configured before
+// script::Pending() is asked.
+bool Active() {
+  return ModReads() || DebugMenu() || ghwor::IntroSkipPending() || ghwor::SocialPromptSkipActive();
+}
 
 uint8_t* GuestBase() {
   auto* kernel = rex::system::kernel_state();
@@ -143,9 +155,12 @@ void GHWoRScriptEvalLeaveHook() {
 // return_on_true: r3 = the component. enable_button_cheats read by the menus' scripts, enable_debug_menus by the main
 // menu's (with ghwor_debug_menu), and autolaunch_go and g_skip_intro_movie by the boot's scripts (with
 // ghwor_skip_intro, src/intro.cpp), and g_skip_social_networks by the boot's sharing prompt (with ghwor_online_text and
-// online play, src/online_text.cpp) become the integer 1.
+// online play, src/online_text.cpp) become the integer 1. The mods' changes of script data are written before the first
+// read of any global they change, and their reads as another value made (src/script_globals.cpp); after those changes
+// only the reads need the hook.
 bool GHWoRGlobalResolveHook(PPCRegister& r3) {
-  if (!Active()) {
+  const bool active = Active();
+  if (!active && !ghwor::script::Pending()) {
     return false;
   }
   uint8_t* base = GuestBase();
@@ -158,11 +173,16 @@ bool GHWoRGlobalResolveHook(PPCRegister& r3) {
     return false;
   }
   const Evaluations& e = t_evaluations;
-  if (e.depth == 0 || e.depth > e.scripts.size() || !e.scripts[e.depth - 1]) {
+  // The reading script: known only while the evaluation hooks run (Active), and not for compiled scripts.
+  const bool known = active && e.depth > 0 && e.depth <= e.scripts.size() && e.scripts[e.depth - 1];
+  const uint32_t global = Load32(base, component + 8);
+  const uint32_t script = known ? Load32(base, e.scripts[e.depth - 1] + kScriptName) : 0;
+  if (ghwor::script::OnResolve(base, component, global, script)) {
+    return true;
+  }
+  if (!known) {
     return false;
   }
-  const uint32_t global = Load32(base, component + 8);
-  const uint32_t script = Load32(base, e.scripts[e.depth - 1] + kScriptName);
   if (!DebugMenuReadsAsOne(script, global) && !ghwor::IntroReadsAsOne(script, global) &&
       !ghwor::OnlineReadsAsOne(script, global)) {
     return false;

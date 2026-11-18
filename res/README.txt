@@ -104,6 +104,47 @@ when you press PLAY.
     keys stay as they were.
   - Microphone (experimental): the microphone you sing with, its channel and gain, and its level (see
     SINGING).
+- Mods (changes to the game itself; each applies when the game starts):
+  - Highway: your own pictures on the note highway (NativeXRenderer only). Folder: where they are (PNG, JPEG,
+    BMP or TGA, any size, stretched over the highway; by default Highways in the game's user data folder).
+    Image: A opens the gallery of that folder: Original (the game's own), Random (a different picture at
+    each song) and your pictures; X marks a favorite, Y gives a bright picture a darkening of its own, LB
+    and RB show All, Favorites (Random among them) or Recent, A uses the picture. Random among: All or
+    Favorites. Dim bright pictures (Off by default): darkens every picture toward black so that the notes
+    stand out (Automatic: as much as each one is bright). The preview at the right draws the highway with
+    the game's own textures, read from your game files: an approximation of the game's look.
+    Highway scale (100 % by default): the note highway smaller or larger when you play alone, 80 to 120 %, from the strike line, with its gems and meters. Highway length (100 % by default): each
+    note shown that much earlier (125, 150 or 170 %), as in Clone Hero: the highway continues beyond its
+    far end in its own perspective, and the notes reach the strike line at the same speed; the timing to
+    hit them does not change; every player gets it; if it does not fit the screen it is shortened.
+    Highway perspective (100 % by default): 25 to 150 %, flatter (as seen from higher, the far notes
+    larger, the longer highway taller) or steeper. Highway style (Original by
+    default): Dark is the community's black highway. Highway opacity (100 % by default): below it the
+    venue shows through the highway (the notes and lines stay solid).
+  - Stage: Crowd (on by default): off hides the crowd during
+    songs (the game's Soundcheck cheat); its cheering stays.
+  - Sound: Whammy sound effect (on by default): off, the
+    whammy bar no longer bends your sustained notes' pitch (it still wobbles them and fills Star Power).
+    Lower the track on a miss (on by default, as on the console), and under it
+    Instrument volume on a miss (Muted by default, as on the console): how much of your guitar's or bass's
+    track stays when you miss a note or strum without one, 10 to 100 %; with two players on the same part
+    only 100 % changes it.
+    World Tour's Star Power sound (off by default): Star Power puts your instrument through Guitar Hero
+    World Tour's echo, reverb and high pass instead of the venue's reverb. Two more settings in ghwor.toml
+    raise it: ghwor_star_power_reverb_send_db (dB added to its send, 0 by default) and
+    ghwor_star_power_reverb_multi_preset (true: World Tour's settings for several players, a large reverb
+    with no echo, for one player too).
+  - Tools: Game debug menu (off by default): the debug menu its developers used,
+    in the main menu and the pause menu (its texts in English; Unlock All and Add 100 Quickplay Stars change
+    your save). Debug keys (off by default): F3, F4 and ` open the developer's windows in the game (frame
+    times, settings, console).
+  - Custom textures (NativeXRenderer only, no launcher row): an image in the "textures" folder next to
+    GHWoRRecomp.exe, named by a texture's hash (16 hexadecimal digits, then anything; .png, .jpg or .jpeg;
+    subfolders too), replaces that texture. The note highway's is 38E266C86DB5FC0C (512x1024; it repeats
+    along the highway, so its top and bottom should join), for example "38E266C86DB5FC0C my highway.png".
+    To find others, add to ghwor.toml native_x_renderer_texture_log = true (each texture's hash in the log)
+    or native_x_renderer_texture_dump = true (each one as a DDS file in texture_dump). The
+    Highway's pictures win over this folder for the highway.
 - Settings:
   - Display: the monitor, fullscreen, borderless or window, the resolution, the image format (fill a screen
     wider than 16:9, where the stage is seen wider while the note highway, the HUD and the menus stay 16:9
@@ -143,18 +184,10 @@ when you press PLAY.
   - Game: the launcher's language and the game's (English, French, German, Italian or Spanish; the game
     has no language menu of its own). Skip the intro videos (off by default): at the start the logos end as
     soon as the game has loaded and the intro movie is not played, so the main menu comes sooner.
-  - Mods: World Tour's Star Power sound (off by default): Star Power puts your instrument through Guitar Hero
-    World Tour's echo, reverb and high pass instead of the venue's reverb. Two more settings in ghwor.toml
-    raise it: ghwor_star_power_reverb_send_db (dB added to its send, 0 by default) and
-    ghwor_star_power_reverb_multi_preset (true: World Tour's settings for several players, a large reverb
-    with no echo, for one player too). Game debug menu (off by default): the debug menu its developers used,
-    in the main menu and the pause menu (its texts in English; Unlock All and Add 100 Quickplay Stars change
-    your save). Debug keys (off by default): F3, F4 and ` open the developer's windows in the game (frame
-    times, settings, console).
   - Online (experimental): online play with your Steam friends (see ONLINE PLAY).
-- Updates: the launcher checks for a new version when it starts (you can turn that off) and installs it
-  for you, keeping your saves, settings and game files. Get beta versions (off by default) offers the betas
-  too.
+  - Updates: the launcher checks for a new version when it starts (you can turn that off) and installs it
+    for you, keeping your saves, settings and game files. Get beta versions (off by default) offers the betas
+    too. Play shows a new version as a button when there is one.
 
 
 SINGING (EXPERIMENTAL)

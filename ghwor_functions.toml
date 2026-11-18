@@ -459,3 +459,31 @@ registers = ["r1"]
 address = 0x823BECF0   # mflr r12 (entry of sub_823BECF0, MuteEffectSend / UnMuteEffectSend: r3 = slot, r4 = mute)
 name = "GHWoRStarPowerMuteHook"
 registers = ["r1", "r3", "r4"]
+
+# The launcher's Mods > Sound (src/mods.cpp, docs/mods.md, local_docs/50): the whammy's bend of a held sustain
+# held at 1 with ghwor_whammy_sound off, and the instrument's track kept at ghwor_miss_volume percent on a miss.
+[[midasm_hook]]
+address = 0x8218CB3C   # bl 0x820D6CE0 (sub_8218C8A8: the local player's whammy bend, f1)
+name = "GHWoRWhammySoundHook"
+registers = ["f1"]
+[[midasm_hook]]
+address = 0x820D2A88   # mflr r12 (entry of sub_820D2A88, the instrument's volume ramp: r3 = the stream state, r4 = player - 1, r5 = the flag)
+name = "GHWoRMissVolumeHook"
+registers = ["r3", "r4", "r5"]
+[[midasm_hook]]
+address = 0x820D2B70   # mr r6,r29 (sub_820D2A88, one stream: before bl 0x820D9940 with f1 = the target, f31 = the time)
+name = "GHWoRMissVolumeSingleHook"
+registers = ["r30", "f1", "f31"]
+[[midasm_hook]]
+address = 0x820D2D50   # lis r10,-32256 (sub_820D2A88, several streams: before f1 is stored at +28 of [r31 + 16])
+name = "GHWoRMissVolumeMultiHook"
+registers = ["r30", "f1", "f31"]
+# The highway see-through (ghwor_highway_opacity below 100): the prepass window's flag cleared (src/mods.cpp).
+[[midasm_hook]]
+address = 0x82581C7C   # addi r1,r1,128 (sub_82581BC0, a window element made: after viewportrenderpre was read into +604)
+name = "GHWoRHighwayPrepassHook"
+registers = ["r30"]
+# The highway's picture changed at each song's start (src/highway_images.cpp).
+[[midasm_hook]]
+address = 0x82182EA8   # mflr r12 (entry of sub_82182EA8, GeneratePosTable: a highway made at a song's start)
+name = "GHWoRHighwaySongHook"

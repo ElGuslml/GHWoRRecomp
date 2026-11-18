@@ -173,7 +173,11 @@ inline constexpr std::array<Language, 5> kLanguages{{
 // - Mods > Sound: Guitar Hero World Tour's Star Power sound, the player's instrument through World Tour's echo, reverb
 //   and high pass while their Star Power is on (src/star_power_reverb.cpp, docs/star-power-reverb.md).
 // - Mods > Tools: the game's debug menu (src/debug_menu.cpp), before the launcher's Debug keys.
-inline constexpr std::array<Toggle, 11> kToggles{{
+// - Mods > Stage (launcher 3.29): the crowd, hidden during songs by the game's own soundcheck cheat (src/mods.cpp,
+//   docs/mods.md). Mods > Sound: the whammy bar's bend of a held sustain, on as on the console (src/mods.cpp).
+// - Launcher 3.30's Mods tab (Gustavo's "mods-galeria" mockup): Sound in the mockup's order, the whammy's sound first,
+//   then World Tour's Star Power sound, then the track lowered on a miss (on as on the console; its volume under it).
+inline constexpr std::array<Toggle, 14> kToggles{{
     {"ghwor_fx_bloom", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_depth_of_field", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_color", true, ToggleGroup::kScreenEffects},
@@ -184,8 +188,59 @@ inline constexpr std::array<Toggle, 11> kToggles{{
     {"native_x_renderer_upscale_late", false, ToggleGroup::kUpscaling, nullptr, ToggleShown::kDlssUpscales},
     {"ghwor_skip_intro", false, ToggleGroup::kStart},
     {"ghwor_debug_menu", false, ToggleGroup::kModsTools},
+    {"ghwor_whammy_sound", true, ToggleGroup::kModsSound},
     {"ghwor_star_power_reverb", false, ToggleGroup::kModsSound},
+    {"ghwor_crowd", true, ToggleGroup::kModsStage},
+    {"ghwor_miss_lower", true, ToggleGroup::kModsSound},
 }};
+
+// Rows of the game's own with several values (game_types.h's Choice, launcher 3.29): Mods > Highway, the note
+// highway's size with one player (80-120 % by 5, Gustavo's steps), its length in time (the console's highway continued
+// in its own perspective, the notes seen earlier at the same speed: 100, 125, 150, 170 %), its perspective (25-150 % of
+// the console's compression by 25: flatter or steeper) and its look (the original, or the community's black highway),
+// each a change of the game's script data when it starts (src/mods.cpp, docs/mods.md). Mods > Sound: how much of the
+// player's instrument track stays on a miss (0-100 % by 10, Gustavo's steps; 0 = muted as on the console). Their titles, hints, help and the styles'
+// names are game.cpp's (GameTexts::choices, choice_help, choice_values).
+inline constexpr const char* kHighwayScales[] = {"80", "85", "90", "95", "100", "105", "110", "115", "120"};
+inline constexpr const char* kHighwayLengths[] = {"100", "125", "150", "170"};
+inline constexpr const char* kHighwayPerspectives[] = {"25", "50", "75", "100", "125", "150"};
+inline constexpr const char* kHighwayStyles[] = {"original", "dark"};
+inline constexpr const char* kHighwayOpacities[] = {"100", "90", "80", "70", "60", "50", "40", "30"};
+inline constexpr const char* kMissVolumes[] = {"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
+inline constexpr std::array<Choice, 6> kChoices{{
+    {"ghwor_highway_scale", kHighwayScales, "100", ToggleGroup::kModsHighway, " %"},
+    {"ghwor_highway_length", kHighwayLengths, "100", ToggleGroup::kModsHighway, " %"},
+    {"ghwor_highway_perspective", kHighwayPerspectives, "100", ToggleGroup::kModsHighway, " %"},
+    {"ghwor_highway_style", kHighwayStyles, "original", ToggleGroup::kModsHighwayLook, "", true},
+    {"ghwor_highway_opacity", kHighwayOpacities, "100", ToggleGroup::kModsHighwayLook, " %"},
+    {"ghwor_miss_volume", kMissVolumes, "0", ToggleGroup::kModsSound, " %", false, "ghwor_miss_lower"},
+}};
+
+// Launcher 3.30: the Mods tab's Highway section, its gallery of the player's pictures (src/highway_images.cpp reads
+// the cvars) and its preview, drawn from the installed game's own textures: Highway_Guitar_01 and the gems' parts in
+// pak\highway\basic_gems\basic_gems.tex, inside data/compressed/ZONES/z_in_game.pak.xen (local_docs/52).
+inline constexpr bool kHighwayPreview = true;
+inline constexpr HighwayGallery kHighwayGallery{
+    "ghwor_highway_folder",     "ghwor_highway_image",       "ghwor_highway_random_from", "ghwor_highway_favorites",
+    "ghwor_highway_dim",        "ghwor_highway_image_dims",  L"Highways",
+    "ghwor_highway_scale",      "ghwor_highway_length",      "ghwor_highway_perspective", "ghwor_highway_opacity",
+    "ghwor_highway_style",      "dark",
+};
+inline constexpr HighwayAssets kHighwayAssets{
+    L"data/compressed/ZONES/z_in_game.pak.xen",
+    0xF3FB8221,  // pak\highway\basic_gems\basic_gems.tex
+    0xCC8983D6,  // Highway_Guitar_01
+    0x388DD606,  // sidebar02
+    0x2ED9AC77,  // string
+    0x12871CA5,  // FretBar_Med01_DNC
+    0x452CB6D1,  // button_grey_Collar01 (the strike line's rings)
+    0xCFA3D7FA,  // button_grey_Base01 (a gem's rim)
+    0x15517A60,  // Button_Grey_Gradient01 (a gem's colored body)
+    0xA8561777,  // Button_grey_Cap01 (a gem's cap)
+    0x8A1231A7,  // WhammyBAR_Grey_wide (a sustain)
+    // guitar_tweaks.qb's highway_guitar1 and highway_scale_chart's first row (src/mods.cpp).
+    655.0f, 350.0f, 160.0f, 512.0f, 1.00108, 1.00125, 1024, 1.5f, 50.0f, 1.5f,
+};
 
 // --- Downloadable content ---
 
@@ -329,6 +384,11 @@ struct GameTexts {
   std::array<const char*, kToggles.size() * 2> toggles;
   // kToggles' help, the Settings tab's panel for the row in focus; null: the hint.
   std::array<const char*, kToggles.size()> toggle_help{};
+  // kChoices' rows (launcher 3.29): a title and a hint each, their help (null: the hint) and their values' names (null
+  // or missing: the value and the row's suffix).
+  std::array<const char*, kChoices.size() * 2> choices{};
+  std::array<const char*, kChoices.size()> choice_help{};
+  std::array<std::array<const char*, 2>, kChoices.size()> choice_values{};
   // The first run's last screen (the game installed), in the game's spirit; null: the launcher's own.
   const char* done_title = nullptr;
   const char* done_text = nullptr;
