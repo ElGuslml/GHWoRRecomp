@@ -150,8 +150,8 @@ when you press PLAY.
   - Display: the monitor, fullscreen, borderless or window, the resolution, the image format (fill a screen
     wider than 16:9, where the stage is seen wider while the note highway, the HUD and the menus stay 16:9
     in the center, or keep 16:9 with bars). Smoothness: the frame rate, 60 FPS (original), and 120, 144, 160,
-    165 or 240 FPS where your monitor reaches them (experimental; the songs keep their speed and stay in sync
-    at every frame rate), V-Sync (on by default: no tearing, and no extra delay; leave it on with a G-Sync or
+    165 or 240 FPS (experimental; the songs keep their speed and stay in sync at every frame rate), and 300, 360,
+    480 or Unlimited (experimental, with V-Sync off: with V-Sync on the game runs at your monitor's rate), V-Sync (on by default: no tearing, and no extra delay; leave it on with a G-Sync or
     FreeSync monitor too), and Venue at the full frame rate (off by default): the game draws its venue and its
     band in turns, each at half the frame rate (30 times a second on the console), while the note highway uses
     the full rate; on, the whole scene is drawn in every frame, for about twice the work for the processor and
@@ -172,12 +172,15 @@ when you press PLAY.
     times with DLSS (off by default): DLSS runs at the start of the next frame, so the venue's frames take
     about the same time, and the venue shows a pair of frames later (the note highway and the HUD are not
     delayed); DLSS upscaling only, not with DLAA, frame generation or the venue at the full frame rate. Image:
-    antialiasing, sharpness, anisotropic filtering and the shadows' quality (up to four times the original
-    resolution).
+    antialiasing, sharpness, anisotropic filtering, the shadows' quality (up to four times the original
+    resolution), Ambient occlusion (Original, the game's own; Low to Ultra, soft shadows in the corners and folds
+    of the whole scene, the band included, for some work of the graphics card) and Texture detail (the venue's
+    textures half a level or a whole one sharper; with DLSS or FSR 3.1, Extra texture detail adds one more).
   - Effects: the game's screen effects (bloom, depth of field, color correction, film grain, vignette), each
     on by default; off, the grain goes with the color correction.
-  - Audio: the output device (Windows default, or another one), the channels (Automatic, Stereo or Mono:
-    the same sound on both sides), the volume (0 to 200 %: above 100 % the game is louder than its own
+  - Audio: the output device (Windows default, or another one), the channels (Automatic: 5.1 on surround
+    speakers, stereo on the rest; 5.1; Stereo; Mono: the same sound on both sides; the game is told its speakers,
+    and the notes' timing stays the same with each), the volume (0 to 200 %: above 100 % the game is louder than its own
     mix and its loudest moments can distort), mute while another window is in front, and Low latency audio
     (off by default): the game takes your audio device in exclusive mode and the sound comes sooner (about
     55 ms on a USB audio interface); other programs cannot play on that device while the game runs.

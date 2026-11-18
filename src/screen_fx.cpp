@@ -60,7 +60,7 @@ constexpr uint32_t kGrain = 0x40;
 constexpr uint32_t kVignette = 0x80;
 constexpr uint32_t kAmbientOcclusion = 0x800;
 
-// NativeXRenderer's own ambient occlusion (native_x_renderer_ao, its D-next), read once: it replaces the game's, which
+// NativeXRenderer's own ambient occlusion (native_x_renderer_ao, its D178), read once: it replaces the game's, which
 // is computed before the band is drawn (the stage's corners at 640x360) and would darken the stage a second time.
 bool NativeAmbientOcclusion() {
   static const bool on = rex::cvar::Query<bool>("native_x_renderer") &&

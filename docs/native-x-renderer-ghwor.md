@@ -414,7 +414,7 @@ the front buffer with FSR 1, NIS or bilinear. At 360 lines on the ultrawide (860
 GPU's frame was 1.0-1.1 ms, against 2.0-2.6 at the full resolution, with 0 errors. Everything is softer, the
 highway and the HUD's text included.
 
-## Ambient occlusion and texture detail (NativeXRenderer D-next, D-next-2, 2026-11-18)
+## Ambient occlusion and texture detail (NativeXRenderer D178, D179, 2026-11-18)
 
 **Ambient occlusion** (`native_x_renderer_ao`, off by default; Settings > Graphics > Ambient occlusion: Original, Low,
 Medium, High, Ultra): the library's XeGTAO at the upscale point (`0x8255AD1C` from `0x8264C1B8`), on the venue, the
