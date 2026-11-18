@@ -88,7 +88,8 @@ submodule: the launcher of every one of these recompilations, SDL3 + Dear ImGui)
 
 ## How the SDK is modified
 
-`thirdparty/rexglue-sdk` is [ElGuslml/rexglue-sdk](https://github.com/ElGuslml/rexglue-sdk), branch `recomp`: the
+`thirdparty/rexglue-sdk` is [ElGuslml/rexglue-sdk](https://github.com/ElGuslml/rexglue-sdk), branch `ghmetal` (the
+`recomp` line and the changes made since for the Guitar Hero games): the
 official ReXGlue SDK's nightly of 2026-10-02 (v0.10.0 and 24 later commits) with the changes this project, GH5Recomp,
 GHVanHRecomp, GHMetalRecomp, KameoRecomp, GRAWRecomp (Ghost Recon Advanced Warfighter), POTCAWERecomp (Pirates of the
 Caribbean: At World's End) and [NativeXRenderer](https://github.com/ElGuslml/NativeXRenderer) need, one commit each.
@@ -99,3 +100,39 @@ lists them, and each commit message explains its change.
 `native_x_renderer/` is NativeXRenderer, a submodule: a native renderer that hooks the game's Direct3D library. This
 game's side of it (its hooks and the map of the game's Direct3D library) is in
 `src/native_x_renderer_ghwor.cpp` and [`native-x-renderer-ghwor.md`](native-x-renderer-ghwor.md).
+
+## Contributing: branches and pull requests
+
+The work lands in groups, so a pull request needs updating only when a group is merged, not after every push.
+
+| Branch | What it is |
+|---|---|
+| `main` | Releases only (tags `vX.Y.Z`). |
+| `dev` | The integration branch: it moves only by merges (a finished group of features, a pull request, a release's version commit). **Base pull requests on `dev`.** |
+| `feat/<topic>` | The maintainer's work in progress, two or three features at a time. Pushed often and possibly rewritten: not a base for other work. Merged into `dev` once tested. |
+| `fix/<topic>` | A fix players need now, merged into `dev` at once. |
+
+Each merge into `dev` is announced with what it brings and the shared files it touched. The open `feat/` branches show
+what is being worked on; to avoid working on the same files, open a draft pull request early.
+
+**The submodules.** NativeXRenderer, RecompLauncher and the SDK fork share the branch `ghmetal` with the other
+recompilations. A group that changes a submodule uses the same `feat/<topic>` there; when the group is done, that branch
+is merged into `ghmetal` first, the game's branch records the merge, and the game's branch is merged into `dev`. A pull
+request to a submodule targets `ghmetal`, and the game's pull request records the submodule pull request's commit.
+
+**Rules that keep conflicts small:**
+- **Numbers given at merge, in the order merged:** NativeXRenderer's decisions (`docs/decisions.md`: a pull request
+  writes `D-next: <title>`, `D-next-2`, ..., in code comments too), the SDK's changes (`RECOMP.md`: `next`) and
+  RecompLauncher's version (its `CHANGELOG.md` entry under `## Unreleased`, `launcher_version.h` untouched).
+- **The shared indexes** (`README.md`'s tables, `res/README.txt`, `docs/README.md`): the maintainer updates them at
+  merge. A pull request brings its own note, `docs/<topic>.md`, and says in its description what the indexes should
+  say.
+- **Hooks:** a new feature's `[[midasm_hook]]`s, functions and switch tables go in a file of their own,
+  `hooks/<topic>.toml`, listed in the `includes` array at the top of `ghwor_functions.toml` (one line each). The
+  codegen reads includes recursively and runs again when any of them changes. Only one hook can sit at an address
+  (the codegen keeps the last one read and says so only in its debug log): search the address in every `.toml` first.
+  The existing hooks stay where they are.
+- **Settings:** a new option is off by default and leaves the game as it was; its default goes in `src/startup.cpp`.
+- **Updating a pull request:** merge `origin/dev` into its branch, or rebase with `git config rerere.enabled true`
+  so that a conflict resolved once is not resolved again.
+- **In the description:** what was tested (hardware, settings, the game's log), and what was not.

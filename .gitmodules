@@ -1,7 +1,7 @@
 [submodule "thirdparty/rexglue-sdk"]
 	path = thirdparty/rexglue-sdk
 	url = https://github.com/ElGuslml/rexglue-sdk
-	branch = recomp
+	branch = ghmetal
 	ignore = dirty
 [submodule "native_x_renderer"]
 	path = native_x_renderer
