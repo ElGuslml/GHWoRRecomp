@@ -413,3 +413,24 @@ it, every smaller one at least at its own size, and the shadow maps at least at 
 the front buffer with FSR 1, NIS or bilinear. At 360 lines on the ultrawide (860x360, "2 EASU passes, RCAS") the
 GPU's frame was 1.0-1.1 ms, against 2.0-2.6 at the full resolution, with 0 errors. Everything is softer, the
 highway and the HUD's text included.
+
+## Ambient occlusion and texture detail (NativeXRenderer D-next, D-next-2, 2026-11-18)
+
+**Ambient occlusion** (`native_x_renderer_ao`, off by default; Settings > Graphics > Ambient occlusion: Original, Low,
+Medium, High, Ultra): the library's XeGTAO at the upscale point (`0x8255AD1C` from `0x8264C1B8`), on the venue, the
+crowd and the band before the screen effects; the note highway and the HUD come after it and are left as they are.
+- The game has its own, the screen effects' `AmbientOcclusion` (bit 0x800): the stage's depth at 640x360 in the split
+  render's first frame, before the band is drawn, multiplied into the stage. With the library's on,
+  `src/screen_fx.cpp` takes that bit out (it would darken the stage twice); `ghwor_fx_ambient_occlusion = false` turns
+  the game's off on its own.
+- The camera: planes 0.1 and 400 (meters) at 72 x 44.5 degrees in the Quest song, from the first of the view's draws
+  that has one (the view's first draw is often a backdrop's: Gustavo's songs had 65 % of their views without AO). The
+  radius is 0.5 (the profile's `ao_radius`; `native_x_renderer_ao_radius` overrides it): the folds, the corners and the
+  ledges shaded, the walls left white. `native_x_renderer_ao_debug = true` shows the occlusion alone.
+- Cost (D162, 1280x720, RTX 4070 Ti, High): 0.23-0.27 ms a frame. With the split render it runs once a pair, in the
+  second frame.
+
+**Texture detail** (`native_x_renderer_texture_lod_bias`: 0, -0.5, -1; Settings > Graphics > Texture detail: Normal,
+Sharper, Sharpest): the 3D view's textures half a mip level or a whole one sharper; the highway and the HUD unchanged.
+With DLSS, DLAA or FSR 3.1, `native_x_renderer_upscaler_lod_bias = -1` adds the vendors' extra mip (no launcher row;
+Gustavo's look to decide).
