@@ -163,15 +163,15 @@ double Place(const Projection& p, double row) {
   return place / sum;
 }
 
-struct Highway {
+struct Shape {
   Projection one_player;  // highway_guitar1's and the chart's first row
   double height;          // highway_height
   double top_width;       // highway_top_width
 };
 
 // The highway for a perspective p and a length k (1, 1 = the console's).
-Highway Make(double p, double k) {
-  Highway out;
+Shape Make(double p, double k) {
+  Shape out;
   out.one_player = Transform(kChart[0], p, k);
   // The console's far end, at the time T, is the new row 1024 (1 - 1/k); it stays at y = 305.
   out.height = k == 1.0 ? kHeight : kHeight / (1.0 - Place(out.one_player, kRows * (1.0 - 1.0 / k)));
@@ -184,13 +184,21 @@ Highway Make(double p, double k) {
   return out;
 }
 
+Highway& TheHighway() {
+  static Highway highway;
+  return highway;
+}
+
 }  // namespace
+
+const Highway& OnePlayerHighway() { return TheHighway(); }
 
 void Configure() {
   static std::once_flag once;
   std::call_once(once, [] {
     std::string summary;
     const int32_t scale = std::clamp(REXCVAR_GET(ghwor_highway_scale), 50, 150);
+    TheHighway().scale = scale / 100.0;
     if (scale != 100) {
       script::Set("highway_scale_chart[0].hw_x_scale", scale / 100.0);
       script::Set("highway_scale_chart[0].hw_y_scale", scale / 100.0);
@@ -212,7 +220,9 @@ void Configure() {
     if (perspective != 100 || length != 100) {
       const double p = perspective / 100.0;
       const double k = length / 100.0;
-      const Highway highway = Make(p, k);
+      const Shape highway = Make(p, k);
+      TheHighway().height = std::round(highway.height);
+      TheHighway().top_width = highway.top_width;
       const double c = highway.top_width / kTopWidth;  // the far end's sizes
       const double width_offset = kBottomWidth / highway.top_width - 1.0;
       script::Set("highway_guitar1.highway_height", std::round(highway.height));

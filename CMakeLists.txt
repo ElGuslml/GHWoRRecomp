@@ -76,6 +76,7 @@ set(GHWOR_SOURCES
     src/main.cpp
     src/matchmaking.cpp
     src/mods.cpp
+    src/highway_effects.cpp
     src/native_x_renderer_ghwor.cpp
     src/online_text.cpp
     src/options.cpp

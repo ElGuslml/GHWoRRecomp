@@ -487,3 +487,16 @@ registers = ["r30"]
 [[midasm_hook]]
 address = 0x82182EA8   # mflr r12 (entry of sub_82182EA8, GeneratePosTable: a highway made at a song's start)
 name = "GHWoRHighwaySongHook"
+# The highway's Star Power and band moment effects at the highway's scale (src/highway_effects.cpp).
+[[midasm_hook]]
+address = 0x823C6BF0   # mflr r12 (entry of sub_823C6BF0, CreateScreenElement: r3 = its params)
+name = "GHWoRHighwayEffectCreateHook"
+registers = ["r3"]
+[[midasm_hook]]
+address = 0x823D4DA4   # lwz r11,0(r31) (sub_823D4B38, SE_SetProps: before this->SetProperties(params); r31 = the element, r29 = the params)
+name = "GHWoRHighwayEffectPropsHook"
+registers = ["r31", "r29"]
+[[midasm_hook]]
+address = 0x823C6708   # mflr r12 (entry of sub_823C6708, DestroyScreenElement: r3 = its params)
+name = "GHWoRHighwayEffectDestroyHook"
+registers = ["r3"]

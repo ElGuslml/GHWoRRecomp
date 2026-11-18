@@ -37,6 +37,13 @@ highways' scaling, the highway's geometry, and a cheat.
   the gems, sidebars, rock meter and Star Power meter scale with it.
 - **How:** it sets the first row of the game's `highway_scale_chart`. That table is what the game uses to shrink the
   highways for two to four players, so the same code applies the new size.
+- **The highway's effects** (Star Power, band moments, revival, the Quest characters' flaming rails): the game's
+  scripts make them as plain sprites at the highway's full size, in the rails' containers, which the scale moves and
+  turns without scaling, at an angle computed with the full height. So they were drawn at the 100 % size and leaned
+  off the rails (the console's two to four player highways do the same). `src/highway_effects.cpp` scales those
+  sprites when they are made (`CreateScreenElement`) and animated (`SE_SetProps`), and turns the rail ones by the
+  angle's error (3.8 degrees at 85 %). This happens only while one highway is on screen, the one-player row being the
+  scale's. Checked in Star Power at 85 % (the debug menu's Star Power "Always", a bot): the glows on the rails.
 - **Limit:** at 115-120 % the highway's right edge reaches the Star Power bar in the bottom right corner.
 
 ## Highway length and perspective
@@ -108,7 +115,8 @@ seen from above, its far end too wide, and the notes came about 18 % slower at 1
   start is `GeneratePosTable` (`sub_82182EA8`, a hook at its entry), which the game calls for each player's highway
   as a song starts: the first call after 3 seconds without one changes a random picture, and the next one is preloaded
   while the song plays.
-- **The launcher:** Mods → Highway → Background. Folder (A: another one), Image (A: the gallery), Random among. The
+- **The launcher:** Mods → Highway → Background. Folder (A: a list, open it in Explorer or change it), Image (A: the
+  gallery), Random among. The
   gallery lists All (Original, Random, the pictures by name), Favorites and Recent (LB / RB); X marks a favorite, Y
   sets the picture's own darkening, A uses it. The preview at the right draws the highway animated with the game's
   own textures, read from the installed game (`data/compressed/ZONES/z_in_game.pak.xen`, its

@@ -106,7 +106,8 @@ when you press PLAY.
     SINGING).
 - Mods (changes to the game itself; each applies when the game starts):
   - Highway: your own pictures on the note highway (NativeXRenderer only). Folder: where they are (PNG, JPEG,
-    BMP or TGA, any size, stretched over the highway; by default Highways in the game's user data folder).
+    BMP or TGA, any size, stretched over the highway; by default Highways in the game's user data folder);
+    A opens it in Explorer or changes it.
     Image: A opens the gallery of that folder: Original (the game's own), Random (a different picture at
     each song) and your pictures; X marks a favorite, Y gives a bright picture a darkening of its own, LB
     and RB show All, Favorites (Random among them) or Recent, A uses the picture. Random among: All or
