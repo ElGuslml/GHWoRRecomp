@@ -149,6 +149,14 @@ pass of the script `button_checker` (`0x716BADDC`, through `sub_8218BF88`) lower
 above held that script to 60 passes a second: at 160 FPS the fall took 0.27 s in GH5, where it was measured. It now
 runs every frame (at 160 FPS here: 59 passes a second held, one a frame now).
 
+**Above 240 (2026-11-18, experimental).** The launcher also offers 300, 360, 480 and Unlimited (1000 Hz, the SDK's
+ceiling, which was 240), whatever the monitor. They need V-Sync off: with V-Sync on, a rate above the monitor's runs at
+the monitor's (`src/options.cpp`; the launcher's row says so), as more frames than the display's could not be shown and
+the game's counts of frames would run ahead of them. The presses kept for scripts held to 60 a second and the whammy's samples were 8, a
+60th of a second only up to about 480 FPS: 32 now. The render thread's predicted sleep before a vertical blank shrinks
+with the period. In the Quest song with the venue every frame: about 400 FPS at 480 and at Unlimited (NativeXRenderer's
+thread the limit), 0 errors. To go back: a rate of 240 or less.
+
 ## Ultrawide
 
 The same as GH5's (`src/widescreen.cpp`, 9 hooks): every 16:9 perspective is widened (Hor+, `sub_824C6EE0`), and the 2D

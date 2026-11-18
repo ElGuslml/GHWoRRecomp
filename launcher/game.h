@@ -128,13 +128,28 @@ inline constexpr bool kShadowQuality = kHasNativeXRenderer && true;
 // sharper. The note highway and the HUD, drawn after the upscale point, are left as they are.
 inline constexpr bool kAmbientOcclusion = kHasNativeXRenderer && true;
 inline constexpr bool kTextureDetail = kHasNativeXRenderer && true;
+// Settings > Audio's Channels row with 5.1 (RecompLauncher 3.31; src/startup.cpp's audio_speaker_config_from_output):
+// the game told its speakers, Dolby Digital only with 5.1 (Automatic on a surround device); its timing kept the same
+// (src/mods.cpp's ghwor_dolby_timing).
+inline constexpr bool kSpeakerChoice = true;
 
 // The Graphics page's frame rate row: kFrameRateCvar's choices (game_types.h's FrameRate) and the value without the
 // key. Here src/framerate.cpp's ghwor_frame_rate, the frame rate itself: 60 as on the console, above it the emulated
 // vblank's rate (src/options.cpp), which the game follows at its own speed.
 inline constexpr const char* kFrameRateCvar = GAME_FRAME_RATE_CVAR;
 inline constexpr bool kFrameRateIsBool = false;
-inline constexpr std::array<FrameRate, 6> kFrameRates{{{60, 60}, {120, 120}, {144, 144}, {160, 160}, {165, 165}, {240, 240}}};
+// Above 240 (RecompLauncher 3.31, with V-Sync off; Gustavo, 2026-11-18): 300, 360, 480 and Unlimited (1000 Hz, the SDK's
+// ceiling), experimental: the rings of src/framerate.cpp hold a 60th of a second at 1000 (local_docs/56).
+inline constexpr std::array<FrameRate, 10> kFrameRates{{{60, 60},
+                                                        {120, 120},
+                                                        {144, 144},
+                                                        {160, 160},
+                                                        {165, 165},
+                                                        {240, 240},
+                                                        {300, 300},
+                                                        {360, 360},
+                                                        {480, 480},
+                                                        {1000, 0}}};
 inline constexpr int kFrameRateDefault = 60;
 
 // The Xenos path's MSAA turned off (src/msaa.cpp): the Graphics page's antialiasing row with Xenos, the game's own

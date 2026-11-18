@@ -33,7 +33,8 @@
 #include <unordered_map>
 
 REXCVAR_DEFINE_INT32(ghwor_frame_rate, 60, "GHWoR",
-                     "Frame rate: 60 as on the console, or 120, 144, 160, 165 or 240: the emulated vertical blank runs "
+                     "Frame rate: 60 as on the console, or 120, 144, 160, 165 or 240, or with V-Sync off 300, 360, "
+                     "480 or 1000 (experimental; the launcher's Unlimited): the emulated vertical blank runs "
                      "at that rate (video_mode_refresh_rate, set at startup) and the game presents on every one; its "
                      "clock is real time, so it keeps its speed");
 
@@ -61,8 +62,9 @@ double VblankRate() {
   const auto now = std::chrono::steady_clock::now();
   if (read == std::chrono::steady_clock::time_point{} || now - read > std::chrono::seconds(1)) {
     read = now;
-    rate = rex::cvar::Query<bool>("vsync") ? std::clamp(rex::cvar::Query<double>("video_mode_refresh_rate"), 24.0, 240.0)
-                                           : 1000.0;
+    rate = rex::cvar::Query<bool>("vsync")
+               ? std::clamp(rex::cvar::Query<double>("video_mode_refresh_rate"), 24.0, 1000.0)
+               : 1000.0;
   }
   return rate;
 }
@@ -299,7 +301,9 @@ void GHWoRFrameWaitCountHook(PPCRegister& r3, PPCRegister& r11) {
 // at 120 FPS: each press started Star Power.
 namespace {
 
-constexpr int kKeptUpdates = 8;
+// Enough for the updates between two runs of a script held to 60 a second at up to 1000 frames a second (16); with
+// 8, presses were lost above about 480 (local_docs/56).
+constexpr int kKeptUpdates = 32;
 
 struct InputUpdates {
   uint32_t state = 0;  // the input state's guest address
@@ -456,9 +460,12 @@ void GHWoRStarPowerPollEndHook() { TakeBackPresses(g_star_patched, g_star_patche
 // equality, so each run of frames keeps the number it began with: one that changed as the rate moved could jump past it.
 namespace {
 
+// A 60th of a second back at up to 1000 frames a second: 17 samples (8 reached it up to about 480).
+constexpr int kWhammySamples = 32;
+
 struct WhammySamples {
-  std::chrono::steady_clock::time_point when[8] = {};
-  float position[8] = {};
+  std::chrono::steady_clock::time_point when[kWhammySamples] = {};
+  float position[kWhammySamples] = {};
   int next = 0;
 };
 
@@ -475,8 +482,8 @@ void CompareWhammyOverSixtieth(int axis, uint32_t object, PPCRegister& position,
   const double frame = FrameInterval();
   std::lock_guard lock(g_whammy_mutex);
   WhammySamples& samples = g_whammy[uint64_t(object) << 1 | uint64_t(axis)];
-  for (int i = 1; i <= 8; ++i) {
-    const int slot = (samples.next - i) & 7;
+  for (int i = 1; i <= kWhammySamples; ++i) {
+    const int slot = (samples.next - i) & (kWhammySamples - 1);
     const double age = std::chrono::duration<double>(now - samples.when[slot]).count();
     if (age >= 1.0 / 60.0 - 0.5 * frame) {
       if (age <= 1.0 / 60.0 + 1.5 * frame) {
@@ -487,7 +494,7 @@ void CompareWhammyOverSixtieth(int axis, uint32_t object, PPCRegister& position,
   }
   samples.when[samples.next] = now;
   samples.position[samples.next] = float(position.f64);
-  samples.next = (samples.next + 1) & 7;
+  samples.next = (samples.next + 1) & (kWhammySamples - 1);
 }
 
 // The console's frames (60ths of a second) in frames of the recent length.
