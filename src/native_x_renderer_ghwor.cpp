@@ -142,6 +142,10 @@ const native_x_renderer::Profile& NativeXRendererProfile() {
     // depth of field blurs showed a grid at 3440x1440 (Gustavo, the rocker creator's character screen; its blurred copy of
     // the scene is the 320x180 0x8436000). GH5, whose bloom showed nothing, was checked on its title screen only.
     p.unscaled_screen_fractions = true;
+    // The ambient occlusion's reach (native_x_renderer_ao, library D-next): the camera's planes are 0.1 and 400 (meters),
+    // and XeGTAO's own default of 0.5 shaded the folds, the corners and the ledges of the Quest song's venue without
+    // greying its walls; 20 greyed everything (2026-11-18, local_docs/57-ambient-occlusion.md).
+    p.ao_radius = 0.5f;
     // The shadows' filter (library D143): the characters' shadows are read by pixel shaders that take nine samples of
     // the 400x400 shadow map at fetch constant 5, each compared with the pixel's depth, at offsets from c10-c13 (+-1 /
     // 400: one texel), as in GH5. GH5 divides them where its renderer builds them (GH5ShadowFilterHook); this game's code

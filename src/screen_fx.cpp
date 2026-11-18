@@ -20,6 +20,10 @@
 //
 // GH Van Halen's ink blotches are part of this game's composite again (InkBlotch, 0x400, Pass1's _inkblot1), which GH5
 // did not have; no switch for them yet (GH Van Halen's ghvanhalen_fx_ink would be kInk = 0x400 here).
+//
+// The game's own ambient occlusion (AmbientOcclusion, 0x800: the stage's depth at 640x360 in the split render's first
+// frame, before the band is drawn) has a switch, and is left out while NativeXRenderer's own (native_x_renderer_ao)
+// is on.
 
 #include <rex/cvar.h>
 #include <rex/logging.h>
@@ -27,6 +31,7 @@
 
 #include <atomic>
 #include <cstdint>
+#include <string>
 
 REXCVAR_DEFINE_BOOL(ghwor_fx_bloom, true, "GHWoR",
                     "Screen effects: the bloom, the glow around lights and bright surfaces; false = off");
@@ -42,6 +47,9 @@ REXCVAR_DEFINE_BOOL(ghwor_fx_color, true, "GHWoR",
 REXCVAR_DEFINE_BOOL(ghwor_fx_vignette, true, "GHWoR",
                     "Screen effects: the vignette, the corners darkened where a venue or a moment turns it on; "
                     "false = off");
+REXCVAR_DEFINE_BOOL(ghwor_fx_ambient_occlusion, true, "GHWoR",
+                    "Screen effects: the game's own ambient occlusion (0x800: the stage's corners darkened, computed "
+                    "at 640x360 before the band is drawn); false = off");
 
 namespace {
 
@@ -50,6 +58,16 @@ constexpr uint32_t kDepthOfField = 0x8;
 constexpr uint32_t kColor = 0x20;
 constexpr uint32_t kGrain = 0x40;
 constexpr uint32_t kVignette = 0x80;
+constexpr uint32_t kAmbientOcclusion = 0x800;
+
+// NativeXRenderer's own ambient occlusion (native_x_renderer_ao, its D-next), read once: it replaces the game's, which
+// is computed before the band is drawn (the stage's corners at 640x360) and would darken the stage a second time.
+bool NativeAmbientOcclusion() {
+  static const bool on = rex::cvar::Query<bool>("native_x_renderer") &&
+                         rex::cvar::Query<std::string>("native_x_renderer_ao") != "off" &&
+                         !rex::cvar::Query<std::string>("native_x_renderer_ao").empty();
+  return on;
+}
 
 uint32_t EffectsOff() {
   uint32_t off = 0;
@@ -58,6 +76,7 @@ uint32_t EffectsOff() {
   off |= REXCVAR_GET(ghwor_fx_grain) ? 0 : kGrain;
   off |= REXCVAR_GET(ghwor_fx_color) ? 0 : kColor;
   off |= REXCVAR_GET(ghwor_fx_vignette) ? 0 : kVignette;
+  off |= REXCVAR_GET(ghwor_fx_ambient_occlusion) && !NativeAmbientOcclusion() ? 0 : kAmbientOcclusion;
   // In GH Van Halen the color pass also toned the grain down, and without it the grain was far stronger, so the grain
   // goes with the color (the launcher's rule). Here, as in GH5, the grain is in the other pass: kept the same until it
   // is seen.

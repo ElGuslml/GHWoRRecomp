@@ -121,6 +121,13 @@ inline constexpr bool kLowResolutions = true;
 // (2026-11-13), its filter's offsets scaled by the library (D143; src/native_x_renderer_ghwor.cpp), and the 640x360
 // depth pass no longer taken for one at the render scale 1 (D144).
 inline constexpr bool kShadowQuality = kHasNativeXRenderer && true;
+// Settings > Graphics' Ambient occlusion and Texture detail rows (RecompLauncher 3.31; NativeXRenderer's
+// native_x_renderer_ao and native_x_renderer_texture_lod_bias, found from the game's views at its upscale point): XeGTAO
+// on the venue, the band and the crowd in place of the game's own (src/screen_fx.cpp turns that one off), its radius
+// from the profile (src/native_x_renderer_ghwor.cpp, 0.5); the 3D view's textures half a mip level or a whole one
+// sharper. The note highway and the HUD, drawn after the upscale point, are left as they are.
+inline constexpr bool kAmbientOcclusion = kHasNativeXRenderer && true;
+inline constexpr bool kTextureDetail = kHasNativeXRenderer && true;
 
 // The Graphics page's frame rate row: kFrameRateCvar's choices (game_types.h's FrameRate) and the value without the
 // key. Here src/framerate.cpp's ghwor_frame_rate, the frame rate itself: 60 as on the console, above it the emulated
