@@ -108,6 +108,14 @@ audio_keep_time = true
 # playing it, where the shared output takes 77 ms (measured in GH Metallica). Without it these do nothing.
 audio_wasapi_exclusive_buffer_ms = 10
 audio_wasapi_exclusive_queue = 2
+# The game is told the speakers it plays on (the SDK's XAudioGetSpeakerConfig): Dolby Digital 5.1 only with
+# audio_channels = "surround", or "auto" on a device of more than two channels; two speakers with "stereo", "mono" or
+# "auto" on a stereo device, as a console without Dolby. The game mixes the same six channels either way (measured: its
+# centre and LFE empty, its rears a third of its fronts, whatever it is told), so the sound does not change; its Dolby
+# Digital adds -30 ms to the notes' and the input's timing (the scripts' default_lag_settings_dolbydigital), which
+# ghwor_dolby_timing (src/mods.cpp, on) keeps whatever it is told: no one calibrates again. GH Warriors of Rock
+# Launcher's Channels row (Automatic, 5.1, Stereo, Mono) writes audio_channels. false = always Dolby Digital, as before.
+audio_speaker_config_from_output = true
 # V-Sync (GH Warriors of Rock Launcher's row writes both): NativeXRenderer presents with FIFO, each frame shown once
 # and never torn, and the game's vertical blank follows the monitor's where the frame rate is its refresh rate or a
 # whole fraction of it, so the game never runs ahead of the display. Measured in GH Metallica at 160 FPS on a 160 Hz

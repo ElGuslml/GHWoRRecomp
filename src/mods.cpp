@@ -80,6 +80,10 @@
 #include "highway_images.h"
 #include "script_globals.h"
 
+REXCVAR_DEFINE_BOOL(ghwor_dolby_timing, true, "GHWoR",
+                    "The notes', the input's and the drums' timing with the game's Dolby Digital offsets (-30 ms each) "
+                    "whatever speakers it is told (audio_speaker_config_from_output): the timing every player had "
+                    "before, so no one calibrates again; false = a console's, -30 ms only with 5.1");
 REXCVAR_DEFINE_INT32(ghwor_highway_scale, 100, "GHWoR",
                      "The note highway's size with one player, in percent (80-120 in the launcher; it shrinks and grows "
                      "from the strike line); 100 = as on the console");
@@ -304,6 +308,20 @@ void Configure() {
     }
     if (!summary.empty()) {
       REXLOG_INFO("[mods]{}", summary);
+    }
+    // The game's timing with Dolby Digital whatever speakers it is told (Gustavo, 2026-11-18: "siempre sí lo quiero").
+    // Its scripts' setlagoffsets adds default_lag_settings, then default_lag_settings_dolbydigital when
+    // IsDolbyDigitalEnabled; on xenon -45 / -61 / +53 and -30 / -30 / -30 ms (gem, input, drum MIDI). The base takes the
+    // Dolby offsets and the Dolby set adds nothing: -75 / -91 / +23 with 5.1, stereo and mono alike, the timing every
+    // player had while the SDK always answered Dolby Digital (docs/speakers-and-dolby.md).
+    if (REXCVAR_GET(ghwor_dolby_timing)) {
+      script::Set("default_lag_settings.xenon.gem_lag_ms", -45 - 30);
+      script::Set("default_lag_settings.xenon.input_lag_ms", -61 - 30);
+      script::Set("default_lag_settings.xenon.drum_midi_lag_ms", 53 - 30);
+      script::Set("default_lag_settings_dolbydigital.xenon.gem_lag_ms", 0);
+      script::Set("default_lag_settings_dolbydigital.xenon.input_lag_ms", 0);
+      script::Set("default_lag_settings_dolbydigital.xenon.drum_midi_lag_ms", 0);
+      REXLOG_INFO("[speakers] the Dolby Digital timing (-30 ms) whatever the speakers (ghwor_dolby_timing)");
     }
     highway::Configure();  // the highway's picture (src/highway_images.cpp)
   });
