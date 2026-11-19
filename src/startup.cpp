@@ -259,12 +259,14 @@ ghwor_star_power_reverb = false
 # highway's size with one player in percent (the launcher offers 80-120; from the strike line, the gems, sidebars and
 # meters with it); its length in time in percent (100, 125, 150, 170: the notes seen that much earlier, the console's
 # highway continued in its own perspective, at the same speed at the strike line, for every player); its perspective in
-# percent of the console's (25-150: flatter or steeper); its look, "original" or "dark" (the community's black highway);
-# the crowd, false to hide it during songs (the game's soundcheck cheat). 100, 100, 100, "original" and true = as on
-# the console.
+# percent of the console's (25-150: flatter or steeper), and with ghwor_highway_keep_speed the notes at the console's
+# speed at the strike line whatever the perspective (the times on the highway shorter below 100, longer above); its
+# look, "original" or "dark" (the community's black highway); the crowd, false to hide it during songs (the game's
+# soundcheck cheat). 100, 100, 100, false, "original" and true = as on the console.
 ghwor_highway_scale = 100
 ghwor_highway_length = 100
 ghwor_highway_perspective = 100
+ghwor_highway_keep_speed = false
 ghwor_highway_style = "original"
 ghwor_crowd = true
 # The whammy bar's bend of a held sustain (true, as on the console; false keeps the pitch, the bar still wobbles the

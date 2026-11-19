@@ -32,6 +32,9 @@
 #include <mutex>
 #include <unordered_map>
 
+// src/song_sync.cpp's: begin_song_after_intro (below) runs every frame with it.
+REXCVAR_DECLARE(bool, ghwor_song_start_sync);
+
 REXCVAR_DEFINE_INT32(ghwor_frame_rate, 60, "GHWoR",
                      "Frame rate: 60 as on the console, or 120, 144, 160, 165 or 240, or with V-Sync off 300, 360, "
                      "480 or 1000 (experimental; the launcher's Unlimited): the emulated vertical blank runs "
@@ -209,6 +212,16 @@ bool FrameExact(uint32_t script) {
          std::end(kFrameExactScripts);
 }
 
+// begin_song_after_intro (src/song_sync.cpp, with ghwor_song_start_sync): a loop of "GetSongTimeMS, if time >=
+// starttimeafterintro break, wait 1 gameframe" that starts the song's music in its first pass with the clock at the
+// song's start. Held to 60 passes a second the music started 0 to 16.7 ms after it at any frame rate; every frame,
+// within a frame (6.25 ms at 160 FPS). A poll of the clock: running it every frame does not speed anything up.
+constexpr uint32_t kSongStartPoll = 0x647F97EE;
+
+bool SongStartPoll(uint32_t script) {
+  return script == kSongStartPoll && REXCVAR_GET(ghwor_song_start_sync);
+}
+
 uint32_t WaitingScript(uint32_t wait) {
   auto* kernel = rex::system::kernel_state();
   const uint8_t* base = kernel && kernel->memory() ? kernel->memory()->virtual_membase() : nullptr;
@@ -238,7 +251,7 @@ void GHWoRFrameWaitSetHook(PPCRegister& r3, PPCRegister& r4) {
   // +60 of its wait (+244 of the script, as in GH5; GH Van Halen's +48, +216), a compiled script's too (sub_823A4090
   // stores it either way).
   const uint32_t waiting = WaitingScript(r3.u32);
-  if (SelfTimed(waiting) || FrameExact(waiting)) {
+  if (SelfTimed(waiting) || FrameExact(waiting) || SongStartPoll(waiting)) {
     std::lock_guard lock(g_frame_waits_mutex);
     g_frame_waits.erase(r3.u32);
     return;
