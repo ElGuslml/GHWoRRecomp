@@ -84,6 +84,7 @@ set(GHWOR_SOURCES
     src/quit_prompt.cpp
     src/screen_fx.cpp
     src/script_globals.cpp
+    src/song_sync.cpp
     src/split_render.cpp
     src/star_power_reverb.cpp
     src/startup.cpp

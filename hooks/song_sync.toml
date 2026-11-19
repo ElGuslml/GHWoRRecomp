@@ -1,0 +1,32 @@
+# A song's music started with its notes (src/song_sync.cpp, ghwor_song_start_sync, on; docs/song-sync.md). The song
+# player's script functions tell when a stream is loaded and waits to be played, and from where (SAP_Load, SAP_Seek;
+# SAP_Play, SAP_Stop, SAP_Unload, SAP_DeInit and SAP_UnPause end the wait). Rule A: a reset of the song's clock past
+# that start while the stream waits sets the clock 100 ms before it. Rule B: at the play, a clock more than 50 ms past
+# the start is set to it. Each song's start is logged.
+[[midasm_hook]]
+address = 0x820D3FCC   # clrlwi r4,r3,24 (SAP_Load, sub_820D3EC0: after bl 0x820D6BE8, the load; r3 = loaded)
+name = "GHWoRSongLoadHook"
+registers = ["r3"]
+[[midasm_hook]]
+address = 0x820D45F8   # bl 0x820D7930 (SAP_Seek, sub_820D4538: the seek; r4 = the time in ms)
+name = "GHWoRSongSeekHook"
+registers = ["r4"]
+[[midasm_hook]]
+address = 0x823D0B74   # addi r31,r10,14936 (ResetSongTimer, sub_823D0B38: f0 = the new time in s, before its two stores)
+name = "GHWoRSongResetHook"
+registers = ["f0"]
+[[midasm_hook]]
+address = 0x820D3800   # mflr r12 (entry of SAP_Play, sub_820D3800)
+name = "GHWoRSongPlayHook"
+[[midasm_hook]]
+address = 0x820D3848   # mflr r12 (entry of SAP_Stop, sub_820D3848)
+name = "GHWoRSongStopHook"
+[[midasm_hook]]
+address = 0x820D4000   # mflr r12 (entry of SAP_Unload, sub_820D4000)
+name = "GHWoRSongUnloadHook"
+[[midasm_hook]]
+address = 0x820D4488   # mflr r12 (entry of SAP_DeInit, sub_820D4488)
+name = "GHWoRSongDeInitHook"
+[[midasm_hook]]
+address = 0x820D395C   # bl 0x820D78D8 (SAP_UnPause, sub_820D38E8: the stream unpaused)
+name = "GHWoRSongUnPauseHook"
