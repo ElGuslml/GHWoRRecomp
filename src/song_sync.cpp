@@ -41,7 +41,10 @@
 // calibration screen (mock_highway_restart shuts the song player down, SongAudioDeInit, before each of its resets to 0;
 // its settings test loads a stream after its reset to -3 s and starts as any song).
 // Every song's start is logged with or without the option ("[song sync]": the clock against the stream's start at
-// SAP_Play, and what the rules did). docs/song-sync.md; local_docs/61, 62, 63.
+// SAP_Play, and what the rules did), and its end with the clock's report (src/song_clock.cpp). docs/song-sync.md;
+// local_docs/61, 62, 63.
+
+#include "song_clock.h"
 
 #include <rex/cvar.h>
 #include <rex/logging.h>
@@ -157,6 +160,7 @@ void GHWoRSongPlayHook() {
   if (!stream.waiting) {
     return;
   }
+  ghwor::SongClockSongStarted();
   uint8_t* base = GuestBase();
   if (!base) {
     return;
@@ -180,16 +184,19 @@ void GHWoRSongPlayHook() {
 // [[midasm_hook]] 0x820D3848 (the entry of SAP_Stop, sub_820D3848).
 void GHWoRSongStopHook() {
   EndWaiting();
+  ghwor::SongClockSongEnded();
 }
 
 // [[midasm_hook]] 0x820D4000 (the entry of SAP_Unload, sub_820D4000).
 void GHWoRSongUnloadHook() {
   EndWaiting();
+  ghwor::SongClockSongEnded();
 }
 
 // [[midasm_hook]] 0x820D4488 (the entry of SAP_DeInit, sub_820D4488).
 void GHWoRSongDeInitHook() {
   EndWaiting();
+  ghwor::SongClockSongEnded();
 }
 
 // [[midasm_hook]] 0x820D395C (SAP_UnPause, sub_820D38E8: "bl 0x820D78D8", the stream unpaused).

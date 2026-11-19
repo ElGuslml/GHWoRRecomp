@@ -30,3 +30,21 @@ name = "GHWoRSongDeInitHook"
 [[midasm_hook]]
 address = 0x820D395C   # bl 0x820D78D8 (SAP_UnPause, sub_820D38E8: the stream unpaused)
 name = "GHWoRSongUnPauseHook"
+
+# The song's clock from the vertical blanks' own times (src/song_clock.cpp, ghwor_song_clock_exact, on): the vblank
+# callback's hook keeps each blank's time by its count; the clock's update adds the time between the blanks it counts
+# (not the game's sum of the last intervals, which counts a blank twice when frames run faster than the blanks and
+# walks its ring of 10 at a hitch), and the count never goes back. Each song's clock report is logged at its end.
+[[midasm_hook]]
+address = 0x8239FB54   # addi r3,r8,1 (sub_8239FB20, the vblank callback: the blank's time r9 stored at +576 of r11, before the count)
+name = "GHWoRSongClockBlankHook"
+registers = ["r9", "r11"]
+[[midasm_hook]]
+address = 0x823D14B0   # ld r11,16(r31) (sub_823D1490, the clock's update: r3 = the blank count, before r29 is chosen)
+name = "GHWoRSongClockUpdateHook"
+registers = ["r3", "r29", "r31"]
+jump_address_on_true = 0x823D14C0
+[[midasm_hook]]
+address = 0x823D1524   # frsp f13,f1 (sub_823D1490: f1 = sub_8239FE30's sum for the update's blanks, in seconds)
+name = "GHWoRSongClockStepHook"
+registers = ["f1"]
