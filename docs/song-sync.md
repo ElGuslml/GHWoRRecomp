@@ -1,8 +1,8 @@
 # The notes ahead of the music when a song follows another
 
-**Status: fixed on branch `fix/song-sync` (2026-11-18), in testing.** Measured with the bot in the Rush chapter at two
-calibrations, in Quickplay+ (a playlist, a retry, a pause, 60 FPS), in practice and on the calibration screen;
-Gustavo's play test to come.
+**Status: fixed on branch `fix/song-sync` (2026-11-18), played.** Measured with the bot in the Rush chapter at two
+calibrations, in Quickplay+ (a playlist, a retry, a pause, 60 FPS), in practice and on the calibration screen. Gustavo
+played the Rush chapter's first two parts and a Quickplay+ song with his 0 / 120: in sync.
 
 ## Symptom
 
