@@ -6,6 +6,10 @@
 
 <p align="center">
   <a href="https://github.com/ElGuslml/GHWoRRecomp/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/ElGuslml/GHWoRRecomp?style=for-the-badge&label=Latest%20release&color=ff6a1a"></a>
+  <a href="https://github.com/ElGuslml/GHWoRRecomp/releases"><img alt="Latest beta" src="https://img.shields.io/github/v/release/ElGuslml/GHWoRRecomp?include_prereleases&sort=semver&style=for-the-badge&label=Latest%20beta&color=c2410c"></a>
+</p>
+<p align="center">
+  <a href="https://github.com/ElGuslml/GHWoRRecomp/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/ElGuslml/GHWoRRecomp/total?style=for-the-badge&label=Downloads&color=30363d"></a>
   <a href="https://discord.gg/XQtM5TmNs8"><img alt="Discord: join the server" src="https://img.shields.io/badge/Discord-Join%20the%20server-5865F2?style=for-the-badge&logo=discord&logoColor=white"></a>
   <a href="https://ko-fi.com/elguslml"><img alt="Ko-fi: support me" src="https://img.shields.io/badge/Ko--fi-Support%20me-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white"></a>
   <a href="https://x.com/ElGuslml"><img alt="X: follow @ElGuslml" src="https://img.shields.io/badge/X-Follow%20%40ElGuslml-000000?style=for-the-badge&logo=x&logoColor=white"></a>
@@ -181,18 +185,25 @@ Everything is set up from **GH Warriors of Rock Launcher**, with the mouse, the 
 | 👤 **Profile** | Your picture at the top right: hours played, streaks, your week, your games and your favorite achievements. |
 
 <p align="center">
+  <img src="docs/images/launcher-mods.png" width="49%" alt="Mods: a picture of your own on the note highway, previewed">
+  <img src="docs/images/launcher-mods-gallery.png" width="49%" alt="Mods: the gallery of your highway pictures">
+</p>
+<p align="center"><sub>Mods: a picture of your own on the note highway, previewed with the game's own highway, and the gallery of your folder (favorites, darkening).</sub></p>
+<p align="center">
   <img src="docs/images/launcher-controls.png" width="49%" alt="Controls: a guitar's frets">
   <img src="docs/images/launcher-microphone.png" width="49%" alt="Controls: the microphone">
 </p>
 <p align="center"><sub>Controls: what each fret of your guitar does, and the microphone you sing with.</sub></p>
 <p align="center">
   <img src="docs/images/launcher-display.png" width="49%" alt="Settings: Display">
-  <img src="docs/images/launcher-achievements.png" width="49%" alt="Achievements">
+  <img src="docs/images/launcher-graphics.png" width="49%" alt="Settings: Graphics">
 </p>
-<p align="center"><sub>Settings (Display: your screen, window or fullscreen, the image format, the frame rate) and the achievements.</sub></p>
+<p align="center"><sub>Settings: Display (your screen, window or fullscreen, the image format, the frame rate, V-Sync) and Graphics (the renderer, the graphics card, upscaling, antialiasing).</sub></p>
 <p align="center">
-  <img src="docs/images/launcher-dlc.png" width="70%" alt="DLC: your DLC folder and its packages">
+  <img src="docs/images/launcher-achievements.png" width="49%" alt="Achievements">
+  <img src="docs/images/launcher-dlc.png" width="49%" alt="DLC: your DLC folder and its packages">
 </p>
+<p align="center"><sub>The 50 achievements, and your DLC folder.</sub></p>
 
 Your choices are saved as soon as you make them. When you quit the game, the launcher comes back.
 
@@ -293,6 +304,7 @@ it will get fixed. Thanks for giving this game a try! 🧡
   - the volume up to 200 %;
   - Star Power answering every press above 60 FPS;
   - work on NativeXRenderer's speed (a one-pass present, per-pass GPU timings).
+- [LuisText](https://github.com/LuisText), for contributions that made the game run faster.
 - Developed by Gustavo Garcia with the help of Claude (Anthropic): see [the note about AI](#-a-note-about-ai).
 
 ## 📜 License

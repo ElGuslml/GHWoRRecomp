@@ -2,4 +2,4 @@
 #pragma once
 
 #define RECOMP_VERSION 1, 0, 0, 0
-#define RECOMP_VERSION_STR "1.0.0-beta.3"
+#define RECOMP_VERSION_STR "1.0.0-beta.4"
