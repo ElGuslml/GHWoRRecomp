@@ -76,6 +76,17 @@ highways' scaling, the highway's geometry, and a cheat.
   stays the console's.
 - **With the length:** a flatter perspective gives the longer part more of the screen. At 50 % with 170 %, the far end
   is at y = 176 and 195 px wide.
+- **The notes' speed on screen:** a note takes the same time to cross the highway, but the rows near the strike line
+  get shorter below 100 % and taller above it, so the notes arrive slower or faster in pixels:
+
+  | Perspective | 25 % | 50 % | 75 % | 100 % | 125 % | 150 % |
+  |---|---|---|---|---|---|---|
+  | Speed at the strike line | 0.44 | 0.60 | 0.78 | 1 | 1.24 | 1.51 |
+
+  The highway scale multiplies it too (0.9 at 90 %). The game's Hyperspeed (band lobby, the player's extras) makes up
+  for it: on Expert its levels 1 to 5 are 1.25, 1.40, 1.58, 1.82 and 2.14 times the speed. With 75 % perspective and
+  90 % scale, level 5 arrives at 1.51 times the console's speed, between the console's levels 2 and 3 (a player's
+  report of 2026-11-19: "Hyperspeed does nothing").
 
 **Limits:**
 - The far end stays below y = 50, also with the scale. A length that does not fit is shortened, in steps of 5 %, and the
