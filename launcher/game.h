@@ -199,7 +199,9 @@ inline constexpr std::array<Language, 5> kLanguages{{
 //   docs/mods.md). Mods > Sound: the whammy bar's bend of a held sustain, on as on the console (src/mods.cpp).
 // - Launcher 3.30's Mods tab (Gustavo's "mods-galeria" mockup): Sound in the mockup's order, the whammy's sound first,
 //   then World Tour's Star Power sound, then the track lowered on a miss (on as on the console; its volume under it).
-inline constexpr std::array<Toggle, 14> kToggles{{
+// - Launcher 3.32: Mods > Highway's notes at the console's speed whatever the perspective (off as on the console; under
+//   the perspective's row, locked at 100 %; src/mods.cpp, local_docs/66).
+inline constexpr std::array<Toggle, 15> kToggles{{
     {"ghwor_fx_bloom", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_depth_of_field", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_color", true, ToggleGroup::kScreenEffects},
@@ -214,6 +216,7 @@ inline constexpr std::array<Toggle, 14> kToggles{{
     {"ghwor_star_power_reverb", false, ToggleGroup::kModsSound},
     {"ghwor_crowd", true, ToggleGroup::kModsStage},
     {"ghwor_miss_lower", true, ToggleGroup::kModsSound},
+    {"ghwor_highway_keep_speed", false, ToggleGroup::kModsHighway, "ghwor_highway_perspective"},
 }};
 
 // Rows of the game's own with several values (game_types.h's Choice, launcher 3.29): Mods > Highway, the note
@@ -246,7 +249,7 @@ inline constexpr HighwayGallery kHighwayGallery{
     "ghwor_highway_folder",     "ghwor_highway_image",       "ghwor_highway_random_from", "ghwor_highway_favorites",
     "ghwor_highway_dim",        "ghwor_highway_image_dims",  L"Highways",
     "ghwor_highway_scale",      "ghwor_highway_length",      "ghwor_highway_perspective", "ghwor_highway_opacity",
-    "ghwor_highway_style",      "dark",
+    "ghwor_highway_style",      "dark",                      "ghwor_highway_keep_speed",
 };
 inline constexpr HighwayAssets kHighwayAssets{
     L"data/compressed/ZONES/z_in_game.pak.xen",

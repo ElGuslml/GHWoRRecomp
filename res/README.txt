@@ -120,7 +120,10 @@ when you press PLAY.
     hit them does not change; every player gets it; if it does not fit the screen it is shortened.
     Highway perspective (100 % by default): 25 to 150 %, flatter (as seen from higher, the far notes
     larger, the longer highway taller) or steeper; below 100 % the notes move slower near the strike
-    line (about a fifth slower at 75 %), above it faster: the game's Hyperspeed makes up for it.
+    line (about a fifth slower at 75 %), above it faster. Notes at the console's speed (off by default,
+    under the perspective): they reach the strike line as fast as at 100 % whatever the perspective, so
+    below 100 % each note shows for less time (1.18 s on Expert at 75 % instead of 1.5); the game's
+    Hyperspeed works on top of it.
     Highway style (Original by default): Dark is the community's black highway. Highway opacity (100 % by default): below it the
     venue shows through the highway (the notes and lines stay solid).
   - Stage: Crowd (on by default): off hides the crowd during

@@ -88,6 +88,23 @@ highways' scaling, the highway's geometry, and a cheat.
   90 % scale, level 5 arrives at 1.51 times the console's speed, between the console's levels 2 and 3 (a player's
   report of 2026-11-19: "Hyperspeed does nothing").
 
+**Notes at the console's speed** (`ghwor_highway_keep_speed`, off by default; the switch under the perspective in the
+launcher, locked at 100 %):
+- **What it does:** the times on the highway (every difficulty's `scroll_time` and `destroy_time`) are multiplied by
+  the perspective's speed above, as the length multiplies them by its factor. The notes reach the strike line at the
+  console's speed, and the Hyperspeed keeps its levels' ratios.
+- **The cost:** below 100 % each note shows for less time. On Expert: 0.67 s at 25 %, 0.90 s at 50 %, 1.18 s at 75 %,
+  1.86 s at 125 %, 2.26 s at 150 % (1.5 s on the console). The length gives it back: 75 % with 125 % length is 1.47 s.
+- **What does not change:** the highway's picture keeps its look (its tiling follows the length only) and moves with
+  the notes; the scale is left out (it shrinks the gems with the highway).
+- **Two to four players:** one factor, the one-player highway's (the time is one per difficulty). Their highways' own
+  perspectives make their notes 4-7 % faster than the console's at 75 %.
+- **The log:** `[mods] highway perspective 75 %: the notes reach the strike line at the console's speed
+  (ghwor_highway_keep_speed: the times on the highway x 0.784, 1.18 s on Expert instead of 1.50)`, or with the switch
+  off `... at 0.78 of the console's speed`.
+- **Checked** (2026-11-19, the bot in a Quickplay+ song on Expert): 75 % off and on, 25 % and 150 % on, 75 % on with
+  150 % length; every note hit, 0 errors.
+
 **Limits:**
 - The far end stays below y = 50, also with the scale. A length that does not fit is shortened, in steps of 5 %, and the
   log says so: `[mods] highway length 170 % with perspective 25 % and scale 120 %: 155 %, the most that fits`.
