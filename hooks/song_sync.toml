@@ -1,7 +1,7 @@
 # A song's music started with its notes (src/song_sync.cpp, ghwor_song_start_sync, on; docs/song-sync.md). The song
 # player's script functions tell when a stream is loaded and waits to be played, and from where (SAP_Load, SAP_Seek;
 # SAP_Play, SAP_Stop, SAP_Unload, SAP_DeInit and SAP_UnPause end the wait). Rule A: a reset of the song's clock past
-# that start while the stream waits sets the clock 100 ms before it. Rule B: at the play, a clock more than 50 ms past
+# that start while the stream waits sets the clock 100 ms before it. Rule B: at the play, a clock more than 30 ms past
 # the start is set to it. Each song's start is logged.
 [[midasm_hook]]
 address = 0x820D3FCC   # clrlwi r4,r3,24 (SAP_Load, sub_820D3EC0: after bl 0x820D6BE8, the load; r3 = loaded)

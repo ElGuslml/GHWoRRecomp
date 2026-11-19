@@ -36,11 +36,11 @@ scripts.
 and waiting to be played, and from which position (`SAP_Load`, `SAP_Seek`; `SAP_Play`, `SAP_Stop`, `SAP_Unload`,
 `SAP_DeInit` and `SAP_UnPause` end the wait).
 
-- **At the clock's reset:** while the music waits, a reset to later than 50 ms before its start sets the clock 100 ms
-  before it. That is what the console does with no calibration (the Rush intro's own length). The game's script then
-  starts the music as in any other song.
-- **At the music's start:** while the music waits, a clock more than 50 ms past its start is set back to it. This
-  catches any other path that starts the music late.
+- **At the clock's reset:** while the music waits, a reset to later than 50 ms before its start (and less than 0.45 s
+  after it) sets the clock 100 ms before it. That is what the console does with no calibration (the Rush intro's own
+  length). The game's script then starts the music as in any other song.
+- **At the music's start:** while the music waits, a clock more than 30 ms past its start is set back to it. This
+  catches any other path that starts the music late, and a hitch right before the start.
 - **Above 60 FPS:** the script that starts the music checks the clock every frame instead of 60 times a second, so the
   music starts within a frame of its time (6.25 ms at 160 FPS instead of 16.7 ms).
 

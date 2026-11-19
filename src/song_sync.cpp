@@ -23,17 +23,23 @@
 // - A stream "waits" from a SAP_Load that loaded it to SAP_Play, or to SAP_Stop, SAP_Unload, SAP_DeInit or SAP_UnPause
 //   (the practice menu's preview plays its stream by unpausing it). Its start is 0, or the time of a SAP_Seek made
 //   while it waits.
-// - Rule A: a ResetSongTimer while a stream waits, to a time later than 50 ms before its start (and less than 1 s after
-//   it: the transitions' arithmetic gives at most +0.4 s), sets the clock 100 ms before the start instead: as the
+// - Rule A: a ResetSongTimer while a stream waits, to a time later than 50 ms before its start (and less than 0.45 s
+//   after it: the transitions' arithmetic gives at most +0.4 s), sets the clock 100 ms before the start instead: as the
 //   console with no calibration (the Rush intro's own length). The game's poll then starts the music as in any song.
 //   50 ms: a reset is followed by a few frames before the poll's first pass (3 in the Rush chapter: 18.8 ms at 160 FPS,
-//   50 at 60).
-// - Rule B, for any other path: at SAP_Play, while a stream waits, a clock more than 50 ms past its start is set to it
-//   (written as SetSongTime, sub_823D0C68, writes it). With rule A it does not act in the Rush chapter.
+//   50 at 60). A moved reset cannot put the music out of step: the poll starts it at the song's start whatever the
+//   clock began at, so the worst a needless move does is a longer wait. The upper bound is for practice, which resets
+//   its clock (the section less its 5 s intro) before SongAudioLoad seeks the stream there, while the start is still 0:
+//   only a section that starts about 5 s into its song falls inside, its intro up to half a second longer.
+// - Rule B, for any other path and for a hitch between the reset and the poll: at SAP_Play, while a stream waits, a
+//   clock more than 30 ms past its start is set to it (written as SetSongTime, sub_823D0C68, writes it). A start
+//   without a hitch is within a frame of it (16.7 ms at 60 FPS), so it is left as the game made it. With rule A it
+//   does not act in the Rush chapter.
 // - begin_song_after_intro runs every frame above 60 FPS (src/framerate.cpp), so the music starts within a frame of the
 //   song's start (6.25 ms at 160 FPS), not within a 60th of a second.
 // Left alone: the pause (its own seek), practice loops (no load), the whammy rewind, jam sessions (no song player), the
-// calibration screen (no begin_song_after_intro).
+// calibration screen (mock_highway_restart shuts the song player down, SongAudioDeInit, before each of its resets to 0;
+// its settings test loads a stream after its reset to -3 s and starts as any song).
 // Every song's start is logged with or without the option ("[song sync]": the clock against the stream's start at
 // SAP_Play, and what the rules did). docs/song-sync.md; local_docs/61, 62, 63.
 
@@ -63,9 +69,9 @@ constexpr uint32_t kSongClock = 0x82993A58;
 // start less kResetBefore.
 constexpr double kResetEarly = 0.050;
 constexpr double kResetBefore = 0.100;
-constexpr double kResetFar = 1.0;
+constexpr double kResetFar = 0.450;
 // Rule B: a clock more than this past the start at SAP_Play.
-constexpr double kPlayLate = 0.050;
+constexpr double kPlayLate = 0.030;
 
 struct WaitingStream {
   bool waiting = false;
