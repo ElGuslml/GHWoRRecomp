@@ -83,6 +83,7 @@ set(GHWOR_SOURCES
     src/players.cpp
     src/quit_prompt.cpp
     src/screen_fx.cpp
+    src/script_pools.cpp
     src/script_globals.cpp
     src/song_clock.cpp
     src/song_sync.cpp
