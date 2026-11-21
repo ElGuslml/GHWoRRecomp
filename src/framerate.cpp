@@ -214,7 +214,10 @@ void FrameBlanksSongEnded() {
     song = g_blanks;
     g_blanks = {};
   }
-  if (song.frames) {
+  // The frames after the music's stop still have the players' updates until the results screen: the next of the three
+  // hooks (SAP_Unload when the results are left) found about a fifth of a second of them and logged them as another
+  // "song". A count under a second's frames is no song (local_docs/71, step 1.0).
+  if (song.frames >= uint64_t(VblankRate())) {
     LogFrameBlanks(song, "the song");
   }
 }
