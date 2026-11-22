@@ -1,0 +1,8 @@
+# Measuring performance (local_docs/68, 70): a song's frames by the vertical blanks each took (src/framerate.cpp). The
+# render thread's present (sub_825840F0) waits for the frame's blank and stores the blank count; the difference from
+# the last frame's is the blanks the frame took. A line every 3,000 of a song's frames and at its end; nothing at
+# Unlimited, where a blank is a millisecond.
+[[midasm_hook]]
+address = 0x82584304   # std r3,7392(r29) (sub_825840F0, loc_82584300: after bl 0x8239FDD0; r3 = the blank count)
+name = "GHWoRFrameBlanksHook"
+registers = ["r3"]

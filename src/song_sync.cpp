@@ -44,6 +44,7 @@
 // SAP_Play, and what the rules did), and its end with the clock's report (src/song_clock.cpp). docs/song-sync.md;
 // local_docs/61, 62, 63.
 
+#include "framerate.h"
 #include "song_clock.h"
 
 #include <rex/cvar.h>
@@ -180,23 +181,27 @@ void GHWoRSongPlayHook() {
               on ? "" : " (ghwor_song_start_sync off)");
 }
 
-// The stream no longer waits: stopped, unloaded, the song player shut down, or played by unpausing it.
+// The stream no longer waits: stopped, unloaded, the song player shut down, or played by unpausing it. The music's
+// stop also ends the count of the song's frames by the blanks they took (src/framerate.cpp).
 // [[midasm_hook]] 0x820D3848 (the entry of SAP_Stop, sub_820D3848).
 void GHWoRSongStopHook() {
   EndWaiting();
   ghwor::SongClockSongEnded();
+  ghwor::FrameBlanksSongEnded();
 }
 
 // [[midasm_hook]] 0x820D4000 (the entry of SAP_Unload, sub_820D4000).
 void GHWoRSongUnloadHook() {
   EndWaiting();
   ghwor::SongClockSongEnded();
+  ghwor::FrameBlanksSongEnded();
 }
 
 // [[midasm_hook]] 0x820D4488 (the entry of SAP_DeInit, sub_820D4488).
 void GHWoRSongDeInitHook() {
   EndWaiting();
   ghwor::SongClockSongEnded();
+  ghwor::FrameBlanksSongEnded();
 }
 
 // [[midasm_hook]] 0x820D395C (SAP_UnPause, sub_820D38E8: "bl 0x820D78D8", the stream unpaused).

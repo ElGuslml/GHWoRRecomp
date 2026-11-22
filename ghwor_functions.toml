@@ -15,7 +15,7 @@ setjmp_address = 0x82798F90
 longjmp_address = 0x82798C70
 
 # A feature's or a fix's hooks in a file of their own (docs/development.md, "Contributing").
-includes = ["hooks/song_sync.toml", "hooks/lighting_job.toml"]
+includes = ["hooks/song_sync.toml", "hooks/perf_measure.toml", "hooks/lighting_job.toml"]
 
 # Codegen: the registers no call passes on are local variables of each function, not fields of the PPCContext, so
 # the compiler keeps them in host registers and the __savegprlr/__restgprlr helpers are elided, as in GH5, GH Van
@@ -30,6 +30,17 @@ cr_as_local = true
 ctr_as_local = true
 xer_as_local = true
 reserved_as_local = true
+# The XDK's inline Interlocked operations disable one core's interrupts around their lwarx / stwcx. (mfmsr rX,
+# mtmsrd r13, ..., mtmsrd rX). By default the codegen turns the three into the SDK's process-wide recursive mutex,
+# which on four cores took 10.7 % of a core at 60 FPS and 21.7 % at 120 in a song, the job workers a fifth of their
+# time (local_docs/72, Phase 1 step 1.1b). skip_msr emits nothing for them, so each site is the host's atomic
+# operation alone. That is the console's meaning: the pair stopped interrupts on one core, never the other cores, so
+# the game's code never had these operations excluded from each other, only each made atomic. recomp-tools'
+# tools/codegen/msr_sites.py checks it by address after every codegen: 172 sites in 105 functions, each one reserved
+# load and store with register arithmetic, compares and branches, and mfmsr's register read by its restores only. The
+# SDK's own users of the lock on guest words (critical sections, spin locks, SLists) use the host's atomics; its
+# object headers' handle stash relies on the guest never writing those words, with the lock as without it.
+skip_msr = true
 
 [functions]
 # The functions that call setjmp keep their registers in the context (share_registers): the host longjmp returns

@@ -17,6 +17,10 @@
 //
 // The waits of src/thread_waits.cpp follow the vblank's rate (VblankPeriod).
 
+#include "framerate.h"
+#include "keyboard.h"
+
+#include <native_x_renderer/native_x_renderer.h>
 #include <rex/cvar.h>
 #include <rex/logging.h>
 #include <rex/ppc/context.h>
@@ -137,7 +141,88 @@ void GHWoRMainFrameHook() {
     g_average_frame.store(average > 0.0 ? average + 0.1 * (seconds - average) : seconds, std::memory_order_relaxed);
   }
   last = now;
+  // NativeXRenderer's summary line counts a song's frames apart (its D181): a player's log then measures the play.
+  native_x_renderer::SetMainActivity(ghwor::PlayingSong());
 }
+
+// The frames of a song by the vertical blanks each took, for the log: at a fixed rate a frame that misses its blank waits
+// a whole one more, so the frames that took two or more are the ones the player saw twice. sub_825840F0, the render
+// thread presenting a frame, waits for its blank (the present interval, 1 in this game) and then stores the blank
+// count (sub_8239FDD0, the counter 0x8298C1E0) at 0x82AA1CE0; every call with an interval reaches that store once, and
+// the difference from the last frame's count is the blanks this frame took. With an interval of 0 the game skips the
+// store, and with the blank every millisecond (the launcher's Unlimited, or the SDK's vsync off) a blank is no display
+// refresh: nothing is counted then. A line every 3,000 of a song's frames and one at its end (the music's stop).
+namespace {
+
+struct FrameBlanks {
+  uint64_t frames = 0;  // the song's frames counted
+  uint64_t two = 0;     // of them, those that took two blanks
+  uint64_t more = 0;    // three or more
+  uint64_t next_line = 3000;
+};
+std::mutex g_blanks_mutex;
+FrameBlanks g_blanks;
+uint64_t g_last_blank = 0;  // the last frame's count (only the render thread, the hook's caller)
+
+void LogFrameBlanks(const FrameBlanks& blanks, const char* when) {
+  const uint64_t missed = blanks.two + blanks.more;
+  REXLOG_INFO("[frames] {}: {} frames at {:.0f} Hz, {} took two vertical blanks and {} three or more ({:.3f} % two or "
+              "more)",
+              when, blanks.frames, VblankRate(), blanks.two, blanks.more,
+              blanks.frames ? 100.0 * double(missed) / double(blanks.frames) : 0.0);
+}
+
+}  // namespace
+
+// [[midasm_hook]] 0x82584304 (sub_825840F0, loc_82584300: before "std r3,7392(r29)", r3 = the blank count when this
+// frame is presented). hooks/perf_measure.toml.
+void GHWoRFrameBlanksHook(PPCRegister& r3) {
+  const uint64_t blank = r3.u64;
+  const uint64_t last = g_last_blank;
+  g_last_blank = blank;
+  if (last == 0 || blank <= last || VblankRate() >= 1000.0 || !ghwor::PlayingSong()) {
+    return;
+  }
+  const uint64_t took = blank - last;
+  FrameBlanks line;
+  bool log = false;
+  {
+    std::lock_guard lock(g_blanks_mutex);
+    ++g_blanks.frames;
+    if (took == 2) {
+      ++g_blanks.two;
+    } else if (took > 2) {
+      ++g_blanks.more;
+    }
+    if (g_blanks.frames >= g_blanks.next_line) {
+      g_blanks.next_line += 3000;
+      line = g_blanks;
+      log = true;
+    }
+  }
+  if (log) {
+    LogFrameBlanks(line, "the song so far");
+  }
+}
+
+namespace ghwor {
+
+void FrameBlanksSongEnded() {
+  FrameBlanks song;
+  {
+    std::lock_guard lock(g_blanks_mutex);
+    song = g_blanks;
+    g_blanks = {};
+  }
+  // The frames after the music's stop still have the players' updates until the results screen: the next of the three
+  // hooks (SAP_Unload when the results are left) found about a fifth of a second of them and logged them as another
+  // "song". A count under a second's frames is no song (local_docs/71, step 1.0).
+  if (song.frames >= uint64_t(VblankRate())) {
+    LogFrameBlanks(song, "the song");
+  }
+}
+
+}  // namespace ghwor
 
 // [[midasm_hook]] 0x82629360 and 0x82629588 (sub_826291F8): before "extsw r8,r30" / "extsw r11,r30", r30 = the
 // game's vertical blanks per second, which divides a clock counted in vertical blanks (the vblank counter
