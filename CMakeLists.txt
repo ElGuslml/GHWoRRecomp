@@ -73,6 +73,7 @@ set(GHWOR_SOURCES
     src/highway_images.cpp
     src/intro.cpp
     src/keyboard.cpp
+    src/lighting_job.cpp
     src/main.cpp
     src/matchmaking.cpp
     src/mods.cpp

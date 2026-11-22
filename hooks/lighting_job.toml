@@ -1,0 +1,8 @@
+# The render thread does not leave a scene with its lighting job unfinished (src/lighting_job.cpp,
+# ghwor_lighting_job_wait, on; docs/lighting-job.md). The lighting job (sub_82648B08, job group 365) reads the scene
+# the render thread draws from a global; with the split render a job that started after the render thread moved on
+# read the next scene, and ended the game on a scene without a light block.
+[[midasm_hook]]
+address = 0x8255A994   # cmplwi cr6,r20,0 (sub_8255A3C8: every way out of a scene's stages meets here, before the next)
+name = "GHWoRLightingJobWaitHook"
+registers = ["r1"]
