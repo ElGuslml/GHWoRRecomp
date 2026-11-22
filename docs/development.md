@@ -132,6 +132,11 @@ request to a submodule targets `ghmetal`, and the game's pull request records th
   codegen reads includes recursively and runs again when any of them changes. Only one hook can sit at an address
   (the codegen keeps the last one read and says so only in its debug log): search the address in every `.toml` first.
   The existing hooks stay where they are.
+- **After every codegen** (a change to `ghwor_functions.toml`, a hook file or the code generator), run recomp-tools'
+  `tools/codegen/check_switch.mjs` (every switch table decoded) and `tools/codegen/msr_sites.py --project <repo>`.
+  `ghwor_functions.toml` sets `skip_msr = true`, so the XDK's inline Interlocked operations run as the host's atomics
+  without the SDK's global lock; `msr_sites.py` checks by address that each of those sites is still a reserved load
+  and store only, and fails when one is not.
 - **Settings:** a new option is off by default and leaves the game as it was; its default goes in `src/startup.cpp`.
 - **Updating a pull request:** merge `origin/dev` into its branch, or rebase with `git config rerere.enabled true`
   so that a conflict resolved once is not resolved again.

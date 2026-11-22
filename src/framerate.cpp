@@ -141,7 +141,7 @@ void GHWoRMainFrameHook() {
     g_average_frame.store(average > 0.0 ? average + 0.1 * (seconds - average) : seconds, std::memory_order_relaxed);
   }
   last = now;
-  // NativeXRenderer's summary line counts a song's frames apart (its D-next): a player's log then measures the play.
+  // NativeXRenderer's summary line counts a song's frames apart (its D181): a player's log then measures the play.
   native_x_renderer::SetMainActivity(ghwor::PlayingSong());
 }
 
