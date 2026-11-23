@@ -435,7 +435,7 @@ Sharper, Sharpest): the 3D view's textures half a mip level or a whole one sharp
 With DLSS, DLAA or FSR 3.1, `native_x_renderer_upscaler_lod_bias = -1` adds the vendors' extra mip (no launcher row;
 Gustavo's look to decide).
 
-## V-Sync in a window (NativeXRenderer D-next, 2026-11-22)
+## V-Sync in a window (NativeXRenderer D182, 2026-11-22)
 
 **Symptom:** with V-Sync in a window, frames held a refresh longer now and then (a 1 % low of 56 FPS at 160), only while
 Windows composed the window (Wallpaper Engine animating the desktop behind it); borderless was smooth.

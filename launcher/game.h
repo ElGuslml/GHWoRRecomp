@@ -140,9 +140,8 @@ inline constexpr const char* kFrameRateCvar = GAME_FRAME_RATE_CVAR;
 inline constexpr bool kFrameRateIsBool = false;
 // Above 240 (RecompLauncher 3.31, with V-Sync off; Gustavo, 2026-11-18): 300, 360, 480 and Unlimited (1000 Hz, the SDK's
 // ceiling), experimental: the rings of src/framerate.cpp hold a 60th of a second at 1000 (local_docs/56).
-// Between 60 and 120 (local_docs/73, 2.3): 72, 75, 90 and 100, for a PC that cannot hold 120 and a monitor whose rate
-// they fit (72 on 144 Hz, 75 on 150, 100 on 200 with V-Sync; any of them with V-Sync off or a variable refresh rate:
-// the launcher says when one does not fit with V-Sync on).
+// Between 60 and 120 (local_docs/73, 2.3): 72, 75, 90 and 100, for a PC that cannot hold 120. With V-Sync they are even
+// on a monitor whose rate they fit (72 on 144 Hz, 75 on 150, 100 on 200), with V-Sync off or a variable refresh rate.
 inline constexpr std::array<FrameRate, 14> kFrameRates{{{60, 60},
                                                         {72, 72},
                                                         {75, 75},
