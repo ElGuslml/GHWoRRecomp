@@ -109,7 +109,7 @@ From then on, the launcher keeps itself up to date: when a new version comes out
 - 🌑 **Sharper shadows:** the **Shadow quality** row draws the shadows at up to four times the original resolution.
 - 🌗 **Ambient occlusion:** soft shadows in the corners, the folds and where the band touches the stage (XeGTAO, Low to
   Ultra), in place of the game's own; **Texture detail** sharpens the venue's textures.
-- ⚡ **High frame rates:** 60 FPS as on the console, or 120, 144, 160, 165 or 240 FPS if your monitor supports it
+- ⚡ **High frame rates:** 60 FPS as on the console, or 72, 75, 90, 100, 120, 144, 160, 165 or 240 FPS if your monitor supports it
   (experimental), and 300, 360, 480 or Unlimited with V-Sync off (experimental: with V-Sync on the game runs at your
   monitor's rate). The songs keep their speed and stay in sync. V-Sync is on by default (no tearing, the game in step
   with your monitor, without V-Sync's usual delay); leave it on with a G-Sync or FreeSync monitor too. Star Power

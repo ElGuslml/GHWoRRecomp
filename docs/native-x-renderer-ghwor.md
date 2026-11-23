@@ -434,3 +434,17 @@ crowd and the band before the screen effects; the note highway and the HUD come 
 Sharper, Sharpest): the 3D view's textures half a mip level or a whole one sharper; the highway and the HUD unchanged.
 With DLSS, DLAA or FSR 3.1, `native_x_renderer_upscaler_lod_bias = -1` adds the vendors' extra mip (no launcher row;
 Gustavo's look to decide).
+
+## V-Sync in a window (NativeXRenderer D-next, 2026-11-22)
+
+**Symptom:** with V-Sync in a window, frames held a refresh longer now and then (a 1 % low of 56 FPS at 160), only while
+Windows composed the window (Wallpaper Engine animating the desktop behind it); borderless was smooth.
+
+**Cause:** FIFO in front of the compositor had a second stable phase, one image held a refresh longer
+(`local_docs/74`, 2.1).
+
+**Fix:** `native_x_renderer_window_present_mode = "mailbox"` in `src/startup.cpp`: with V-Sync, a window that does not
+cover its display presents with MAILBOX; borderless and full screen keep FIFO (MAILBOX there queued a frame, 10.4 ms to
+the display against 4.0). In a 1280x720 window on a display plane every frame was shown, 2.2-3.1 ms to the display. The
+composed case itself did not come back on this PC (not even with the window across two monitors), so its cure is a
+reading. `"vsync"` turns it off (FIFO in a window too).
