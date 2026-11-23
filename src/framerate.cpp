@@ -40,8 +40,9 @@
 REXCVAR_DECLARE(bool, ghwor_song_start_sync);
 
 REXCVAR_DEFINE_INT32(ghwor_frame_rate, 60, "GHWoR",
-                     "Frame rate: 60 as on the console, or 120, 144, 160, 165 or 240, or with V-Sync off 300, 360, "
-                     "480 or 1000 (experimental; the launcher's Unlimited): the emulated vertical blank runs "
+                     "Frame rate: 60 as on the console, or 72, 75, 90, 100, 120, 144, 160, 165 or 240, or with "
+                     "V-Sync off 300, 360, 480 or 1000 (experimental; the launcher's Unlimited): the emulated "
+                     "vertical blank runs "
                      "at that rate (video_mode_refresh_rate, set at startup) and the game presents on every one; its "
                      "clock is real time, so it keeps its speed");
 

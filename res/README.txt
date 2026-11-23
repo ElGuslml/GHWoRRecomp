@@ -153,9 +153,9 @@ when you press PLAY.
 - Settings:
   - Display: the monitor, fullscreen, borderless or window, the resolution, the image format (fill a screen
     wider than 16:9, where the stage is seen wider while the note highway, the HUD and the menus stay 16:9
-    in the center, or keep 16:9 with bars). Smoothness: the frame rate, 60 FPS (original), and 120, 144, 160,
-    165 or 240 FPS (experimental; the songs keep their speed and stay in sync at every frame rate), and 300, 360,
-    480 or Unlimited (experimental, with V-Sync off: with V-Sync on the game runs at your monitor's rate), V-Sync (on by default: no tearing, and no extra delay; leave it on with a G-Sync or
+    in the center, or keep 16:9 with bars). Smoothness: the frame rate, 60 FPS (original), and 72, 75, 90, 100, 120,
+    144, 160, 165 or 240 FPS (experimental; the songs keep their speed and stay in sync at every frame rate), and 300,
+    360, 480 or Unlimited (experimental, with V-Sync off: with V-Sync on the game runs at your monitor's rate), V-Sync (on by default: no tearing, and no extra delay; leave it on with a G-Sync or
     FreeSync monitor too), and Venue at the full frame rate (off by default): the game draws its venue and its
     band in turns, each at half the frame rate (30 times a second on the console), while the note highway uses
     the full rate; on, the whole scene is drawn in every frame, for about twice the work for the processor and

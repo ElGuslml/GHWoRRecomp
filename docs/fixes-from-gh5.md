@@ -91,8 +91,8 @@ Moved on 2026-11-05 to GH Metallica's versions: SDK `0a7c86c` (changes 69-72, on
 
 ## Frame rates above 60
 
-**Experimental.** `ghwor_frame_rate` (60, 120, 144, 160, 165, 240; the launcher's frame rate row) sets the vertical
-blank's rate; the game's clock is real time. `src/framerate.cpp` (`ghwor_frame_rate_fix`, on) keeps at the console's
+**Experimental.** `ghwor_frame_rate` (60, 72, 75, 90, 100, 120, 144, 160, 165, 240; the launcher's frame rate row)
+sets the vertical blank's rate; the game's clock is real time. `src/framerate.cpp` (`ghwor_frame_rate_fix`, on) keeps at the console's
 speed what counts frames, as GH5's: the vblank clocks, the scripts' game-frame waits, the button presses scripts poll,
 the whammy on a sustain and the loading screen's animations. Where this game differs: the whammy's hooks read the note
 hold object from another register and its fields moved; the loading star's turn is multiplied by a new speed parameter;
