@@ -82,8 +82,9 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   buttons in a song are its own (the launcher's **In a song**: each fret, the open note, Star Power and the whammy bar on
   up to two buttons), apart from the menus' (**Navigation**). It is the default **Play style**; each controller's page
   in the launcher's Controls tab can choose **Guitar · Xbox 360** instead, for a guitar that Windows sees as a
-  controller (through an adapter), while another controller keeps this one. On the keyboard, each fret can strum
-  as you press it (the Keyboard page's switch).
+  controller (through an adapter), while another controller keeps this one. **The keyboard plays the same way** by
+  default (the fret keys D, F, J, K and L, the open note on 3, Star Power on Space, the whammy bar on the right arrow);
+  its Keyboard page's **Play style** can choose **Guitar · Xbox 360** instead (strum with the arrows).
 - 🎤 **Sing (experimental):** any microphone on your PC is the game's USB microphone. Choose it in the launcher, and
   choose which controller sings.
 - 🖥️ **Sharp, native graphics:** the game is drawn by your graphics card at your screen's resolution, with smooth
