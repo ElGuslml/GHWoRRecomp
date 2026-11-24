@@ -1,0 +1,13 @@
+# Stamps the page watches do not see (src/fence_stamps.cpp, ghwor_draw_stamps_unwatched, on; local_docs/76 step 3.1).
+# A render object's last drawn frame and SetTexture's fence are written through the physical view: the render objects
+# share pages with textures, and each of these stores faulted on a watched texture page (14-26 a frame in a song).
+[[midasm_hook]]
+address = 0x822D862C   # stw r11,8(r28) (sub_822D8500, SetTexture: the sampler's previous texture), then b 0x822D8684
+name = "GHWoRTextureFenceHook"
+registers = ["r11", "r28"]
+jump_address_on_true = 0x822D8684
+[[midasm_hook]]
+address = 0x8263D35C   # stw r11,112(r29) (sub_8263D160: the frame the render object is drawn in)
+name = "GHWoRObjectFrameHook"
+registers = ["r11", "r29"]
+jump_address_on_true = 0x8263D360

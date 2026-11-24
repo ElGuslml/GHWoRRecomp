@@ -1,4 +1,4 @@
-# D3D's fence stamps and the renderers' page watches
+# D3D's fence stamps, the render objects' frame and the renderers' page watches
 
 **Symptom.** At high frame rates (240 FPS in ultrawide, the venue drawn every frame) the renderer's thread could not
 keep up in busy songs: about 230 FPS on average, stretches under 200. NativeXRenderer spent a quarter of its time
@@ -21,4 +21,16 @@ a word stamped in the last 20 ms); a real write to the page still faults and upl
 3.00 ms a frame, 231 -> 239 FPS on average, the slowest stretch 198 -> 225. With V-Sync off and the frame rate at 480
 (measurement only): 260 -> 320 FPS. Test-Games OK on both renderers.
 
-**Turning it off.** `ghwor_fence_stamps_unwatched = false` in `ghwor.toml`: the game's own stores.
+**Two more (2026-11-24, the performance plan's Phase 3).** A render object's last drawn frame (`sub_8263D160` writes
+the frame number at object + 112, `0x8263D35C`) and `SetTexture`'s fence in the previous texture's header
+(`0x822D862C`) are written the same way (`hooks/draw_stamps.toml`). The render objects live in the unused space of
+textures' packed mip tails, so nearly every write fault left on a texture's page was the object's stamp (9-18 a frame
+in a song), and NativeXRenderer reloaded one small texture with the same image at every frame the object was drawn.
+A check over two songs: no vertex or index range a draw read held a word these two stamped in the last 20 ms; texture
+ranges did, always in that unused space, which no image is made of (NativeXRenderer D148). Measured inside one play
+with the setting alternated: texture loads 0.5-1 a frame -> 0, a quarter fewer invalidations and protections, the
+process about 1 % less CPU.
+
+**Turning it off.** `ghwor_fence_stamps_unwatched = false` (vertex and index buffers' fences) and
+`ghwor_draw_stamps_unwatched = false` (the render objects' frame, the textures' fence) in `ghwor.toml`: the game's own
+stores.
