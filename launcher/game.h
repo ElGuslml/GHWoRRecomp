@@ -293,6 +293,14 @@ inline constexpr DlcRule kDlcRule{.manifest_prefix = "cmanifest_",
                                   .known_names = kDlcDiscNames,
                                   .foreign = DlcForeign::kDamaged};
 
+// --- Mod packs ---
+
+// The Mods tab's Packs section (RecompLauncher next, mod_packs.h; docs/mods.md): the players' mods as folders of
+// files in <user data>\Mods, each switched on or off, a pack with patches made from the player's own game files when it
+// is switched on. The game mounts the packs on over its files (src/startup.cpp's ConfigureModPacks, the SDK's
+// game_data_overlays).
+inline constexpr bool kHasModPacks = true;
+
 // NativeXRenderer's pipeline list (its D129, pipelines.h): Play first runs the game's --native_x_renderer_prepare_pipelines
 // ("Compiling shaders") when the executable, the list (<TITLEID>.pipelines.list beside it) or the graphics driver
 // changed since the last time. On when the game's NativeXRenderer profile names its shader files.

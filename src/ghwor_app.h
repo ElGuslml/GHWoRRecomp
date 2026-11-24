@@ -43,13 +43,20 @@ class GhworApp : public rex::ReXApp {
 
   // Game files: without --game_data_root, assets/ next to GHWoRRecomp.exe or the repository's assets/. User data
   // (shader cache, downloadable content; the saves and achievements before the profiles): userdata/ next to the
-  // executable; the saves, settings and achievements in the launchers' current profile (src/startup.cpp).
+  // executable; the saves, settings and achievements in the launchers' current profile (src/startup.cpp). The mod
+  // packs the launcher switched on (<user data>\Mods\enabled.txt) over the game files.
   void OnConfigurePaths(rex::PathConfig& paths) override {
     if (paths.game_data_root.empty()) {
       paths.game_data_root = ghwor::DefaultGameRoot();
     }
     ghwor::ConfigureUserData(paths.user_data_root, paths.cache_root);
     ghwor::ConfigureProfile(paths.user_data_root);
+    // Not in the tool modes (the launcher's achievements list, NativeXRenderer's, a package installed): the game files
+    // check's condition, and install_content.
+    if (!rex::cvar::Query<bool>("achievements_cache_only") && !native_x_renderer::ToolModeRequested() &&
+        rex::cvar::Query<std::string>("install_content").empty()) {
+      ghwor::ConfigureModPacks(paths.user_data_root);
+    }
   }
 
   // ghwor.toml with the built-in defaults if it is missing, then (after the SDK loads it) the game files check
@@ -61,6 +68,7 @@ class GhworApp : public rex::ReXApp {
     ghwor::EnsureDefaultConfig(exe_dir / GAME_CONFIG);
     if (!rex::ReXApp::SetupEnvironment()) return false;
     REXLOG_INFO("[startup] User data: {}", user_data_root().string());
+    ghwor::LogModPacks();
     REXLOG_INFO("[startup] {}", native_x_renderer::Describe());
     if (!rex::cvar::Query<bool>("achievements_cache_only") && !native_x_renderer::ToolModeRequested() &&
         !ghwor::CheckGameFiles(game_data_root())) {
