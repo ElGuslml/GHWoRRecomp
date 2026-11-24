@@ -36,7 +36,7 @@ that is not in the note still ends everything.
 
 **In the menus and the pause menu** nothing changes: A selects, B goes back, and the D-pad moves.
 
-**Not affected:** real guitars and drum kits, the keyboard, a controller set to Drums or Vocals, and a controller
+**Not affected:** real guitars and drum kits, a controller or the keyboard set to Drums or Vocals, and a controller
 whose whammy bar was calibrated in the launcher (the SDK takes it for a guitar).
 
 **The launcher** (3.23): each controller playing guitar has a **Play style** selector on its Controls page, its own
@@ -64,3 +64,27 @@ group a chord, so chords sometimes strummed once too often. That emulation is go
 - Checked in the launcher: the play style selector (each controller its own), and both lists of buttons.
 - Gustavo played it with a DualSense: "almost as in GH III". A chord over an extended sustain never counted, and
   pressing it again ended the long note. Both are fixed as above, and he checked them in the same song.
+
+## The keyboard (2026-11-23)
+
+**Now also the keyboard** playing guitar (SDK change 125, `keyboard_guitar_layout = "gh3"`, the default in
+`src/startup.cpp`; GH Warriors of Rock Launcher's Keyboard page, **Play style**). In a song the game plays the
+keyboard with the same controller code and the same hooks, so the chord and sustain rules above hold for it too.
+
+| | Keyboard (the launcher's default keys) |
+|---|---|
+| Green, red, yellow, blue, orange | D, F, J, K, L (the keys of the guitar's frets, whatever they are) |
+| Strum | None: pressing a fret key plays. The arrows (the guitar's strum) do nothing in a song |
+| Open note (bass) | The right bumper's key (3 by default; free to choose on the Keyboard page) |
+| Star Power | Space or Backspace (Back's keys) |
+| Whammy bar | The right arrow (the right stick's key), all or nothing |
+| Pause | Enter |
+
+The menus and the pause menu keep the keys as they are (the arrows move, D confirms). The strum switch on the Keyboard
+page is hidden on this layout (there is nothing to strum). **Off:** Play style **Guitar · Xbox 360** on the Keyboard
+page, or `keyboard_guitar_layout = "guitar"`: the arrows strum again, as before.
+
+**Status:** built; a short check with keys sent to the game (Quickplay+, one song): the log's "[controller layout]
+port 0: a controller (or the keyboard) on Guitar Hero III's layout" at the song's start, notes hit by fret keys alone
+(the multiplier at x2), 0 errors. Gustavo played a song with the keyboard on it (2026-11-24): "todo perfecto", 0
+errors (RecompLauncher 3.33.0).

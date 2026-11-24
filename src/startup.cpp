@@ -154,6 +154,13 @@ gamepad_subtype = 6
 # Back, the whammy bar on either stick. "guitar": an Xbox 360 guitar's controls, frets on A, B, Y, X and LB,
 # strumming on the D-pad, the whammy bar on the right stick, the tilt on its Y, Star Power on Back.
 gamepad_guitar_layout = "gh3"
+# The keyboard playing guitar plays a song on the same layout (SDK change 125, keyboard_guitar_layout; GH Warriors of
+# Rock Launcher's Keyboard page, Play style): the game's controller code plays its fret keys (green, red, yellow, blue,
+# orange on the keys of A, B, Y, X and LB below; the open note on RB's), a fret key pressed plays, no strum: in a song
+# the arrows (the D-pad) do nothing and the strum switch (mnk_tap_target) does not act. Star Power on Back's keys, the
+# whammy bar on the right stick's key. The menus keep the keys as they are. "guitar": an Xbox 360 guitar's, as before
+# (the arrows strum).
+keyboard_guitar_layout = "gh3"
 # A PS3 Guitar Hero guitar (a CRKD guitar on its P3 setting too): yellow and blue, swapped on that protocol, put right,
 # and its whammy bar, which rests at the middle of its axis, at rest there.
 guitar_ps3_protocol = true

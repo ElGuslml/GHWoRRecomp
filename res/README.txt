@@ -95,8 +95,11 @@ when you press PLAY.
     gives you no Star Power (a Wii or PS3 guitar): press Assign, tilt the neck up as for Star Power and hold it,
     then go back to your playing position.
   - Keyboard (experimental): turn on "Play with keyboard and mouse" to play with the keyboard as a guitar
-    (frets D F J K L, strum with the Up and Down arrows, Star Power with Space, Start with Enter), and change
-    any key. "Strum when a fret is pressed" makes each fret strum as you press it, in songs. Shift, Ctrl
+    (frets D F J K L, Star Power with Space, Start with Enter), and change any key. Play style:
+    "Controller · GH III" (the default) plays songs as in Guitar Hero III: no strum (pressing a fret key plays
+    its note), the open note (bass) on 3, the whammy bar on the Right arrow; the arrows do nothing in a song.
+    "Guitar · Xbox 360" strums with the Up and Down arrows, and "Strum when a fret is pressed" makes each
+    fret strum as you press it, in songs. Shift, Ctrl
     and Alt can be keys of their own (press and release one alone): each side is a separate key, so Left
     Alt can be Star Power. F1 to F12 can be assigned too: a key on a control only presses that control.
     Instrument: Drums plays the keyboard as a drum kit with keys of its own (5 lanes: D red, F yellow,
