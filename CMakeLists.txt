@@ -62,6 +62,59 @@ add_custom_command(
 add_custom_target(ghwor_sources_marker DEPENDS "${GHWOR_SOURCES_MARKER}")
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${GHWOR_SOURCES_MARKER}")
 
+# The executable's own code (the generated code, src/, NativeXRenderer and DiligentCore) can be built for a higher
+# CPU level and with a profile (the performance plan's Phase 5, local_docs/77). The SDK, included above, keeps the
+# baseline, and its DLLs are shared by every build.
+# - GHWOR_CPU_LEVEL: x86-64-v2 (the default, any CPU since about 2009) or x86-64-v3 (AVX2, FMA, BMI1/2, MOVBE,
+#   LZCNT: Haswell, Zen 1 and later).
+# - GHWOR_PGO: empty (none), "generate" (an instrumented build that writes the profile it collects; never shipped;
+#   src/pgo_profile.cpp) or the path of a merged profile (.profdata) to optimize with.
+set(GHWOR_CPU_LEVEL "x86-64-v2" CACHE STRING "The CPU level of the executable's own code: x86-64-v2 or x86-64-v3")
+set_property(CACHE GHWOR_CPU_LEVEL PROPERTY STRINGS x86-64-v2 x86-64-v3)
+# A Release build takes the game's profile when there is one (tools/pgo/ghwor.profdata, kept out of git as the pipeline
+# list is: docs/development.md, "Releases"); -DGHWOR_PGO= (empty) builds without it.
+set(_ghwor_profile "${CMAKE_CURRENT_SOURCE_DIR}/tools/pgo/ghwor.profdata")
+if(CMAKE_BUILD_TYPE STREQUAL "Release" AND EXISTS "${_ghwor_profile}")
+    set(_ghwor_pgo_default "${_ghwor_profile}")
+else()
+    set(_ghwor_pgo_default "")
+endif()
+set(GHWOR_PGO "${_ghwor_pgo_default}" CACHE STRING "Profile-guided optimization: empty, generate, or the path of a .profdata")
+# On by default: the profile comes from guitar songs, and the drums', the microphone's or the rocker creator's code it
+# never ran is then optimized as without a profile, not for size (local_docs/77: the same gains either way).
+set(GHWOR_PGO_COLD_AS_BASE ON CACHE BOOL
+    "With a profile, code the profile never ran is optimized as without one (-pgso=false), not for size")
+set(GHWOR_EXTRA_SOURCES "")
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    get_directory_property(_ghwor_options COMPILE_OPTIONS)
+    if(NOT GHWOR_CPU_LEVEL STREQUAL "x86-64-v2")
+        # The same arithmetic as the baseline's: no a * b + c fused where the code did not ask for it (the generated
+        # code's fmadd and its kin call fma, the same result either way).
+        list(REMOVE_ITEM _ghwor_options -march=x86-64-v2)
+        list(APPEND _ghwor_options -march=${GHWOR_CPU_LEVEL} -ffp-contract=off)
+        # A message instead of a crash on a processor without it, built for the baseline (src/cpu_check.cpp).
+        list(APPEND GHWOR_EXTRA_SOURCES src/cpu_check.cpp)
+        set_source_files_properties(src/cpu_check.cpp PROPERTIES COMPILE_OPTIONS "-march=x86-64-v2")
+    endif()
+    if(GHWOR_PGO STREQUAL "generate")
+        list(APPEND _ghwor_options -fprofile-instr-generate)
+        add_link_options(-fprofile-instr-generate)
+        list(APPEND GHWOR_EXTRA_SOURCES src/pgo_profile.cpp)
+    elseif(GHWOR_PGO)
+        if(NOT EXISTS "${GHWOR_PGO}")
+            message(FATAL_ERROR "GHWOR_PGO: no profile at ${GHWOR_PGO}")
+        endif()
+        # A function the profile does not know (changed since, or never run) is only reported in the summary.
+        list(APPEND _ghwor_options -fprofile-instr-use=${GHWOR_PGO} -Wno-profile-instr-unprofiled
+             -Wno-profile-instr-out-of-date -Wno-profile-instr-missing)
+        if(GHWOR_PGO_COLD_AS_BASE)
+            list(APPEND _ghwor_options "SHELL:-mllvm -pgso=false")
+        endif()
+    endif()
+    set_directory_properties(PROPERTIES COMPILE_OPTIONS "${_ghwor_options}")
+    message(STATUS "GHWoR: the executable's code for ${GHWOR_CPU_LEVEL}, profile: ${GHWOR_PGO}")
+endif()
+
 # Sources
 set(GHWOR_SOURCES
     src/camera_cuts.cpp
@@ -93,6 +146,7 @@ set(GHWOR_SOURCES
     src/thread_waits.cpp
     src/timer.cpp
     src/widescreen.cpp
+    ${GHWOR_EXTRA_SOURCES}
 )
 
 if(WIN32)

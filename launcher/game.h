@@ -23,6 +23,9 @@ namespace launcher::game {
 inline constexpr const char* kName = GAME_TITLE;
 // The recompiled executable and the launcher, side by side; the launcher's name is its window's title.
 inline constexpr const char* kRecompExecutable = GAME_EXE;
+// The same built for x86-64-v3 processors (AVX2), beside it in a release: Play starts it where the processor runs it
+// (launcher 3.36, recomp_launcher/cpu.h; the game's CMakeLists.txt GHWOR_CPU_LEVEL).
+inline constexpr const char* kRecompExecutableAvx2 = GAME_EXE_AVX2;
 inline constexpr const char* kLauncherExecutable = GAME_LAUNCHER ".exe";
 inline constexpr const char* kLauncherName = GAME_LAUNCHER;
 // The game's settings next to it: its base file (src/startup.cpp writes the defaults) and what the launcher saves.

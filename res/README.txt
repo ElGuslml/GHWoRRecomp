@@ -13,7 +13,8 @@ REQUIREMENTS
 - Windows 10 or 11, 64-bit.
 - A GPU with up-to-date drivers that support Vulkan (NativeXRenderer, the default renderer) or
   Direct3D 12 (the Xenos renderer).
-- A CPU with SSE4.2 (practically any 64-bit CPU from 2009 on).
+- A CPU with SSE4.2 (practically any 64-bit CPU from 2009 on). On a CPU with AVX2 (Intel from 2013, AMD
+  Ryzen) the launcher starts GHWoRRecomp-avx2.exe, the same game built for it, faster (5-8 % more frames in our tests).
 - Microsoft Visual C++ Redistributable 2015-2022 (x64). Most PCs already have it. If Windows says that
   MSVCP140.dll or VCRUNTIME140.dll is missing, install it from:
   https://aka.ms/vs/17/release/vc_redist.x64.exe
@@ -252,6 +253,9 @@ FILES
 
 - ghwor.toml                Base settings. Created with the defaults this game needs if it is missing.
 - ghwor_options.toml        What GH Warriors of Rock Launcher saves. Loaded after ghwor.toml.
+                            launcher_avx2 = false in it: PLAY starts GHWoRRecomp.exe even on a CPU with AVX2.
+- GHWoRRecomp-avx2.exe      The game built for CPUs with AVX2, which the launcher starts on them. Started by hand
+                            on a CPU without AVX2 it says so and closes: start GHWoRRecomp.exe there.
 - logs\                     Log files: the game's (ghwor_NNN.log) and the launcher's (launcher_NNN.log,
                             with a .dmp file when it stopped responding). Attach the latest ones when you report
                             a problem.

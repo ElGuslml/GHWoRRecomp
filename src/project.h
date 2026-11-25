@@ -6,6 +6,9 @@
 
 #define GAME_TITLE "Guitar Hero: Warriors of Rock"
 #define GAME_EXE "GHWoRRecomp.exe"
+// The same game built for x86-64-v3 processors (AVX2; CMakeLists.txt's GHWOR_CPU_LEVEL), next to it in a release: the
+// launcher starts it where the processor has what it needs.
+#define GAME_EXE_AVX2 "GHWoRRecomp-avx2.exe"
 #define GAME_LAUNCHER "GH Warriors of Rock Launcher"
 // The game's executable in the game files (assets/): the code is recompiled from it.
 #define GAME_XEX "default.xex"

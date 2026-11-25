@@ -32,7 +32,31 @@ cmake --build --preset win-amd64-release
 - If you cloned without `--recursive`: `git submodule update --init --recursive`.
 - The first build translates `default.xex` into C++ (`generated/`) and builds the SDK: it takes a while. If it stops
   with "precompiled header ... has been modified", run the build command again.
-- Presets: `win-amd64-release`, `win-amd64-relwithdebinfo`, `win-amd64-debug`.
+- Presets: `win-amd64-release`, `win-amd64-release-avx2`, `win-amd64-relwithdebinfo`, `win-amd64-debug`.
+
+### The two executables and the profile (releases)
+
+A release ships the game twice: `GHWoRRecomp.exe` for any x86-64-v2 processor and `GHWoRRecomp-avx2.exe` for
+x86-64-v3 ones (AVX2, FMA, BMI1/2, MOVBE, LZCNT: Intel Haswell, AMD Zen and later). The launcher starts the second
+where the processor runs it (`launcher_avx2 = false` in `ghwor_options.toml` turns that off); started by hand on an
+older processor it says so and closes. Both are built with profile-guided optimization from the game's profile,
+`tools\pgo\ghwor.profdata` (out of git, as the pipeline list): a Release build takes it when it is there
+(`-DGHWOR_PGO=` builds without it). Only the executable's own code changes (the generated code, `src\`,
+NativeXRenderer); the SDK's DLLs are the same for both. On the plan's bench (an i7-13700K held to four efficiency
+cores, and whole): the AVX2 build with the profile 5-8 % more frames uncapped and 1-8 % less CPU at 120 FPS
+(`local_docs/77`). Code the profile never ran (drums, the microphone, the rocker creator) is optimized as without one
+(`GHWOR_PGO_COLD_AS_BASE`, on).
+
+```powershell
+cmake --preset win-amd64-release      ; cmake --build --preset win-amd64-release
+cmake --preset win-amd64-release-avx2 ; cmake --build --preset win-amd64-release-avx2
+..\recomp-tools\tools\release\Package-Release.ps1 -Game ghwor -Version x.y.z -Avx2Build out\build\win-amd64-release-avx2 ...
+```
+
+The profile: an instrumented build (`-DGHWOR_PGO=generate`, in a tree of its own; never shipped) writes what it ran
+every 10 s to `GHWOR_PGO_FILE` (`src\pgo_profile.cpp`); play a few songs with it (the split render and the venue
+every frame), then `llvm-profdata merge -o tools\pgo\ghwor.profdata <files>.profraw`. A profile older than the code
+still builds: the functions changed since are optimized without it. Make it again when much of the code has changed.
 
 ## Running
 
