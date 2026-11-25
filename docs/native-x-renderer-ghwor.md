@@ -429,6 +429,13 @@ crowd and the band before the screen effects; the note highway and the HUD come 
   ledges shaded, the walls left white. `native_x_renderer_ao_debug = true` shows the occlusion alone.
 - Cost (D162, 1280x720, RTX 4070 Ti, High): 0.23-0.27 ms a frame. With the split render it runs once a pair, in the
   second frame.
+- **At half resolution (NativeXRenderer D-next, 2026-11-25; `local_docs/79`):** at 3440x1440 with the venue every frame
+  Ultra was 1.36 ms of a 3.87 ms frame (the pass timer, the bench song), a third of the GPU, more than the venue's own
+  draws; in Serpent's Stronghold 1.24 of 4.12, its main pass 0.91-0.93 ms (RenderDoc). `src/startup.cpp` sets
+  `native_x_renderer_ao_resolution = "half"`: the occlusion at 1720x720 there, the game's own lines, enlarged onto the
+  view by depth. Ultra 0.41 ms, the frame 2.85 ms (250 -> 298 FPS uncapped on that song); the edges stay sharp in the
+  occlusion alone (`native_x_renderer_ao_debug`, the rocker creator). **Off:** `native_x_renderer_ao_resolution =
+  "full"`.
 
 **Texture detail** (`native_x_renderer_texture_lod_bias`: 0, -0.5, -1; Settings > Graphics > Texture detail: Normal,
 Sharper, Sharpest): the 3D view's textures half a mip level or a whole one sharper; the highway and the HUD unchanged.
