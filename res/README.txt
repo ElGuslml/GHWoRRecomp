@@ -5,7 +5,7 @@ A static recompilation of the Xbox 360 game to native Windows. The game's code i
 compiled into GHWoRRecomp.exe: you do not need to compile anything. You do need your own copy of the game,
 because this package contains no game files.
 
-This is a beta. Not affiliated with Microsoft, Activision or the game's developers.
+Not affiliated with Microsoft, Activision or the game's developers.
 
 
 REQUIREMENTS
@@ -22,7 +22,7 @@ REQUIREMENTS
 - An Xbox 360 guitar. Any other controller works as a guitar too, and so does the keyboard. An Xbox One
   guitar (such as the PDP Riffmaster for Xbox) needs Microsoft GameInput: the installer offers it, and so does
   the launcher's Controls page while it is missing (Windows asks for permission to install it).
-- To sing (experimental): any microphone connected to the PC, and a controller for the singer.
+- To sing: any microphone connected to the PC, and a controller for the singer.
 
 
 INSTALLATION
@@ -94,7 +94,7 @@ when you press PLAY.
     push the bar all the way and hold it, then let it go; X clears the assignment. Tilt: the same, if tilting
     gives you no Star Power (a Wii or PS3 guitar): press Assign, tilt the neck up as for Star Power and hold it,
     then go back to your playing position.
-  - Keyboard (experimental): turn on "Play with keyboard and mouse" to play with the keyboard as a guitar
+  - Keyboard: turn on "Play with keyboard and mouse" to play with the keyboard as a guitar
     (frets D F J K L, Star Power with Space, Start with Enter), and change any key. Play style:
     "Controller · GH III" (the default) plays songs as in Guitar Hero III: no strum (pressing a fret key plays
     its note), the open note (bass) on 3, the whammy bar on the Right arrow; the arrows do nothing in a song.
@@ -105,7 +105,7 @@ when you press PLAY.
     Instrument: Drums plays the keyboard as a drum kit with keys of its own (5 lanes: D red, F yellow,
     J blue, K orange, L green; 4 lanes: K green; Space the kick pedal, Backspace Star Power); your guitar
     keys stay as they were.
-  - Microphone (experimental): the microphone you sing with, its channel and gain, and its level (see
+  - Microphone: the microphone you sing with, its channel and gain, and its level (see
     SINGING).
 - Mods (changes to the game itself; each applies when the game starts):
   - Highway: your own pictures on the note highway (NativeXRenderer only). Folder: where they are (PNG, JPEG,
@@ -201,7 +201,7 @@ when you press PLAY.
     too. Play shows a new version as a button when there is one.
 
 
-SINGING (EXPERIMENTAL)
+SINGING
 
 Any microphone connected to the PC works as the game's Xbox 360 USB microphone:
 1. In the launcher's Controls tab, choose Microphone (under the keyboard) and pick your microphone, or the
@@ -275,15 +275,7 @@ launcher misbehaved, the launcher's).
 
 KNOWN ISSUES
 
-- Guitar Hero: Warriors of Rock shares its engine with Guitar Hero 5, with GH5Recomp's, GHVanHRecomp's and
-  GHMetalRecomp's fixes. Songs have been played with a guitar; drums and singing have not been tested in this
-  game yet.
-- Singing is experimental: if the pitch line jumps or the game misses your voice, change the microphone's
-  Gain in the launcher.
-- Some USB audio interfaces add delay in Windows' shared audio mode (a Focusrite Scarlett about 20 ms more
-  than a motherboard's audio): calibrate the audio in the game's options.
 - Above 60 FPS is experimental: something may still run too fast. Tell us what and where.
-- Playing with the keyboard is experimental.
 - Downloadable content: Guitar Hero 5's packages add their songs to Quickplay+; Warriors of Rock's own
   packages and the community's are read, but their songs have not been played yet. The community's custom
   songs need its "GH:WoR Customs Database" package in your DLC folder too: without it the number of songs can
@@ -291,8 +283,7 @@ KNOWN ISSUES
 - The first time an effect appears, it may show up a few frames late.
 - Xbox One guitars (PDP Riffmaster, PDP Jaguar, Mad Catz Stratocaster) have not been played with yet: tell us
   how yours goes, with the game's latest log.
-- Online play is experimental: Quickplay+ and a competitive mode have been played between two copies of the
-  game; RockFest with more players and online Quest have not been tried yet.
+- The music store, leaderboards and Rock Record needed Activision's servers, which are gone.
 
 
 MORE INFORMATION

@@ -30,14 +30,14 @@ Windows: no emulator to set up, sharp graphics, wide screens, high frame rates, 
 > This project is not affiliated with or endorsed by Microsoft, Activision or the game's developers.
 
 > [!NOTE]
-> 🤘 **Beta.** Songs have been played with an Xbox 360 guitar. Drums and singing have not been tested in this game yet.
+> 🤘 **Version 1.0.** Songs have been played on an Xbox 360 guitar, on drums and singing.
 > Guitar Hero: Warriors of Rock shares its engine with Guitar Hero 5, and what
 > [GH5Recomp](https://github.com/ElGuslml/GH5Recomp), [GHVanHRecomp](https://github.com/ElGuslml/GHVanHRecomp) and
 > [GHMetalRecomp](https://github.com/ElGuslml/GHMetalRecomp) fix and add is here too. If something goes wrong, please
 > [tell us](#-reporting-a-problem)!
 
 > [!WARNING]
-> ⚠️ **Not tested yet:** AMD graphics cards (only in a simulation so far) and drum kits. If you play with either and
+> ⚠️ **Not fully tested yet:** AMD and Intel graphics cards (AMD only in a simulation so far). If you play with one and
 > something goes wrong, please report it in [issues](https://github.com/ElGuslml/GHWoRRecomp/issues) or on
 > [Discord](https://discord.gg/XQtM5TmNs8).
 
@@ -67,13 +67,14 @@ From then on, the launcher keeps itself up to date: when a new version comes out
 - A graphics card with up-to-date drivers that support Vulkan (practically any card from the last ten years).
 - The [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe) (most PCs already
   have it).
-- An Xbox 360 guitar. Any other controller works as a guitar too, and so does the keyboard.
-- To sing (experimental): any microphone connected to the PC, and a controller for the singer.
+- An Xbox 360 guitar, or an Xbox One guitar (through Microsoft GameInput, which the installer and the launcher offer
+  to install). Any other controller works as a guitar too, and so does the keyboard.
+- To sing: any microphone connected to the PC, and a controller for the singer.
 
 ## ✨ Features
 
 - 🎸 **Your guitar:** an Xbox 360 guitar plays as on the console, whammy bar and Star Power included. Any other
-  controller is a guitar too, and the keyboard can be one (experimental: turn it on in the launcher's Keyboard page;
+  controller is a guitar too, and the keyboard can be one (its page in the launcher's Controls tab;
   frets on D F J K L). Each controller's buttons can be reassigned in the launcher, and a whammy bar that reads
   pressed at rest or does nothing, or a tilt that gives no Star Power (some third-party guitars), can be assigned there.
 - 🎮 **A controller plays as in Guitar Hero III:** in a song the frets are LT, LB, RB, RT and A (B the bass's open
@@ -85,7 +86,12 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   controller (through an adapter), while another controller keeps this one. **The keyboard plays the same way** by
   default (the fret keys D, F, J, K and L, the open note on 3, Star Power on Space, the whammy bar on the right arrow);
   its Keyboard page's **Play style** can choose **Guitar · Xbox 360** instead (strum with the arrows).
-- 🎤 **Sing (experimental):** any microphone on your PC is the game's USB microphone. Choose it in the launcher, and
+- 🎸 **Xbox One guitars:** the PDP Riffmaster and Jaguar, the Mad Catz Stratocaster and the CRKD / RedOctane Stage
+  Tour play through Microsoft GameInput, their tilt included. The installer and the launcher offer to install GameInput
+  if your PC lacks it ([details](docs/xbox-one-guitars.md)).
+- 🥁 **Drum kits on five or four lanes:** a Guitar Hero kit, a PlayStation kit through a MIDI Pro Adapter, a Rock Band
+  kit, a controller or the keyboard as drums, on five or four lanes as you choose in the launcher's **Controls** tab.
+- 🎤 **Sing:** any microphone on your PC is the game's USB microphone. Choose it in the launcher, and
   choose which controller sings.
 - 🖥️ **Sharp, native graphics:** the game is drawn by your graphics card at your screen's resolution, with smooth
   edges (antialiasing) and sharper textures.
@@ -115,9 +121,21 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   monitor's rate). The songs keep their speed and stay in sync. V-Sync is on by default (no tearing, the game in step
   with your monitor, without V-Sync's usual delay); leave it on with a G-Sync or FreeSync monitor too. Star Power
   answers every press of Back (Select) or the D-pad at any frame rate. *(Star Power fix by
-  [Panchovix](https://github.com/Panchovix).)*
+  [Panchovix](https://github.com/Panchovix).)* The game draws its stage at half your frame rate, as on the console;
+  **Venue at the full frame rate** (**Settings → Display**, off by default) draws it every frame.
+- 🪶 **Light on your PC:** the renderer records the graphics card's work on a thread of its own, compiles each shader
+  for its draw's textures (about a fifth less work for the graphics card, the same image) and skips data the game
+  marks without changing it. In a busy song at 3440x1440 with the venue at the full frame rate, an i7-13700K holds
+  160 and 240 FPS; on a four-core processor 60 and 120 FPS hold too.
+- 🎞️ **Steady frame times:** in menus and videos, after a hitch (a loading, a stall), and in a window with V-Sync,
+  which shows every frame.
+- 🎵 **The music in time with the notes:** a song that follows another (a chapter's next part, a playlist's next song)
+  starts with its music, and the notes do not drift from the music during a song, at any frame rate
+  ([details](docs/song-sync.md)).
 - 🔊 **Low latency audio:** optional, in the launcher's Settings: the game takes your audio device in exclusive mode,
   and the sound comes up to about 55 ms sooner (measured in GHMetalRecomp on a USB audio interface).
+- 🔉 **5.1 or stereo:** **Settings → Audio → Channels** (Automatic, 5.1, Stereo or Mono) tells the game your
+  speakers; the notes' timing stays the same with each, so you do not need to calibrate again.
 - 🔈 **Louder when you need it:** the volume goes up to 200 % in **Settings → Audio**, for a game that sounds quiet next
   to the rest of your PC (above 100 % its loudest moments can distort). *(By [Panchovix](https://github.com/Panchovix).)*
 - 🌟 **World Tour's Star Power sound (optional):** while your Star Power is on, your instrument goes through Guitar
@@ -181,7 +199,7 @@ Everything is set up from **GH Warriors of Rock Launcher**, with the mouse, the 
 | 🎶 **DLC** | Your DLC folder: the game reads your packages from there, nothing copied. They are grouped by the game they were made for, each with its switch. |
 | 🏆 **Achievements** | All 50 achievements, the ones you have unlocked and when. |
 | 🧩 **Mods** | **Highway:** your pictures for the note highway (a gallery with favorites, one picture or a random one at each song, bright ones darkened), previewed with the game's own highway; its scale with one player, its length (the notes seen earlier at the same speed), perspective (the notes at the console's speed with it, if you want), style (original or dark) and opacity. **Stage:** the crowd. **Sound:** the whammy's sound effect, World Tour's Star Power sound, the instrument's volume on a miss. **Tools:** the game's own debug menu, the developer's keys. |
-| 🎮 **Controls** | Your guitars, controllers and keyboard: what each button or key does, and which controller plays drums (five or four lanes) or sings. The keyboard as a guitar or a drum kit (experimental). Frets that strum as you press them, on a controller or the keyboard. A whammy bar's and a tilt's assignment. Your microphone (experimental): device, gain and level. |
+| 🎮 **Controls** | Your guitars, controllers and keyboard: what each button or key does, and which controller plays drums (five or four lanes) or sings. The keyboard as a guitar or a drum kit. Each controller's and the keyboard's **Play style**: as in Guitar Hero III (the default) or a guitar. Xbox One guitars, and GameInput to install when it is missing. A whammy bar's and a tilt's assignment. Your microphone: device, gain and level. |
 | ⚙️ **Settings** | **Display:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), frame rate, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too), the venue at the full frame rate (the console draws it at half the rate of the note highway). **Graphics:** renderer, graphics card, upscaling (AMD FSR 1, NVIDIA NIS, AMD FSR 3.1, NVIDIA DLSS with its Transformer, Transformer K or CNN model) with its quality and the internal resolution, two switches that make the upscalers faster (the screen effects before the upscaler, even frame times with DLSS upscaling), antialiasing (SMAA, FXAA or NVIDIA DLAA), sharpness, texture sharpness, shadow quality, ambient occlusion, texture detail (and extra texture detail with DLSS or FSR 3.1). **Effects:** the game's screen effects. **Audio:** output device, channels (Automatic, 5.1, Stereo, Mono; the notes' timing the same with each), volume (up to 200 %), mute in the background, Low latency audio. **Game:** the game's and the launcher's language, the intro videos shortened (the logos end once the game has loaded, no intro movie). **Online** (experimental): online play with your Steam friends. **Updates:** your version, and new ones when they come out (the betas too, if you choose); Play shows a new one. |
 | 👤 **Profile** | Your picture at the top right: hours played, streaks, your week, your games and your favorite achievements. |
 
@@ -230,13 +248,15 @@ graphics instead), and tell us whether it happens there too.
 
 ### Known issues
 
-- 🥁 Drums and singing have not been tested in this game yet.
-- 🎤 Singing is experimental: if the pitch line jumps around, lower the microphone's **Gain** in the launcher; if the
-  game does not hear you, raise it. While a microphone is chosen, Windows shows that the game is using it.
-- ⌨️ Playing with the keyboard is experimental.
-- 🔊 Some USB audio interfaces add delay in Windows' shared audio mode (a Focusrite Scarlett about 20 ms more than
-  a motherboard's audio): calibrate the audio in the game's options.
-- ⚡ Above 60 FPS is experimental: something may still run too fast.
+- 🌐 The music store, leaderboards and Rock Record needed Activision's servers, which are gone.
+- 🖼️ The highway's pictures, custom textures, ambient occlusion and texture detail need NativeXRenderer (the default
+  renderer); with Xenos the game draws its own.
+- 🛣️ With two to four players, a perspective other than 100 % and the notes at the console's speed on, the notes come
+  a few percent faster than on the console (4-7 % at 75 %).
+- 📺 A frame rate that is not a whole fraction of your monitor's refresh rate (90 FPS on a 144 Hz monitor, for
+  example) looks uneven with V-Sync, unless your monitor has G-Sync or FreeSync.
+- 🎨 AMD and Intel graphics cards have not been tried with this version: if something looks wrong, tell us.
+- ⚡ Above 60 FPS is experimental: something may still run too fast. Above 240 FPS more so.
 - 🎶 Downloadable content: Guitar Hero 5's packages add their songs to Quickplay+; Warriors of Rock's own packages and
   the community's are read, but their songs have not been played yet ([details](docs/dlc.md)). The community's
   custom songs need its **GH:WoR Customs Database** package in your DLC folder too: without it the number of songs
