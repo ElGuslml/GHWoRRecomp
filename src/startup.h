@@ -24,6 +24,15 @@ void ConfigureUserData(std::filesystem::path& user_data_root, std::filesystem::p
 // the game then keeps them in user_data_root, as before.
 void ConfigureProfile(const std::filesystem::path& user_data_root);
 
+// The mod packs the launcher switched on (its Mods tab's Packs section, docs/mods.md): the files\ folder of each pack
+// <user_data_root>\Mods\enabled.txt names, in its order, as the SDK's game_data_overlays (a later one's file wins),
+// before Runtime::SetupVfs mounts the game data; the list, even empty, wins over a game_data_overlays of ghwor.toml or
+// of a REX_ environment variable. Unless game_data_overlays was given on the command line; without enabled.txt nothing
+// changes. A line that is not one folder's name is left out. Not called in the executable's tool modes. Logging is not
+// set up yet: LogModPacks logs what it found, once it is.
+void ConfigureModPacks(const std::filesystem::path& user_data_root);
+void LogModPacks();
+
 // Writes config_path (ghwor.toml) with the built-in defaults if it does not exist: the settings
 // this game needs must not depend on a file that can go missing.
 void EnsureDefaultConfig(const std::filesystem::path& config_path);
