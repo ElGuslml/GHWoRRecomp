@@ -1,4 +1,4 @@
-# The Mods tab: the note highway, its pictures, the crowd, two sounds and custom textures
+# The Mods tab: the note highway, its pictures, the crowd, two sounds, custom textures and mod packs
 
 **Status (2026-11-17):**
 - The highway, the crowd and the two sounds: played by Gustavo.
@@ -213,8 +213,151 @@ seen from above, its far end too wide, and the notes came about 18 % slower at 1
 - **When the images load:** they are decoded at the start, in the background (4 ms for a 512x1024 PNG). The log says
   `texture ...: ... ready` and, when it is first drawn, `drawn with ...`.
 
+## Mod packs (launcher next)
+
+**Status (2026-11-24):** built and tested. The launcher's Packs section checked in a scratch install with a test
+pack made for this game (11 patches made into the 11 files of its modified copy, SHA-256 equal). The game with that
+pack on: its saves byte-identical to those of the full modified copy of the game data; a pack listed without its
+files and lines that are not a folder's name left out with warnings; the command line's cvar used as it is; no list,
+nothing changed.
+
+- **What it does:** a player's mod, a folder of files, is read by the game in place of the game's own files at the
+  same paths. Mods → Packs lists the packs of the Mods folder, each with a switch; the game's own files are never
+  changed, and a pack switched off leaves the game as it was. They apply when the game starts.
+- **How:** the launcher writes the packs on to `Mods\enabled.txt`. The game reads it when it starts
+  (`src/startup.cpp`, `ConfigureModPacks`, from `OnConfigurePaths`; not in the executable's tool modes) and gives
+  their `files\` folders to the SDK's `game_data_overlays` (change next), whose `HostPathDevice::MergeOverlay` mounts
+  each over the game data, a later folder's file over an earlier one's. An overlay's file is read, checked and deleted
+  at its own path, and never renamed; every other file of the mount (the saves' too) behaves as before. The log: one
+  `[mods] pack <folder> on: its files over the game's (<path>)` line a pack, and a warning for a line left out (a pack
+  listed without a `files` folder, a line that is not one folder's name).
+- **Nothing to pay without packs:** without a Mods folder the launcher reads nothing and logs nothing about them, and
+  without `enabled.txt` the game changes nothing and logs nothing.
+
+### The Mods folder
+
+`Mods` in the game's user data folder (`userdata\Mods` next to the game, or `Documents\ghwor\Mods` where that cannot
+be written; the launcher's and the game's choice are the same, as for the DLC folder; a `--user_data_root` given to
+the launcher reaches the game, not the launcher), made when a first pack is added. A pack is a folder of it. Folders
+whose name starts with a `.` are the launcher's own (a pack being added or replaced) and are not listed; one whose
+name starts with `#`, or starts or ends with a space or a dot, is listed as unusable (`enabled.txt` could not name it).
+
+### mod.toml
+
+UTF-8, one `key = value` a line (a string in double quotes with `\"` and `\\`, or a bare value); no tables:
+
+```toml
+format = 1
+id = "example-pack"
+name = "Example pack"
+version = "1"
+author = "Its author"
+description = "What it changes, in a line."
+description_es = "Lo que cambia, en una línea."
+title_id = "41560883"
+```
+
+- `format`: 1. Another is "made for a newer launcher".
+- `id`: the folder the launcher installs it as: letters, digits, `-`, `_` and `.`, 1 to 64 of them, not starting with
+  a `.`, not ending with a dot, not a device's name (`CON`, `PRN`, `AUX`, `NUL`, `COM1`-`COM9`, `LPT1`-`LPT9`, with an
+  extension too), not `enabled.txt`.
+- `title_id`: the game's, in hexadecimal: `41560883`. Another is "made for another game", and cannot be switched on.
+- `name_<language>` and `description_<language>` (optional): the name and description in the launcher's language, its
+  keys `en`, `de`, `fr`, `es`, `it`; `name` and `description` otherwise.
+- A folder without a readable `mod.toml` (or one without `format`, `id` or `title_id`) is listed as broken, with its
+  folder's name. A `mod.toml` that is there but that another program holds open (an antivirus) is "cannot be read right
+  now": the pack is left as it was in `enabled.txt` until the next reading.
+
+### files and patches
+
+- `files\<path>`: a whole file, at the game data's relative path (`files\data\compressed\PAK\qb.pak.xen`).
+- `patches\<path>.delta`: a patch that turns the player's own `<path>` into the pack's (below). The pack ships no copy
+  of the game's files, only what it changes.
+- A pack has either or both. One with patches is **prepared** when it is switched on: each patch is applied to the
+  player's file (the game data the game reads: the launcher's `--game_data_root`, else its `assets`) and the result
+  written to `files\<path>`. `prepared.txt` beside `files\` records each file made (the patch's size and time, the
+  result's size and SHA-256) and the bases found to differ (with their size and time): a prepared file is known by
+  its size and that record, without reading it, and a pack updated (another patch) is prepared again.
+- A patch refused stops the preparation: the files made before it stay in `files\` (recorded, not made again at the
+  next try), and the pack stays off. A pack can be on only once every one of its patches is prepared; one listed in
+  `enabled.txt` that cannot be mounted as it is (to be prepared, made for other files or another game, broken, gone)
+  is taken out of it when the launcher reads the folder.
+- The launcher asks for the free space first (the results' sizes), works on a thread with the row's progress, and a
+  press on the row cancels it (between files or within one). A preparation starts by deleting the temporaries an
+  earlier one could not end left in `files\` (`*.part<digits>`, only those); such a file is never mounted.
+- It never writes through a link: a `files` folder, a folder between it and a result, or a result that is a link (a
+  symbolic link, a junction), or a result whose real path is not in the pack's folder, stops the preparation.
+- A patch whose `result_size` is over 16 GiB (far above any file of the game) makes its pack broken; sums of sizes
+  from the headers saturate.
+
+### Adding a pack
+
+Mods → Packs → Add mod… (a file dialog for a pack's `.zip`, or its `mod.toml` for a folder), or a `.zip` or a folder
+dropped on the window. The `mod.toml` is at its top or one folder down; the pack is installed as `Mods\<id>` through
+`Mods\.adding <id>`, so that a failure leaves no half pack. Every name in a zip is checked first: valid UTF-8, relative,
+each part a name Windows takes (none of `<>:"|?*`, no control character, not a device's name, not ending with a dot or
+a space). A folder of that id with another pack (or none) is left as it is; the same pack is replaced once the player
+says so. A `.7z` or a `.rar` is refused with a line saying that a `.zip` or a folder is needed.
+
+The zip reader is the updater's (`zip.cpp`): it reads the whole archive into memory and takes no ZIP64 (an archive under
+4 GB with fewer than 65535 entries, each under 2 GB), nor encrypted entries. The test pack's zip is 170 MB.
+
+### The patch format (version 1)
+
+All integers little-endian, nothing aligned:
+
+| Offset | Size | Field |
+|---|---|---|
+| 0 | 8 | `RCMPDLT1` (ASCII) |
+| 8 | 8 | `base_size` (u64) |
+| 16 | 32 | `base_sha256` |
+| 48 | 8 | `result_size` (u64) |
+| 56 | 32 | `result_sha256` |
+| 88 | ... | the operations, until the result is complete |
+
+An operation is a byte `kind`, then:
+- `0x00` COPY: u64 `base_offset`, u64 `length`: that range of the base is appended;
+- `0x01` DATA: u64 `length`, then that many bytes, appended.
+
+No count and no trailer: the lengths add up to exactly `result_size`, the file ends there, and no length is 0. The
+launcher (`ApplyModPatch`) checks the base's size and SHA-256 before it writes anything, streams the result (the
+largest here: a 642 MB base, an 803 MB result) to `<file>.part<process id>` in its folder, and renames it once its
+SHA-256 is `result_sha256`. It refuses, leaving no file: another magic, a base of another size or SHA-256 ("made for
+other game files", naming the file), a COPY outside the base, lengths beyond `result_size`, a length of 0, another
+kind, a patch that ends early or has bytes after its last operation, a result with another SHA-256. Checked against a
+reference applier's 20 cases (2 patches applied, 18 refused, each for its reason, no file left).
+
+### enabled.txt
+
+Written whole by the launcher (to `enabled.txt.tmp`, then put in place; a failed write puts the switch back and says
+so): a comment line, then a pack's folder a line, in load order (by folder name; a later one's file wins over an
+earlier one's). Two packs on with the same file: each row says "replaces files that <the other> also replaces".
+
+```
+# The mod packs on (the launcher's Mods > Packs): a folder of this one a line, in load order, a later one's file winning. Read by the game when it starts.
+example-pack
+```
+
+The game takes a line only as one folder's name: valid UTF-8, at most 255 bytes, none of `/`, `\`, `:` and `|`, no
+control character, not `.` or `..`. Another line is left out with a warning.
+
+### The cvar
+
+`game_data_overlays` (the SDK's, change next): folders separated by `|`, each mounted over the game data in that
+order. Which value the game uses:
+1. given on the command line (`--game_data_overlays=...`): that one, and `enabled.txt` is not read;
+2. else, with `enabled.txt`: the list's packs, even none, over a value of a `REX_` environment variable or of
+   `ghwor.toml`;
+3. else (no `enabled.txt`): the environment variable's or `ghwor.toml`'s, as for any cvar.
+
+### Online
+
+A pack on changes the game's data; a player online with others who do not have it may see the game behave
+differently (the section's note says so).
+
 ## Turning them off
 
 Set each row back to its default (Reset mods), or set the cvars to `100`, `100`, `100`, `"original"`, `true`, `true`,
 `0` and `ghwor_highway_opacity = 100`. Custom textures: no image in the folder, or `native_x_renderer_texture_replacements =
-""`. Nothing is then changed: the interpreter's hooks do not run for the mods.
+""`. Nothing is then changed: the interpreter's hooks do not run for the mods. Mod packs: switch them off in Mods →
+Packs (or delete `Mods\enabled.txt`).

@@ -398,6 +398,91 @@ void ConfigureProfile(const std::filesystem::path& user_data_root) {
   }
 }
 
+namespace {
+
+// ConfigureModPacks's findings, for LogModPacks: a warning or not, and the line.
+std::vector<std::pair<bool, std::string>>& ModPackLines() {
+  static std::vector<std::pair<bool, std::string>> lines;
+  return lines;
+}
+
+// One folder's name, as the launcher writes it to enabled.txt: valid UTF-8, at most 255 bytes, no separator ('/',
+// '\\', ':') nor the cvar's ('|'), no control character, not "." or "..".
+bool ModPackFolderName(const std::string& name) {
+  if (name.empty() || name.size() > 255 || name == "." || name == "..") return false;
+  for (size_t i = 0; i < name.size();) {
+    const auto c = static_cast<unsigned char>(name[i]);
+    if (c < 0x20 || c == '/' || c == '\\' || c == ':' || c == '|') return false;
+    // A UTF-8 sequence: its length from the lead byte, its continuation bytes 10xxxxxx, no overlong lead.
+    const size_t length = c < 0x80 ? 1 : (c >= 0xC2 && c < 0xE0) ? 2 : (c >= 0xE0 && c < 0xF0) ? 3
+                                                                     : (c >= 0xF0 && c < 0xF5) ? 4 : 0;
+    if (length == 0 || i + length > name.size()) return false;
+    for (size_t k = 1; k < length; ++k) {
+      if ((static_cast<unsigned char>(name[i + k]) & 0xC0) != 0x80) return false;
+    }
+    i += length;
+  }
+  return true;
+}
+
+}  // namespace
+
+void ConfigureModPacks(const std::filesystem::path& user_data_root) {
+  // Given on the command line, the cvar is the player's own: the list is not read.
+  if (rex::cvar::GetFlagSource("game_data_overlays") == rex::cvar::Source::kCommandLine) {
+    return;
+  }
+  // Logging is not set up yet, and nothing here may stop the game: a failure leaves the cvar as it is.
+  try {
+    const std::filesystem::path mods = user_data_root / "Mods";
+    std::ifstream list(mods / "enabled.txt", std::ios::binary);
+    if (!list) {
+      return;
+    }
+    // A folder a line, the launcher's comment lines (#) and blank ones skipped.
+    std::string overlays;
+    std::string line;
+    for (int number = 1; std::getline(list, line); ++number) {
+      if (number == 1 && line.rfind("\xEF\xBB\xBF", 0) == 0) line.erase(0, 3);
+      const size_t begin = line.find_first_not_of(" \t\r");
+      if (begin == std::string::npos || line[begin] == '#') continue;
+      const std::string folder = line.substr(begin, line.find_last_not_of(" \t\r") + 1 - begin);
+      if (!ModPackFolderName(folder)) {
+        ModPackLines().push_back({true, "[mods] line " + std::to_string(number) +
+                                            " of Mods\\enabled.txt is not a folder's name: left out"});
+        continue;
+      }
+      const std::filesystem::path files = mods / rex::to_path(folder) / "files";
+      std::error_code ec;
+      if (!std::filesystem::is_directory(files, ec)) {
+        ModPackLines().push_back(
+            {true, "[mods] pack " + folder + " is on (Mods\\enabled.txt) but has no files folder: left out"});
+        continue;
+      }
+      overlays += (overlays.empty() ? "" : "|") + rex::path_to_utf8(files);
+      ModPackLines().push_back(
+          {false, "[mods] pack " + folder + " on: its files over the game's (" + rex::path_to_utf8(files) + ")"});
+    }
+    // Set as the code's (the highest source), even empty: the list wins over a game_data_overlays of a REX_
+    // environment variable and of ghwor.toml (read after this).
+    rex::cvar::SetFlagByName("game_data_overlays", overlays);
+  } catch (const std::exception& e) {
+    ModPackLines().push_back({true, std::string("[mods] Mods\\enabled.txt not read: ") + e.what()});
+  } catch (...) {
+    ModPackLines().push_back({true, "[mods] Mods\\enabled.txt not read"});
+  }
+}
+
+void LogModPacks() {
+  for (const auto& [warning, line] : ModPackLines()) {
+    if (warning) {
+      REXLOG_WARN("{}", line);
+    } else {
+      REXLOG_INFO("{}", line);
+    }
+  }
+}
+
 // Creates ghwor.toml with the defaults, or appends to an existing one the settings (with their
 // comments) it does not mention, so that a setting added in a newer build takes effect without
 // deleting the user's file. A setting the file has, with any value, is left alone.
