@@ -21,6 +21,8 @@ Every option is off by default, which means the game is as on the console, and e
 | Image | `ghwor_highway_image` | `""` (the game's own), a file of the folder, `"<random>"` (one at each song) |
 | Random among | `ghwor_highway_random_from` | `"all"`, `"favorites"` (`ghwor_highway_favorites`, names separated by `\|`) |
 | Dim bright pictures | `ghwor_highway_dim` | `"off"`, `"auto"`, `"90"`-`"40"`; each picture's own in `ghwor_highway_image_dims` (`name:value`) |
+| Infinite front-end (Gameplay) | `ghwor_infinite_front_end` | `false`, the console's; `true` on |
+| Sustain drop leniency (Gameplay) | `ghwor_sustain_leniency_ms` | 0-200 ms in steps of 5; 0 = the console's |
 | Crowd | `ghwor_crowd` | `true`; `false` hides it |
 | Note effects: hit burst, Star Power burst, sustain sparks, open note and kick wave | `ghwor_fx_hit_burst`, `ghwor_fx_star_power_burst`, `ghwor_fx_sustain`, `ghwor_fx_open_note` | `true`; `false` hides it |
 | Venues in Quickplay (13 switches) | `ghwor_venue_beast_dethroned`, `_cbgbs`, `_hypersphere`, `_infernal_hall`, `_metallic_lab`, `_paramourn_manor`, `_razorback_forest`, `_rush_2112`, `_serpents_stronghold`, `_monument`, `_stage_of_kings`, `_thorn_fortress`, `_wormhole` | `true`; `false` leaves it out of the random choice |
@@ -166,6 +168,30 @@ seen from above, its far end too wide, and the notes came about 18 % slower at 1
 - **What else sees it:** the global itself keeps its value (-1), so no other script sees the cheat.
 - **Why not `disable_crowd`:** that global, which practice mode uses, crashes the game here. The venues' crowd objects
   expect the 3D crowd system that it leaves out.
+
+## Infinite front-end (launcher 3.38, Mods > Gameplay)
+
+- **What it does:** as in Clone Hero and YARG, a hammer-on, pull-off or tap note fretted before it reaches the hit
+  window counts as soon as it enters it. A HOPO still needs the note before it hit; a missed note or an overstrum
+  clears it, so after a miss the fret is pressed again. Strummed notes are not changed.
+- **How** (`src/gameplay.cpp`, `hooks/gameplay.toml`): a player's input in each frame (`sub_82180BA0`) makes a hammer
+  candidate only when the frets held differ from the last frame's (player + `0x180D8`), and the notes take it only
+  inside their window. Once the frets changed since the last hit or miss, each frame without a strum is made one with
+  a change at `0x821814E4`; the game's own checks then build the candidate from what is held. A hit (`0x82181AB8`), a
+  miss (`0x82180ED8`) and an overstrum (`0x82181DD8`) end it. Guitar Hero III's code (GH Aerosmith's `sub_821235E0`)
+  has the same rule as Warriors of Rock: the players' "GH III infinite front-end" is not in it.
+
+## Sustain drop leniency (launcher 3.38, Mods > Gameplay)
+
+- **What it does:** as Clone Hero's setting of that name, a sustained note's fret let go is still held for that long.
+  A sustain let go a moment early to reach the next note, or a fret lifted for an instant, is not dropped; pressed
+  again within it, the sustain goes on; a sustain that ends within it counts as held to the end.
+- **What it costs:** while a fret is forgiven the sustain scores as if held, at most the leniency's length each time
+  (Clone Hero stops scoring until the fret returns).
+- **How** (`src/gameplay.cpp`, `hooks/gameplay.toml`): a player's sustain in each frame (`sub_8218ED00`) reads the
+  frets held and then ends each sustaining fret not held and, when what is held is not the note, the whole sustain.
+  At `0x8218EFC8`, before both checks, the hook adds the sustaining frets let go less than the leniency ago. The open
+  note needs no fret and is left out.
 
 ## Note effects (launcher 3.37)
 
@@ -396,6 +422,6 @@ differently (the section's note says so).
 ## Turning them off
 
 Set each row back to its default (Reset mods), or set the cvars to `100`, `100`, `100`, `"original"`, `true`, `true`,
-`0` and `ghwor_highway_opacity = 100`; the note effects' and the venues' switches `true`. Custom textures: no image in the folder, or `native_x_renderer_texture_replacements =
+`0` and `ghwor_highway_opacity = 100`; the note effects' and the venues' switches `true`; `ghwor_sustain_leniency_ms = 0`; `ghwor_infinite_front_end = false`. Custom textures: no image in the folder, or `native_x_renderer_texture_replacements =
 ""`. Nothing is then changed: the interpreter's hooks do not run for the mods. Mod packs: switch them off in Mods →
 Packs (or delete `Mods\enabled.txt`).

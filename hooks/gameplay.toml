@@ -1,0 +1,22 @@
+# How the game takes the player's input (src/gameplay.cpp, Mods > Gameplay; off by default, as on the console).
+[[midasm_hook]]
+address = 0x8218EFC8   # mr r22,r29 (sub_8218ED00, a player's sustain in a frame: loc_8218EFC8, the frets held in r29)
+name = "GHWoRSustainHeldHook"
+registers = ["r29", "r31"]
+[[midasm_hook]]
+address = 0x821814E4   # lis r11,1 (sub_82180BA0, loc_821814E4: before the hammer candidate; held at [r1+144], strum at
+                       # [r1+136], the last frame's frets at player + 0x180D8)
+name = "GHWoRFrontEndHook"
+registers = ["r1", "r27"]
+[[midasm_hook]]
+address = 0x82181AB8   # fmadds f0,f28,f31,f30 (sub_82180BA0: right after 0x82181AB4, where every hit goes)
+name = "GHWoRFrontEndHitHook"
+registers = ["r27"]
+[[midasm_hook]]
+address = 0x82180ED8   # lis r11,1 (sub_82180BA0, loc_82180ED8: a note missed, the last hit set to 0)
+name = "GHWoRFrontEndMissHook"
+registers = ["r27"]
+[[midasm_hook]]
+address = 0x82181DD8   # lis r11,1 (sub_82180BA0, loc_82181DD8: an overstrum, the last hit set to 0)
+name = "GHWoRFrontEndOverstrumHook"
+registers = ["r27"]

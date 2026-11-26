@@ -16,7 +16,7 @@ longjmp_address = 0x82798C70
 
 # A feature's or a fix's hooks in a file of their own (docs/development.md, "Contributing").
 includes = ["hooks/song_sync.toml", "hooks/perf_measure.toml", "hooks/lighting_job.toml", "hooks/draw_stamps.toml",
-            "hooks/note_effects.toml", "hooks/venues.toml"]
+            "hooks/note_effects.toml", "hooks/venues.toml", "hooks/gameplay.toml"]
 
 # Codegen: the registers no call passes on are local variables of each function, not fields of the PPCContext, so
 # the compiler keeps them in host registers and the __savegprlr/__restgprlr helpers are elided, as in GH5, GH Van

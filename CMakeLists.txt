@@ -70,6 +70,7 @@ set(GHWOR_SOURCES
     src/drums.cpp
     src/fence_stamps.cpp
     src/framerate.cpp
+    src/gameplay.cpp
     src/highway_images.cpp
     src/intro.cpp
     src/keyboard.cpp

@@ -318,6 +318,13 @@ ghwor_venue_monument = true
 ghwor_venue_stage_of_kings = true
 ghwor_venue_thorn_fortress = true
 ghwor_venue_wormhole = true
+# Sustain drop leniency in milliseconds (src/gameplay.cpp; the launcher offers 0-200 by 5): a sustained note's fret let
+# go is still held for that long, so letting go a moment early to reach the next note, or lifting a fret for an
+# instant, does not drop the sustain. 0 = as on the console.
+ghwor_sustain_leniency_ms = 0
+# Infinite front-end (src/gameplay.cpp): HOPOs and taps fretted before they reach the hit window count as they enter
+# it, as in Clone Hero and YARG; a miss or an overstrum clears it. false = as on the console.
+ghwor_infinite_front_end = false
 # Images that replace the game's textures (NativeXRenderer's D176, docs/mods.md): a folder next to the executable, each
 # image named by the texture's hash (16 hexadecimal digits, then anything; .png, .jpg or .jpeg; subfolders too); the
 # note highway's is 38E266C86DB5FC0C. native_x_renderer_texture_log = true logs every texture's hash as it loads.

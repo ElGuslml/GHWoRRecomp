@@ -47,6 +47,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "The Stage of Kings", "Picked at random in Quickplay+, Party Play and online.",
           "Thorn Fortress", "Picked at random in Quickplay+, Party Play and online.",
           "Wormhole", "Picked at random in Quickplay+, Party Play and online.",
+          "Infinite front-end", "HOPOs and taps fretted early count as they reach the window.",
       },
       .toggle_help = {
           "The halo of light around the stage's lights, the pyrotechnics and the brightest surfaces. Off, the image is sharper and flatter.",
@@ -81,6 +82,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "On, as on the console, the game may pick this venue at random for Quickplay+ (at the start and after each song), Party Play and online play, once your save has unlocked it. Off, it is left out of that random choice; where the game lets you choose a venue yourself, it is still there. With every venue off, the game picks among all of them.",
           "On, as on the console, the game may pick this venue at random for Quickplay+ (at the start and after each song), Party Play and online play, once your save has unlocked it. Off, it is left out of that random choice; where the game lets you choose a venue yourself, it is still there. With every venue off, the game picks among all of them.",
           "On, as on the console, the game may pick this venue at random for Quickplay+ (at the start and after each song), Party Play and online play, once your save has unlocked it. Off, it is left out of that random choice; where the game lets you choose a venue yourself, it is still there. With every venue off, the game picks among all of them.",
+          "As in Clone Hero and YARG: hold the fret of a hammer-on, pull-off or tap note before it reaches the strike line and it counts as soon as it enters the hit window, without pressing it again at the right moment. The rest is the game's own: a hammer-on still needs the note before it hit, a strummed note still needs its strum, and a missed note or a strum without a note clears it, so after a miss you fret again. Off, as on the console, the fret must be pressed while the note is inside the window.",
       },
       .choices = {
           "Highway scale", "The note highway's size when you play alone.",
@@ -89,6 +91,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Highway style", "The look of the highway behind the notes.",
           "Highway opacity", "How much of the venue shows through the highway.",
           "Instrument volume on a miss", "How loud your part stays when you miss a note.",
+          "Sustain drop leniency", "How long a long note forgives letting go of its fret.",
       },
       .choice_help = {
           "Makes the note highway smaller or larger when you play alone, anchored at the strike line: the gems, the sidebars, the rock meter and the Star Power meter with it. At 80 % more of the stage shows around it. 100 % is the console's size; with two or more players the game's own sizes stay.",
@@ -97,8 +100,9 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Dark is the community's black highway: the highway's picture turned black, so the gems, the sustains and the lines stand out against it.",
           "Below 100 % the venue shows through the note highway: the notes, the lines and the sidebars stay solid. 100 % is the console's opaque highway.",
           "When you miss a note or strum without one, the game mutes your instrument's track until you hit a note again. Here you choose how much of it stays: 0 % mutes it as on the console, 50 % halves it, 100 % keeps it as it was. Guitar and bass; with two players on the same part (they share its track) only 100 % changes it. The drums are not changed.",
+          "As in Clone Hero: when you let go of a long note's fret, the note goes on for this long as if you still held it. Let go a moment early to reach the next note, or lift a finger for an instant, and the sustain is not dropped; press the fret again within it and the sustain goes on; if the note ends within it, it counts as held to the end. While it forgives, the note keeps scoring as if held (at most this long each time). Off, as on the console, a sustain ends the moment you let go.",
       },
-      .choice_values = {{{}, {}, {}, {"Original", "Dark"}, {}, {"Muted"}}},
+      .choice_values = {{{}, {}, {}, {"Original", "Dark"}, {}, {"Muted"}, {"Off"}}},
       .done_title = "The stage is yours!",
       .done_text = "The game was installed. Go play now, or first review the display, graphics and instrument settings; "
                    "you can always change them in the launcher.",
@@ -147,6 +151,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "The Stage of Kings", "Zufällig gewählt in Quickplay+, Party Play und online.",
           "Thorn Fortress", "Zufällig gewählt in Quickplay+, Party Play und online.",
           "Wormhole", "Zufällig gewählt in Quickplay+, Party Play und online.",
+          "Unendliches Front-End", "Früh gegriffene HOPOs und Taps zählen, sobald sie ins Fenster kommen.",
       },
       .toggle_help = {
           "Der Lichtschein um die Bühnenlichter, die Pyrotechnik und die hellsten Flächen. Aus wirkt das Bild schärfer und flacher.",
@@ -181,6 +186,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Ein, wie auf der Konsole: das Spiel kann diese Location zufällig für Quickplay+ (beim Start und nach jedem Song), Party Play und das Online-Spiel wählen, sobald dein Spielstand sie freigeschaltet hat. Aus: sie wird bei dieser Zufallswahl ausgelassen; wo du im Spiel selbst eine Location wählen kannst, bleibt sie verfügbar. Sind alle Locations aus, wählt das Spiel unter allen.",
           "Ein, wie auf der Konsole: das Spiel kann diese Location zufällig für Quickplay+ (beim Start und nach jedem Song), Party Play und das Online-Spiel wählen, sobald dein Spielstand sie freigeschaltet hat. Aus: sie wird bei dieser Zufallswahl ausgelassen; wo du im Spiel selbst eine Location wählen kannst, bleibt sie verfügbar. Sind alle Locations aus, wählt das Spiel unter allen.",
           "Ein, wie auf der Konsole: das Spiel kann diese Location zufällig für Quickplay+ (beim Start und nach jedem Song), Party Play und das Online-Spiel wählen, sobald dein Spielstand sie freigeschaltet hat. Aus: sie wird bei dieser Zufallswahl ausgelassen; wo du im Spiel selbst eine Location wählen kannst, bleibt sie verfügbar. Sind alle Locations aus, wählt das Spiel unter allen.",
+          "Wie in Clone Hero und YARG: Greifst du den Bund einer Hammer-on-, Pull-off- oder Tap-Note, bevor sie die Schlaglinie erreicht, zählt sie, sobald sie ins Trefferfenster kommt, ohne dass du im richtigen Moment erneut drücken musst. Der Rest bleibt wie im Spiel: ein Hammer-on braucht weiterhin die getroffene Note davor, eine Anschlagnote ihren Anschlag, und eine verpasste Note oder ein Anschlag ohne Note löscht es, nach einem Fehler greifst du neu. Aus, wie auf der Konsole, muss der Bund gedrückt werden, während die Note im Fenster ist.",
       },
       .choices = {
           "Notenbahn-Größe", "Die Größe der Notenbahn, wenn du allein spielst.",
@@ -189,6 +195,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Notenbahn-Stil", "Das Aussehen der Bahn hinter den Noten.",
           "Deckkraft der Notenbahn", "Wie viel von der Location durch die Bahn scheint.",
           "Instrument-Lautstärke bei Fehlern", "Wie laut deine Spur bleibt, wenn du eine Note verpasst.",
+          "Toleranz beim Loslassen langer Noten", "Wie lange eine lange Note das Loslassen ihres Bundes verzeiht.",
       },
       .choice_help = {
           "Macht die Notenbahn kleiner oder größer, wenn du allein spielst, verankert an der Schlaglinie: Noten, Seitenleisten, Rock-Meter und Star-Power-Anzeige mit ihr. Bei 80 % ist mehr von der Bühne zu sehen. 100 % ist die Größe der Konsole; mit zwei oder mehr Spielern bleiben die Größen des Spiels.",
@@ -197,8 +204,9 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Dunkel ist die schwarze Notenbahn der Community: Das Bild der Bahn wird schwarz, sodass Noten, gehaltene Noten und Linien hervorstechen.",
           "Unter 100 % scheint die Location durch die Notenbahn: Noten, Linien und Seitenleisten bleiben deckend. 100 % ist die deckende Bahn der Konsole.",
           "Verpasst du eine Note oder schlägst ohne eine an, schaltet das Spiel die Spur deines Instruments stumm, bis du wieder eine Note triffst. Hier wählst du, wie viel davon bleibt: 0 % schaltet sie stumm wie auf der Konsole, 50 % halbiert sie, 100 % lässt sie, wie sie war. Gitarre und Bass; spielen zwei Spieler denselben Part (sie teilen sich seine Spur), ändert nur 100 % etwas. Das Schlagzeug ändert sich nicht.",
+          "Wie in Clone Hero: lässt du den Bund einer langen Note los, läuft sie so lange weiter, als würdest du sie noch halten. Lässt du einen Moment zu früh los, um die nächste Note zu erreichen, oder hebst du einen Finger kurz an, bricht die Note nicht ab; drückst du den Bund in dieser Zeit wieder, geht sie weiter; endet die Note in dieser Zeit, zählt sie als bis zum Ende gehalten. Solange sie verzeiht, zählt die Note weiter Punkte, als würdest du sie halten (höchstens so lange jedes Mal). Aus, wie auf der Konsole, endet eine lange Note in dem Moment, in dem du loslässt.",
       },
-      .choice_values = {{{}, {}, {}, {"Original", "Dunkel"}, {}, {"Stumm"}}},
+      .choice_values = {{{}, {}, {}, {"Original", "Dunkel"}, {}, {"Stumm"}, {"Aus"}}},
       .done_title = "Die Bühne gehört dir!",
       .done_text = "Das Spiel wurde installiert. Leg gleich los oder sieh dir zuerst die Anzeige-, Grafik- und "
                    "Instrumenteinstellungen an; du kannst sie jederzeit im Launcher ändern.",
@@ -247,6 +255,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "The Stage of Kings", "Choisie au hasard en Quickplay+, Party Play et en ligne.",
           "Thorn Fortress", "Choisie au hasard en Quickplay+, Party Play et en ligne.",
           "Wormhole", "Choisie au hasard en Quickplay+, Party Play et en ligne.",
+          "Front-end infini", "Les HOPO et les taps frettés en avance comptent dès qu'ils entrent dans la fenêtre.",
       },
       .toggle_help = {
           "Le halo autour des lumières de la scène, de la pyrotechnie et des surfaces les plus claires. Désactivé, l'image est plus nette et plus plate.",
@@ -281,6 +290,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Activé, comme sur la console, le jeu peut choisir cette salle au hasard pour le Quickplay+ (au démarrage et après chaque morceau), le Party Play et le jeu en ligne, une fois débloquée dans votre sauvegarde. Désactivé, elle est écartée de ce choix au hasard ; là où le jeu vous laisse choisir une salle, elle reste disponible. Si toutes les salles sont désactivées, le jeu choisit parmi toutes.",
           "Activé, comme sur la console, le jeu peut choisir cette salle au hasard pour le Quickplay+ (au démarrage et après chaque morceau), le Party Play et le jeu en ligne, une fois débloquée dans votre sauvegarde. Désactivé, elle est écartée de ce choix au hasard ; là où le jeu vous laisse choisir une salle, elle reste disponible. Si toutes les salles sont désactivées, le jeu choisit parmi toutes.",
           "Activé, comme sur la console, le jeu peut choisir cette salle au hasard pour le Quickplay+ (au démarrage et après chaque morceau), le Party Play et le jeu en ligne, une fois débloquée dans votre sauvegarde. Désactivé, elle est écartée de ce choix au hasard ; là où le jeu vous laisse choisir une salle, elle reste disponible. Si toutes les salles sont désactivées, le jeu choisit parmi toutes.",
+          "Comme dans Clone Hero et YARG : appuyez sur la frette d'une note hammer-on, pull-off ou tap avant qu'elle n'atteigne la ligne de frappe, et elle compte dès qu'elle entre dans la fenêtre de frappe, sans réappuyer au bon moment. Le reste est celui du jeu : un hammer-on demande toujours la note précédente touchée, une note grattée son grattement, et une note ratée ou un grattement sans note l'efface, donc après une erreur vous frettez de nouveau. Désactivé, comme sur la console, la frette doit être pressée pendant que la note est dans la fenêtre.",
       },
       .choices = {
           "Taille de la piste", "La taille de la piste de notes quand vous jouez seul.",
@@ -289,6 +299,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Style de la piste", "L'aspect de la piste derrière les notes.",
           "Opacité de la piste", "Ce qu'on voit de la salle à travers la piste.",
           "Volume de l'instrument sur une erreur", "Le volume de votre partie quand vous ratez une note.",
+          "Tolérance au relâchement des notes tenues", "Combien de temps une note tenue pardonne qu'on lâche sa frette.",
       },
       .choice_help = {
           "Réduit ou agrandit la piste de notes quand vous jouez seul, ancrée à la ligne de frappe : les notes, les bords, le rock-mètre et la jauge de Star Power avec elle. À 80 %, on voit davantage la scène autour. 100 % est la taille de la console ; à deux joueurs ou plus, les tailles du jeu restent.",
@@ -297,8 +308,9 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Sombre est la piste noire de la communauté : l'image de la piste devient noire, pour que les notes, les notes tenues et les lignes ressortent.",
           "Sous 100 %, la salle se voit à travers la piste de notes : les notes, les lignes et les bords restent opaques. 100 % est la piste opaque de la console.",
           "Quand vous ratez une note ou grattez sans note, le jeu coupe la piste de votre instrument jusqu'à la prochaine note réussie. Ici vous choisissez ce qu'il en reste : 0 % la coupe comme sur la console, 50 % la réduit de moitié, 100 % la laisse telle quelle. Guitare et basse ; avec deux joueurs sur la même partie (ils partagent sa piste), seul 100 % la change. La batterie ne change pas.",
+          "Comme dans Clone Hero : quand vous lâchez la frette d'une note tenue, la note continue aussi longtemps que si vous la teniez encore. Lâchez un instant trop tôt pour atteindre la note suivante, ou levez un doigt un instant, et la note n'est pas perdue ; appuyez de nouveau sur la frette dans ce délai et elle continue ; si la note se termine dans ce délai, elle compte comme tenue jusqu'au bout. Pendant la tolérance, la note continue de marquer des points comme si elle était tenue (au plus cette durée à chaque fois). Désactivé, comme sur la console, une note tenue s'arrête dès que vous lâchez.",
       },
-      .choice_values = {{{}, {}, {}, {"Originale", "Sombre"}, {}, {"Coupé"}}},
+      .choice_values = {{{}, {}, {}, {"Originale", "Sombre"}, {}, {"Coupé"}, {"Désactivée"}}},
       .done_title = "La scène est à vous !",
       .done_text = "Le jeu a été installé. Allez jouer tout de suite, ou vérifiez d'abord les réglages d'affichage, "
                    "graphiques et de vos instruments ; vous pourrez toujours les changer dans le launcher.",
@@ -348,6 +360,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "The Stage of Kings", "Sale al azar en Quickplay+, Party Play y en línea.",
           "Thorn Fortress", "Sale al azar en Quickplay+, Party Play y en línea.",
           "Wormhole", "Sale al azar en Quickplay+, Party Play y en línea.",
+          "Infinite front-end", "Los HOPO y taps presionados antes cuentan al entrar en la ventana.",
       },
       .toggle_help = {
           "El halo de luz alrededor de las luces del escenario, la pirotecnia y las superficies más brillantes. Desactivado, la imagen se ve más nítida y plana.",
@@ -382,6 +395,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Activado, como en la consola, el juego puede elegir este escenario al azar en Quickplay+ (al inicio y después de cada canción), Party Play y en línea, cuando tu partida ya lo desbloqueó. Desactivado, queda fuera de esa elección al azar; donde el juego te deja elegir el escenario tú mismo, sigue estando. Si desactivas todos, el juego elige entre todos.",
           "Activado, como en la consola, el juego puede elegir este escenario al azar en Quickplay+ (al inicio y después de cada canción), Party Play y en línea, cuando tu partida ya lo desbloqueó. Desactivado, queda fuera de esa elección al azar; donde el juego te deja elegir el escenario tú mismo, sigue estando. Si desactivas todos, el juego elige entre todos.",
           "Activado, como en la consola, el juego puede elegir este escenario al azar en Quickplay+ (al inicio y después de cada canción), Party Play y en línea, cuando tu partida ya lo desbloqueó. Desactivado, queda fuera de esa elección al azar; donde el juego te deja elegir el escenario tú mismo, sigue estando. Si desactivas todos, el juego elige entre todos.",
+          "Como en Clone Hero y YARG: si mantienes el traste de una nota hammer-on, pull-off o tap antes de que llegue a la línea de golpe, cuenta en cuanto entra en la ventana de acierto, sin volver a presionarlo en el momento justo. Lo demás es del juego: un hammer-on sigue necesitando la nota anterior acertada, una nota rasgueada su rasgueo, y una nota fallada o un rasgueo sin nota lo borra, así que después de fallar vuelves a presionar. Desactivado, como en la consola, el traste se presiona mientras la nota está dentro de la ventana.",
       },
       .choices = {
           "Escala del highway", "El tamaño del highway de notas cuando tocas solo.",
@@ -390,6 +404,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Estilo del highway", "El aspecto del highway detrás de las notas.",
           "Opacidad del highway", "Cuánto del escenario se ve a través del highway.",
           "Volumen del instrumento al fallar", "Qué tan fuerte queda tu parte cuando fallas una nota.",
+          "Tolerancia al soltar notas largas", "Cuánto perdona una nota larga que sueltes su traste.",
       },
       .choice_help = {
           "Hace el highway de notas más pequeño o más grande cuando tocas solo, anclado en la línea de golpe: las notas, los bordes, el medidor de rock y el de Star Power con él. Al 80 % se ve más del escenario alrededor. 100 % es el tamaño de la consola; con dos o más jugadores se quedan los tamaños del juego.",
@@ -398,8 +413,9 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Oscuro es el highway negro de la comunidad: la imagen del highway se vuelve negra, así las notas, las notas largas y las líneas resaltan.",
           "Bajo 100 % el escenario se ve a través del highway de notas: las notas, las líneas y los bordes siguen opacos. 100 % es el highway opaco de la consola.",
           "Cuando fallas una nota o rasgueas sin nota, el juego silencia la pista de tu instrumento hasta que aciertes otra. Aquí eliges cuánto queda: 0 % la silencia como en la consola, 50 % la deja a la mitad, 100 % la deja como estaba. Guitarra y bajo; con dos jugadores en la misma parte (comparten su pista) solo 100 % la cambia. La batería no cambia.",
+          "Como en Clone Hero: cuando sueltas el traste de una nota larga, la nota sigue este tiempo como si la mantuvieras. Si la sueltas un momento antes para llegar a la siguiente nota, o levantas un dedo un instante, la nota larga no se corta; si vuelves a presionar el traste dentro de ese tiempo, sigue; si la nota termina dentro de ese tiempo, cuenta como mantenida hasta el final. Mientras perdona, la nota sigue sumando puntos como si la mantuvieras (como mucho este tiempo cada vez). Desactivada, como en la consola, una nota larga termina en el momento en que la sueltas.",
       },
-      .choice_values = {{{}, {}, {}, {"Original", "Oscuro"}, {}, {"Silenciado"}}},
+      .choice_values = {{{}, {}, {}, {"Original", "Oscuro"}, {}, {"Silenciado"}, {"Desactivada"}}},
       .done_title = "¡El escenario es tuyo!",
       .done_text = "El juego se instaló correctamente. Puedes salir a tocar ya o revisar primero los ajustes de pantalla, "
                    "gráficos y tus instrumentos; siempre podrás cambiarlos desde el launcher.",
@@ -448,6 +464,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "The Stage of Kings", "Scelto a caso in Quickplay+, Party Play e online.",
           "Thorn Fortress", "Scelto a caso in Quickplay+, Party Play e online.",
           "Wormhole", "Scelto a caso in Quickplay+, Party Play e online.",
+          "Front-end infinito", "HOPO e tap premuti in anticipo contano quando entrano nella finestra.",
       },
       .toggle_help = {
           "L'alone di luce attorno alle luci del palco, alla pirotecnica e alle superfici più luminose. Disattivato, l'immagine è più nitida e piatta.",
@@ -482,6 +499,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Attivato, come sulla console, il gioco può scegliere questo locale a caso per Quickplay+ (all'avvio e dopo ogni canzone), Party Play e il gioco online, una volta sbloccato nel tuo salvataggio. Disattivato, resta fuori da quella scelta a caso; dove il gioco ti lascia scegliere il locale, resta disponibile. Se li disattivi tutti, il gioco sceglie tra tutti.",
           "Attivato, come sulla console, il gioco può scegliere questo locale a caso per Quickplay+ (all'avvio e dopo ogni canzone), Party Play e il gioco online, una volta sbloccato nel tuo salvataggio. Disattivato, resta fuori da quella scelta a caso; dove il gioco ti lascia scegliere il locale, resta disponibile. Se li disattivi tutti, il gioco sceglie tra tutti.",
           "Attivato, come sulla console, il gioco può scegliere questo locale a caso per Quickplay+ (all'avvio e dopo ogni canzone), Party Play e il gioco online, una volta sbloccato nel tuo salvataggio. Disattivato, resta fuori da quella scelta a caso; dove il gioco ti lascia scegliere il locale, resta disponibile. Se li disattivi tutti, il gioco sceglie tra tutti.",
+          "Come in Clone Hero e YARG: se tieni il tasto di una nota hammer-on, pull-off o tap prima che arrivi alla linea di battuta, conta appena entra nella finestra di colpo, senza premerlo di nuovo al momento giusto. Il resto è del gioco: un hammer-on richiede sempre la nota prima colpita, una nota pennata la sua pennata, e una nota mancata o una pennata senza nota lo cancella, quindi dopo un errore premi di nuovo. Disattivato, come sulla console, il tasto va premuto mentre la nota è nella finestra.",
       },
       .choices = {
           "Dimensione della pista", "La dimensione della pista delle note quando suoni da solo.",
@@ -490,6 +508,7 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Stile della pista", "L'aspetto della pista dietro le note.",
           "Opacità della pista", "Quanto del locale si vede attraverso la pista.",
           "Volume dello strumento sugli errori", "Quanto resta forte la tua parte quando sbagli una nota.",
+          "Tolleranza al rilascio delle note lunghe", "Quanto una nota lunga perdona che lasci il suo tasto.",
       },
       .choice_help = {
           "Rende la pista delle note più piccola o più grande quando suoni da solo, ancorata alla linea di battuta: le note, i bordi, il rock meter e l'indicatore di Star Power con essa. All'80 % si vede più palco intorno. 100 % è la dimensione della console; con due o più giocatori restano le dimensioni del gioco.",
@@ -498,8 +517,9 @@ const GameTexts& GameTextsFor(uint32_t language) {
           "Scuro è la pista nera della community: l'immagine della pista diventa nera, così le note, le note lunghe e le linee risaltano.",
           "Sotto il 100 % il locale si vede attraverso la pista delle note: le note, le linee e i bordi restano opachi. 100 % è la pista opaca della console.",
           "Quando sbagli una nota o fai una pennata senza nota, il gioco silenzia la traccia del tuo strumento finché non colpisci di nuovo una nota. Qui scegli quanto ne resta: 0 % la silenzia come sulla console, 50 % la dimezza, 100 % la lascia com'era. Chitarra e basso; con due giocatori sulla stessa parte (ne condividono la traccia) cambia solo con 100 %. La batteria non cambia.",
+          "Come in Clone Hero: quando lasci il tasto di una nota lunga, la nota continua per questo tempo come se la tenessi ancora. Se la lasci un attimo prima per raggiungere la nota successiva, o sollevi un dito per un istante, la nota lunga non si interrompe; se premi di nuovo il tasto entro questo tempo, continua; se la nota finisce entro questo tempo, conta come tenuta fino alla fine. Mentre perdona, la nota continua a dare punti come se la tenessi (al massimo questo tempo ogni volta). Disattivata, come sulla console, una nota lunga finisce nel momento in cui la lasci.",
       },
-      .choice_values = {{{}, {}, {}, {"Originale", "Scuro"}, {}, {"Muto"}}},
+      .choice_values = {{{}, {}, {}, {"Originale", "Scuro"}, {}, {"Muto"}, {"Disattivata"}}},
       .done_title = "Il palco è tuo!",
       .done_text = "Il gioco è stato installato. Vai a suonare subito o controlla prima le impostazioni dello schermo, grafiche e "
                    "dei tuoi strumenti; potrai sempre cambiarle nel launcher.",

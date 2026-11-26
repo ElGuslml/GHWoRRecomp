@@ -132,6 +132,11 @@ when you press PLAY.
     Note effects (all on by default, as on the console): Hit burst (the flames and sparks of each note you
     hit), Star Power burst (the blue one while your Star Power is on), Sustain sparks (while you hold a long
     note, and a bass's open sustains' glow), Open note and kick wave; off hides each one, nothing else changes.
+  - Gameplay: Infinite front-end (off by default): hammer-on, pull-off and tap notes fretted before they
+    reach the strike line count as they enter the hit window (as in Clone Hero); a miss clears it.
+    Sustain drop leniency (Off by default, as on the console): 5 to 200 ms; a long note's fret
+    let go is still held for that long, so letting go a moment early to reach the next note, or lifting a
+    finger for an instant, does not cut the note (as in Clone Hero); it keeps scoring meanwhile.
   - Stage: Crowd (on by default): off hides the crowd during
     songs (the game's Soundcheck cheat); its cheering stays.
     Venues in Quickplay (all on by default): a switch for each of the 13 venues; off, the game never picks it
