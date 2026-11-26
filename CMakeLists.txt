@@ -79,6 +79,7 @@ set(GHWOR_SOURCES
     src/mods.cpp
     src/highway_effects.cpp
     src/native_x_renderer_ghwor.cpp
+    src/note_effects.cpp
     src/online_text.cpp
     src/options.cpp
     src/players.cpp
@@ -92,6 +93,7 @@ set(GHWOR_SOURCES
     src/startup.cpp
     src/thread_waits.cpp
     src/timer.cpp
+    src/venues.cpp
     src/widescreen.cpp
 )
 

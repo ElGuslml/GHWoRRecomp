@@ -129,8 +129,14 @@ when you press PLAY.
     Hyperspeed works on top of it.
     Highway style (Original by default): Dark is the community's black highway. Highway opacity (100 % by default): below it the
     venue shows through the highway (the notes and lines stay solid).
+    Note effects (all on by default, as on the console): Hit burst (the flames and sparks of each note you
+    hit), Star Power burst (the blue one while your Star Power is on), Sustain sparks (while you hold a long
+    note, and a bass's open sustains' glow), Open note and kick wave; off hides each one, nothing else changes.
   - Stage: Crowd (on by default): off hides the crowd during
     songs (the game's Soundcheck cheat); its cheering stays.
+    Venues in Quickplay (all on by default): a switch for each of the 13 venues; off, the game never picks it
+    at random in Quickplay+, Party Play or online (only venues your save has unlocked are picked; with all of
+    them off, any). You can still choose it yourself where the game lets you.
   - Sound: Whammy sound effect (on by default): off, the
     whammy bar no longer bends your sustained notes' pitch (it still wobbles them and fills Star Power).
     Lower the track on a miss (on by default, as on the console), and under it

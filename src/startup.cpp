@@ -296,6 +296,28 @@ ghwor_miss_lower = true
 ghwor_miss_volume = 0
 # The note highway's opacity in percent: below 100 the venue shows through it (src/mods.cpp). 100 = as on the console.
 ghwor_highway_opacity = 100
+# The flames and sparks on the strike line (src/note_effects.cpp): the burst when you hit a note, its blue one while
+# your Star Power is on, a held sustain's sparks (and the bass's open sustains' glow), and the wave of an open note or
+# a kick. false hides each. true = as on the console.
+ghwor_fx_hit_burst = true
+ghwor_fx_star_power_burst = true
+ghwor_fx_sustain = true
+ghwor_fx_open_note = true
+# The venues Quickplay+, Party Play and online play may pick at random (src/venues.cpp): false leaves one out; with
+# every one false, all of them are picked from. true = as on the console.
+ghwor_venue_beast_dethroned = true
+ghwor_venue_cbgbs = true
+ghwor_venue_hypersphere = true
+ghwor_venue_infernal_hall = true
+ghwor_venue_metallic_lab = true
+ghwor_venue_paramourn_manor = true
+ghwor_venue_razorback_forest = true
+ghwor_venue_rush_2112 = true
+ghwor_venue_serpents_stronghold = true
+ghwor_venue_monument = true
+ghwor_venue_stage_of_kings = true
+ghwor_venue_thorn_fortress = true
+ghwor_venue_wormhole = true
 # Images that replace the game's textures (NativeXRenderer's D176, docs/mods.md): a folder next to the executable, each
 # image named by the texture's hash (16 hexadecimal digits, then anything; .png, .jpg or .jpeg; subfolders too); the
 # note highway's is 38E266C86DB5FC0C. native_x_renderer_texture_log = true logs every texture's hash as it loads.

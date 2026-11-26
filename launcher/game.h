@@ -207,7 +207,11 @@ inline constexpr std::array<Language, 5> kLanguages{{
 //   then World Tour's Star Power sound, then the track lowered on a miss (on as on the console; its volume under it).
 // - Launcher 3.32: Mods > Highway's notes at the console's speed whatever the perspective (off as on the console; under
 //   the perspective's row, locked at 100 %; src/mods.cpp, local_docs/66).
-inline constexpr std::array<Toggle, 15> kToggles{{
+// - Launcher 3.37: Mods > Highway > Note effects, the flames and sparks on the strike line, each on as on the console
+//   (src/note_effects.cpp): the burst on a hit, Star Power's blue one, a sustain's sparks, an open note's and a kick's
+//   wave. Mods > Stage > Venues in Quickplay, the venues the game may pick at random, all on as on the console
+//   (src/venues.cpp); their names are the game's own, the same in every language.
+inline constexpr std::array<Toggle, 32> kToggles{{
     {"ghwor_fx_bloom", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_depth_of_field", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_color", true, ToggleGroup::kScreenEffects},
@@ -223,6 +227,23 @@ inline constexpr std::array<Toggle, 15> kToggles{{
     {"ghwor_crowd", true, ToggleGroup::kModsStage},
     {"ghwor_miss_lower", true, ToggleGroup::kModsSound},
     {"ghwor_highway_keep_speed", false, ToggleGroup::kModsHighway, "ghwor_highway_perspective"},
+    {"ghwor_fx_hit_burst", true, ToggleGroup::kModsNoteEffects},
+    {"ghwor_fx_star_power_burst", true, ToggleGroup::kModsNoteEffects},
+    {"ghwor_fx_sustain", true, ToggleGroup::kModsNoteEffects},
+    {"ghwor_fx_open_note", true, ToggleGroup::kModsNoteEffects},
+    {"ghwor_venue_beast_dethroned", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_cbgbs", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_hypersphere", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_infernal_hall", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_metallic_lab", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_paramourn_manor", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_razorback_forest", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_rush_2112", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_serpents_stronghold", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_monument", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_stage_of_kings", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_thorn_fortress", true, ToggleGroup::kModsVenues},
+    {"ghwor_venue_wormhole", true, ToggleGroup::kModsVenues},
 }};
 
 // Rows of the game's own with several values (game_types.h's Choice, launcher 3.29): Mods > Highway, the note
