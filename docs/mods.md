@@ -226,7 +226,7 @@ nothing changed.
   changed, and a pack switched off leaves the game as it was. They apply when the game starts.
 - **How:** the launcher writes the packs on to `Mods\enabled.txt`. The game reads it when it starts
   (`src/startup.cpp`, `ConfigureModPacks`, from `OnConfigurePaths`; not in the executable's tool modes) and gives
-  their `files\` folders to the SDK's `game_data_overlays` (change next), whose `HostPathDevice::MergeOverlay` mounts
+  their `files\` folders to the SDK's `game_data_overlays` (change 127), whose `HostPathDevice::MergeOverlay` mounts
   each over the game data, a later folder's file over an earlier one's. An overlay's file is read, checked and deleted
   at its own path, and never renamed; every other file of the mount (the saves' too) behaves as before. The log: one
   `[mods] pack <folder> on: its files over the game's (<path>)` line a pack, and a warning for a line left out (a pack
@@ -354,7 +354,7 @@ control character, not `.` or `..`. Another line is left out with a warning.
 
 ### The cvar
 
-`game_data_overlays` (the SDK's, change next): folders separated by `|`, each mounted over the game data in that
+`game_data_overlays` (the SDK's, change 127): folders separated by `|`, each mounted over the game data in that
 order. Which value the game uses:
 1. given on the command line (`--game_data_overlays=...`): that one, and `enabled.txt` is not read;
 2. else, with `enabled.txt`: the list's packs, even none, over a value of a `REX_` environment variable or of
