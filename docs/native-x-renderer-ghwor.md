@@ -32,9 +32,18 @@ the library's checklist is `native_x_renderer/docs/integrating-a-game.md`.
   the crowd's draws (`< 0x8255A994`; that frame shows the other's image again), the other the whole scene before the
   post-processing (`< 0x8264C1B8`) and from inside the composite `sub_82641110` after the bloom's passes
   (`< 0x82641558`). With the first outer caller only, every other frame was left as it was (applied 300 times in 600
-  frames). So no outer caller: every 1280x720 copy through the helper is antialiased, 900 times in 600 frames (in the
+  frames). So no outer caller: every 1280x720 copy through the helper was antialiased, 900 times in 600 frames (in the
   menus too); the helper's smaller copies (the effects' quarter sizes, the lobby's 400x400 portraits) are left out by
   their size. The HUD and the note highway are drawn over the composite: they stay sharp.
+- **Once a frame (NativeXRenderer D185, 2026-11-25; `local_docs/79`).** With the venue every frame that was 2 to 2.6
+  applications a frame (0.32-0.39 ms of the GPU at 3440x1440): RenderDoc captures (bloom off and on) showed the
+  composite's copy (`< 0x82641558`) to be of an image the composite draws whole, without blending, from the scene's
+  antialiased copy, and in Serpent's Stronghold a mid-scene copy read only by a 128x128 downsample. The profile sets
+  `scene_resolve_once` (each frame's first copy only: the stage's in the split render's first frame, the scene's in the
+  second or with the venue every frame) and `scene_resolve_skip_outer_callers` (stage 12's and two materials' copies,
+  from `0x8264A548`, `0x82620794`, `0x826207D4`, never). One application a frame in both modes; SMAA 0.335 -> 0.175 ms,
+  298 -> 321 FPS uncapped on the bench song; the rocker creator's edges smooth. The log's line counts the copies left
+  as they are.
 - **DLAA, DLSS and FSR 3.1: with the split render on, once a pair of frames (NativeXRenderer's D159), DLSS ran smooth
   and without ghosting in a song; the launcher offers them** ([below](#dlaa-dlss-and-fsr-31)).
 
@@ -429,6 +438,13 @@ crowd and the band before the screen effects; the note highway and the HUD come 
   ledges shaded, the walls left white. `native_x_renderer_ao_debug = true` shows the occlusion alone.
 - Cost (D162, 1280x720, RTX 4070 Ti, High): 0.23-0.27 ms a frame. With the split render it runs once a pair, in the
   second frame.
+- **At half resolution (NativeXRenderer D184, 2026-11-25; `local_docs/79`):** at 3440x1440 with the venue every frame
+  Ultra was 1.36 ms of a 3.87 ms frame (the pass timer, the bench song), a third of the GPU, more than the venue's own
+  draws; in Serpent's Stronghold 1.24 of 4.12, its main pass 0.91-0.93 ms (RenderDoc). `src/startup.cpp` sets
+  `native_x_renderer_ao_resolution = "half"`: the occlusion at 1720x720 there, the game's own lines, enlarged onto the
+  view by depth. Ultra 0.41 ms, the frame 2.85 ms (250 -> 298 FPS uncapped on that song); the edges stay sharp in the
+  occlusion alone (`native_x_renderer_ao_debug`, the rocker creator). **Off:** `native_x_renderer_ao_resolution =
+  "full"`.
 
 **Texture detail** (`native_x_renderer_texture_lod_bias`: 0, -0.5, -1; Settings > Graphics > Texture detail: Normal,
 Sharper, Sharpest): the 3D view's textures half a mip level or a whole one sharper; the highway and the HUD unchanged.

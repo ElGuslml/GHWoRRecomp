@@ -97,11 +97,20 @@ const native_x_renderer::Profile& NativeXRendererProfile() {
     // the stage's and the crowd's draws (0x8255A990; that frame shows the last pair's image again, and the next
     // restores the scene from this copy), the other the whole scene before the screen effects (0x8264C1B4) and from
     // inside the composite sub_82641110 after the bloom's passes (0x82641554). Antialiasing one of them only (the outer
-    // caller) left every other frame's edges as they were; so every 1280x720 copy through the helper is antialiased
-    // (1.5 a frame), the HUD and the highway drawn over the composite stay sharp. The same helper's smaller copies (the
+    // caller) left every other frame's edges as they were; so no outer caller is named (the first copy of each frame is
+    // antialiased, below), the HUD and the highway drawn over the composite stay sharp. The same helper's smaller copies (the
     // screen effects' quarter sizes, the band lobby's 400x400 portraits) are not the scene: NativeXRenderer takes only
     // copies of the output's size.
+    // Once a frame (D94, NativeXRenderer D185; local_docs/79): SMAA works in place on the copy, and with the venue
+    // every frame the composite's copy (< 0x82641558) is of an image the composite drew whole from the scene's
+    // antialiased copy (< 0x8264C1B8): antialiased twice, 2 to 2.6 applications a frame at 3440x1440 (0.32-0.39 ms of
+    // the GPU). So only each frame's first copy of the scene: the stage's in the split render's first frame, the whole
+    // scene's in the second (or the composite's own copy of the scene, < 0x8264146C, when no screen effect is on). The
+    // copies in the middle of the scene (stage 12's and two materials', from 0x8264A548, 0x82620794, 0x826207D4; in
+    // Serpent's Stronghold one, read only by a 128x128 downsample) are neither antialiased nor counted as the first.
     p.scene_resolve_caller = 0x8255AD1C;
+    p.scene_resolve_once = true;
+    p.scene_resolve_skip_outer_callers = {0x8264A54C, 0x82620798, 0x826207D8, 0};
     // DLAA, DLSS and FSR 3.1 (NativeXRenderer's auto views, D119: the game marks no view): the upscaler's view ends at
     // a copy of the output's size through the helper's color resolve, and the upscaled image is what that copy reads;
     // only the copy of the finished 3D scene from sub_8264BB88 (the main view's last stage, < 0x8264C1B8), before the

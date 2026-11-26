@@ -135,6 +135,11 @@ native_x_renderer_window_present_mode = "mailbox"
 # or more (225.7 without it), the renderer's thread at about half of the frame; played at 160 and 420. false = one
 # thread, as before.
 native_x_renderer_record_thread = true
+# NativeXRenderer's ambient occlusion (GH Warriors of Rock Launcher's Graphics row, off by default) is computed at half
+# the 3D view's width and height and enlarged onto it by depth (D184; local_docs/79): the game's own 720 lines at
+# 1440. Measured at 3440x1440 on the bench song with the venue every frame: Ultra 1.36 -> 0.41 ms of the GPU a frame,
+# the frame 3.87 -> 2.85 ms. "full" = at the view's resolution, as before.
+native_x_renderer_ao_resolution = "half"
 # Where the vertical blank runs on the SDK's timer (a G-Sync / FreeSync display, V-Sync off): its ticks within a few
 # microseconds of their time (700 us of spinning each; without, up to half a millisecond late), as the display shows
 # each frame when it comes.
