@@ -213,7 +213,7 @@ seen from above, its far end too wide, and the notes came about 18 % slower at 1
 - **When the images load:** they are decoded at the start, in the background (4 ms for a 512x1024 PNG). The log says
   `texture ...: ... ready` and, when it is first drawn, `drawn with ...`.
 
-## Mod packs (launcher next)
+## Mod packs (launcher 3.36.0)
 
 **Status (2026-11-24):** built and tested. The launcher's Packs section checked in a scratch install with a test
 pack made for this game (11 patches made into the 11 files of its modified copy, SHA-256 equal). The game with that
@@ -300,7 +300,18 @@ a space). A folder of that id with another pack (or none) is left as it is; the 
 says so. A `.7z` or a `.rar` is refused with a line saying that a `.zip` or a folder is needed.
 
 The zip reader is the updater's (`zip.cpp`): it reads the whole archive into memory and takes no ZIP64 (an archive under
-4 GB with fewer than 65535 entries, each under 2 GB), nor encrypted entries. The test pack's zip is 170 MB.
+4 GB with fewer than 65535 entries, each under 2 GB), nor encrypted entries. The test pack's zip is 170 MB. An entry
+whose size no entry of its compressed size can have is refused before memory is taken, the zip's sizes are checked
+against the free space first, and `\` in its names is read as `/` (PowerShell 5.1's Compress-Archive writes them).
+Play pressed while a pack is added, or while the Mods folder is read, starts the game once they end.
+
+### Deleting a pack
+
+Delete on a pack's row (or X), asked first: the folder is renamed to `Mods\.removing <folder>` (Windows refuses while
+a program has one of its files open, the game for one: nothing changes, and the line says to close it), taken out of
+`enabled.txt`, then deleted without following a link inside it (a link is removed, never what it points to). A file
+that cannot be deleted leaves the pack out of the list and its `.removing` folder behind; the next deletion tries it
+again.
 
 ### The patch format (version 1)
 

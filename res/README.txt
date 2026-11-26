@@ -153,6 +153,14 @@ when you press PLAY.
     To find others, add to ghwor.toml native_x_renderer_texture_log = true (each texture's hash in the log)
     or native_x_renderer_texture_dump = true (each one as a DDS file in texture_dump). The
     Highway's pictures win over this folder for the highway.
+  - Packs: the community's mods, each a folder of files the game reads in place of its own (your game
+    files are never changed). Add mod... takes a mod's .zip, or its mod.toml for a folder (you can also
+    drop either on the window); a newer version replaces the one installed once you say so. Each mod has
+    its switch, and applies from the game's next start; a mod made of patches is prepared once, as you
+    switch it on, from your own game files (it needs the files it was made for). When two mods on replace
+    the same file, the one whose folder comes later by name wins. Delete (or X) removes a mod and all its
+    files, once you confirm. Open folder shows the Mods folder (in the game's user data folder). Online, a
+    mod may not work with players who do not have it.
 - Settings:
   - Display: the monitor, fullscreen, borderless or window, the resolution, the image format (fill a screen
     wider than 16:9, where the stage is seen wider while the note highway, the HUD and the menus stay 16:9

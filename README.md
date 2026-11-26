@@ -152,6 +152,9 @@ From then on, the launcher keeps itself up to date: when a new version comes out
   replaces that texture (with NativeXRenderer); the note highway's is `38E266C86DB5FC0C`. The game can log and dump
   its textures by hash to find the others. The highway can also be made see-through (**Mods → Highway**, Highway
   opacity).
+- 📦 **Mod packs (optional):** the community's mods in the launcher's **Mods → Packs**: add a mod's `.zip` (or its
+  folder), switch it on, and the game reads its files in place of its own without changing them. A mod made of patches
+  is prepared once from your own game files; Delete removes a mod. *(By [Panchovix](https://github.com/Panchovix).)*
 - 📺 **Wide and ultrawide screens:** the stage fills 16:9, 21:9 and wider screens, while the note highway, the HUD and
   the menus keep their shape in the center.
 - 👤 **Profiles:** your saves, achievements and playtime in a profile shared by all the ElGus Recomps launchers.
@@ -198,7 +201,7 @@ Everything is set up from **GH Warriors of Rock Launcher**, with the mouse, the 
 | ▶️ **Play** | Start the game, see your settings and achievements at a glance, and a new version when there is one. |
 | 🎶 **DLC** | Your DLC folder: the game reads your packages from there, nothing copied. They are grouped by the game they were made for, each with its switch. |
 | 🏆 **Achievements** | All 50 achievements, the ones you have unlocked and when. |
-| 🧩 **Mods** | **Highway:** your pictures for the note highway (a gallery with favorites, one picture or a random one at each song, bright ones darkened), previewed with the game's own highway; its scale with one player, its length (the notes seen earlier at the same speed), perspective (the notes at the console's speed with it, if you want), style (original or dark) and opacity. **Stage:** the crowd. **Sound:** the whammy's sound effect, World Tour's Star Power sound, the instrument's volume on a miss. **Tools:** the game's own debug menu, the developer's keys. |
+| 🧩 **Mods** | **Highway:** your pictures for the note highway (a gallery with favorites, one picture or a random one at each song, bright ones darkened), previewed with the game's own highway; its scale with one player, its length (the notes seen earlier at the same speed), perspective (the notes at the console's speed with it, if you want), style (original or dark) and opacity. **Stage:** the crowd. **Sound:** the whammy's sound effect, World Tour's Star Power sound, the instrument's volume on a miss. **Tools:** the game's own debug menu, the developer's keys. **Packs:** the mods you add from a `.zip` or a folder, each with its switch, and Delete. |
 | 🎮 **Controls** | Your guitars, controllers and keyboard: what each button or key does, and which controller plays drums (five or four lanes) or sings. The keyboard as a guitar or a drum kit. Each controller's and the keyboard's **Play style**: as in Guitar Hero III (the default) or a guitar. Xbox One guitars, and GameInput to install when it is missing. A whammy bar's and a tilt's assignment. Your microphone: device, gain and level. |
 | ⚙️ **Settings** | **Display:** monitor, fullscreen or window, resolution, image format (fill a wide screen or keep 16:9), frame rate, V-Sync (on by default: no tearing, without V-Sync's usual delay; leave it on with a G-Sync or FreeSync monitor too), the venue at the full frame rate (the console draws it at half the rate of the note highway). **Graphics:** renderer, graphics card, upscaling (AMD FSR 1, NVIDIA NIS, AMD FSR 3.1, NVIDIA DLSS with its Transformer, Transformer K or CNN model) with its quality and the internal resolution, two switches that make the upscalers faster (the screen effects before the upscaler, even frame times with DLSS upscaling), antialiasing (SMAA, FXAA or NVIDIA DLAA), sharpness, texture sharpness, shadow quality, ambient occlusion, texture detail (and extra texture detail with DLSS or FSR 3.1). **Effects:** the game's screen effects. **Audio:** output device, channels (Automatic, 5.1, Stereo, Mono; the notes' timing the same with each), volume (up to 200 %), mute in the background, Low latency audio. **Game:** the game's and the launcher's language, the intro videos shortened (the logos end once the game has loaded, no intro movie). **Online** (experimental): online play with your Steam friends. **Updates:** your version, and new ones when they come out (the betas too, if you choose); Play shows a new one. |
 | 👤 **Profile** | Your picture at the top right: hours played, streaks, your week, your games and your favorite achievements. |
@@ -324,6 +327,8 @@ it will get fixed. Thanks for giving this game a try! 🧡
   - World Tour's Star Power sound;
   - the volume up to 200 %;
   - Star Power answering every press above 60 FPS;
+  - mod packs: mods the game reads in place of its own files without changing them, added from a `.zip` in the
+    launcher's **Mods** tab, each with its switch;
   - work on NativeXRenderer's speed (a one-pass present, per-pass GPU timings).
 - [LuisText](https://github.com/LuisText), for contributions that made the game run faster.
 - Developed by Gustavo Garcia with the help of Claude (Anthropic): see [the note about AI](#-a-note-about-ai).
