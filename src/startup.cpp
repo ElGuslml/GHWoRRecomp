@@ -303,21 +303,6 @@ ghwor_fx_hit_burst = true
 ghwor_fx_star_power_burst = true
 ghwor_fx_sustain = true
 ghwor_fx_open_note = true
-# The venues Quickplay+, Party Play and online play may pick at random (src/venues.cpp): false leaves one out; with
-# every one false, all of them are picked from. true = as on the console.
-ghwor_venue_beast_dethroned = true
-ghwor_venue_cbgbs = true
-ghwor_venue_hypersphere = true
-ghwor_venue_infernal_hall = true
-ghwor_venue_metallic_lab = true
-ghwor_venue_paramourn_manor = true
-ghwor_venue_razorback_forest = true
-ghwor_venue_rush_2112 = true
-ghwor_venue_serpents_stronghold = true
-ghwor_venue_monument = true
-ghwor_venue_stage_of_kings = true
-ghwor_venue_thorn_fortress = true
-ghwor_venue_wormhole = true
 # Sustain drop leniency in milliseconds (src/gameplay.cpp; the launcher offers 0-200 by 5): a sustained note's fret let
 # go is still held for that long, so letting go a moment early to reach the next note, or lifting a fret for an
 # instant, does not drop the sustain. 0 = as on the console.
