@@ -207,7 +207,12 @@ inline constexpr std::array<Language, 5> kLanguages{{
 //   then World Tour's Star Power sound, then the track lowered on a miss (on as on the console; its volume under it).
 // - Launcher 3.32: Mods > Highway's notes at the console's speed whatever the perspective (off as on the console; under
 //   the perspective's row, locked at 100 %; src/mods.cpp, local_docs/66).
-inline constexpr std::array<Toggle, 15> kToggles{{
+// - Launcher 3.37: Mods > Highway > Note effects, the flames and sparks on the strike line, each on as on the console
+//   (src/note_effects.cpp): the burst on a hit, Star Power's blue one, a sustain's sparks, an open note's and a kick's
+//   wave.
+// - Launcher 3.38: Mods > Gameplay's infinite front-end, off as on the console (src/gameplay.cpp): HOPOs and taps
+//   fretted early count as they enter the hit window, as in Clone Hero and YARG.
+inline constexpr std::array<Toggle, 20> kToggles{{
     {"ghwor_fx_bloom", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_depth_of_field", true, ToggleGroup::kScreenEffects},
     {"ghwor_fx_color", true, ToggleGroup::kScreenEffects},
@@ -223,6 +228,11 @@ inline constexpr std::array<Toggle, 15> kToggles{{
     {"ghwor_crowd", true, ToggleGroup::kModsStage},
     {"ghwor_miss_lower", true, ToggleGroup::kModsSound},
     {"ghwor_highway_keep_speed", false, ToggleGroup::kModsHighway, "ghwor_highway_perspective"},
+    {"ghwor_fx_hit_burst", true, ToggleGroup::kModsNoteEffects},
+    {"ghwor_fx_star_power_burst", true, ToggleGroup::kModsNoteEffects},
+    {"ghwor_fx_sustain", true, ToggleGroup::kModsNoteEffects},
+    {"ghwor_fx_open_note", true, ToggleGroup::kModsNoteEffects},
+    {"ghwor_infinite_front_end", false, ToggleGroup::kModsGameplay},
 }};
 
 // Rows of the game's own with several values (game_types.h's Choice, launcher 3.29): Mods > Highway, the note
@@ -238,13 +248,18 @@ inline constexpr const char* kHighwayPerspectives[] = {"25", "50", "75", "100", 
 inline constexpr const char* kHighwayStyles[] = {"original", "dark"};
 inline constexpr const char* kHighwayOpacities[] = {"100", "90", "80", "70", "60", "50", "40", "30"};
 inline constexpr const char* kMissVolumes[] = {"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
-inline constexpr std::array<Choice, 6> kChoices{{
+// Launcher 3.38: Mods > Gameplay, Clone Hero's sustain drop leniency: 0 (off, as on the console) to 200 ms by 5
+// (Gustavo's steps; src/gameplay.cpp).
+inline constexpr const char* kSustainLeniencies[] = {
+    "0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "100", "105", "110", "115", "120", "125", "130", "135", "140", "145", "150", "155", "160", "165", "170", "175", "180", "185", "190", "195", "200"};
+inline constexpr std::array<Choice, 7> kChoices{{
     {"ghwor_highway_scale", kHighwayScales, "100", ToggleGroup::kModsHighway, " %"},
     {"ghwor_highway_length", kHighwayLengths, "100", ToggleGroup::kModsHighway, " %"},
     {"ghwor_highway_perspective", kHighwayPerspectives, "100", ToggleGroup::kModsHighway, " %"},
     {"ghwor_highway_style", kHighwayStyles, "original", ToggleGroup::kModsHighwayLook, "", true},
     {"ghwor_highway_opacity", kHighwayOpacities, "100", ToggleGroup::kModsHighwayLook, " %"},
     {"ghwor_miss_volume", kMissVolumes, "0", ToggleGroup::kModsSound, " %", false, "ghwor_miss_lower"},
+    {"ghwor_sustain_leniency_ms", kSustainLeniencies, "0", ToggleGroup::kModsGameplay, " ms"},
 }};
 
 // Launcher 3.30: the Mods tab's Highway section, its gallery of the player's pictures (src/highway_images.cpp reads

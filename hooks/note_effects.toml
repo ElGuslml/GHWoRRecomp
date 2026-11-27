@@ -1,0 +1,16 @@
+# The flames and sparks on the strike line, each hidden by a switch (src/note_effects.cpp, Mods > Highway > Note
+# effects; all on by default, as on the console).
+[[midasm_hook]]
+address = 0x821E64A4   # ori r4,r4,34202 (NoteFX, sub_821E63A8: `star` just read into r28), then the burst's emission
+name = "GHWoRNoteFxHook"
+registers = ["r28"]
+jump_address_on_true = 0x821E6A08   # li r3,1 and NoteFX's end (where a reset leaves too)
+[[midasm_hook]]
+address = 0x821E6AAC   # lis r11,-32116 (WhammyFXOn, sub_821E6A20: before the loop over the held pattern at [r1 + 84])
+name = "GHWoRWhammyFxHook"
+registers = ["r1"]
+[[midasm_hook]]
+address = 0x822B78E0   # mflr r12 (the entry of sub_822B78E0, Create2DParticleSystem: r3 = its params)
+name = "GHWoRParticleSystemHook"
+registers = ["r3"]
+return_on_true = true

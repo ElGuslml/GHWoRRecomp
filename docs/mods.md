@@ -1,4 +1,4 @@
-# The Mods tab: the note highway, its pictures, the crowd, two sounds, custom textures and mod packs
+# The Mods tab: the note highway, its pictures, the note effects, the crowd, two sounds, custom textures and mod packs
 
 **Status (2026-11-17):**
 - The highway, the crowd and the two sounds: played by Gustavo.
@@ -21,7 +21,10 @@ Every option is off by default, which means the game is as on the console, and e
 | Image | `ghwor_highway_image` | `""` (the game's own), a file of the folder, `"<random>"` (one at each song) |
 | Random among | `ghwor_highway_random_from` | `"all"`, `"favorites"` (`ghwor_highway_favorites`, names separated by `\|`) |
 | Dim bright pictures | `ghwor_highway_dim` | `"off"`, `"auto"`, `"90"`-`"40"`; each picture's own in `ghwor_highway_image_dims` (`name:value`) |
+| Infinite front-end (Gameplay) | `ghwor_infinite_front_end` | `false`, the console's; `true` on |
+| Sustain drop leniency (Gameplay) | `ghwor_sustain_leniency_ms` | 0-200 ms in steps of 5; 0 = the console's |
 | Crowd | `ghwor_crowd` | `true`; `false` hides it |
+| Note effects: hit burst, Star Power burst, sustain sparks, open note and kick wave | `ghwor_fx_hit_burst`, `ghwor_fx_star_power_burst`, `ghwor_fx_sustain`, `ghwor_fx_open_note` | `true`; `false` hides it |
 | Whammy sound effect | `ghwor_whammy_sound` | `true`; `false` keeps the pitch |
 | Lower the track on a miss | `ghwor_miss_lower` | `true`, the console's; `false` never lowers it |
 | Instrument volume on a miss | `ghwor_miss_volume` | 0-100 % in steps of 10; 0 = muted, the console's |
@@ -164,6 +167,45 @@ seen from above, its far end too wide, and the notes came about 18 % slower at 1
 - **What else sees it:** the global itself keeps its value (-1), so no other script sees the cheat.
 - **Why not `disable_crowd`:** that global, which practice mode uses, crashes the game here. The venues' crowd objects
   expect the 3D crowd system that it leaves out.
+
+## Infinite front-end (launcher 3.38, Mods > Gameplay)
+
+- **What it does:** as in Clone Hero and YARG, a hammer-on, pull-off or tap note fretted before it reaches the hit
+  window counts as soon as it enters it. A HOPO still needs the note before it hit; a missed note or an overstrum
+  clears it, so after a miss the fret is pressed again. Strummed notes are not changed.
+- **How** (`src/gameplay.cpp`, `hooks/gameplay.toml`): a player's input in each frame (`sub_82180BA0`) makes a hammer
+  candidate only when the frets held differ from the last frame's (player + `0x180D8`), and the notes take it only
+  inside their window. Once the frets changed since the last hit or miss, each frame without a strum is made one with
+  a change at `0x821814E4`; the game's own checks then build the candidate from what is held. A hit (`0x82181AB8`), a
+  miss (`0x82180ED8`) and an overstrum (`0x82181DD8`) end it. Guitar Hero III's code (GH Aerosmith's `sub_821235E0`)
+  has the same rule as Warriors of Rock: the players' "GH III infinite front-end" is not in it.
+
+## Sustain drop leniency (launcher 3.38, Mods > Gameplay)
+
+- **What it does:** as Clone Hero's setting of that name, a sustained note's fret let go is still held for that long.
+  A sustain let go a moment early to reach the next note, or a fret lifted for an instant, is not dropped; pressed
+  again within it, the sustain goes on; a sustain that ends within it counts as held to the end.
+- **What it costs:** while a fret is forgiven the sustain scores as if held, at most the leniency's length each time
+  (Clone Hero stops scoring until the fret returns).
+- **How** (`src/gameplay.cpp`, `hooks/gameplay.toml`): a player's sustain in each frame (`sub_8218ED00`) reads the
+  frets held and then ends each sustaining fret not held and, when what is held is not the note, the whole sustain.
+  At `0x8218EFC8`, before both checks, the hook adds the sustaining frets let go less than the leniency ago. The open
+  note needs no fret and is left out.
+
+## Note effects (launcher 3.37)
+
+- **What it does:** each switch hides one of the effects on the strike line; the notes, their points and the sound do
+  not change.
+  - **Hit burst:** the flames and sparks of each note hit.
+  - **Star Power burst:** the blue burst of each hit while Star Power is on.
+  - **Sustain sparks:** the sparks while a sustain is held, and a bass's open sustains' glow.
+  - **Open note and kick wave:** the wave across the strike line on an open note or a kick.
+- **How** (`src/note_effects.cpp`, `hooks/note_effects.toml`):
+  - The bursts: `NoteFX` (`sub_821E63A8`) leaves right after reading `star`, before it emits, as it does after a reset.
+  - The sparks: `WhammyFXOn` (`sub_821E6A20`) sees an empty pattern in its loop over the held frets, so no fret's
+    effect starts.
+  - The waves and the bass's open sustains: `Create2DParticleSystem` (`sub_822B78E0`) answers 0 for their materials
+    (`mat_particle_kickhit_*`), as it does when its 44 systems are in use.
 
 ## Whammy sound effect
 
@@ -369,6 +411,6 @@ differently (the section's note says so).
 ## Turning them off
 
 Set each row back to its default (Reset mods), or set the cvars to `100`, `100`, `100`, `"original"`, `true`, `true`,
-`0` and `ghwor_highway_opacity = 100`. Custom textures: no image in the folder, or `native_x_renderer_texture_replacements =
+`0` and `ghwor_highway_opacity = 100`; the note effects' switches `true`; `ghwor_sustain_leniency_ms = 0`; `ghwor_infinite_front_end = false`. Custom textures: no image in the folder, or `native_x_renderer_texture_replacements =
 ""`. Nothing is then changed: the interpreter's hooks do not run for the mods. Mod packs: switch them off in Mods →
 Packs (or delete `Mods\enabled.txt`).

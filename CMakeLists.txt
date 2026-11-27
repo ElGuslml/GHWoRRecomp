@@ -70,6 +70,7 @@ set(GHWOR_SOURCES
     src/drums.cpp
     src/fence_stamps.cpp
     src/framerate.cpp
+    src/gameplay.cpp
     src/highway_images.cpp
     src/intro.cpp
     src/keyboard.cpp
@@ -79,6 +80,7 @@ set(GHWOR_SOURCES
     src/mods.cpp
     src/highway_effects.cpp
     src/native_x_renderer_ghwor.cpp
+    src/note_effects.cpp
     src/online_text.cpp
     src/options.cpp
     src/players.cpp
