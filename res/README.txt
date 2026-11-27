@@ -139,6 +139,9 @@ when you press PLAY.
     finger for an instant, does not cut the note (as in Clone Hero); it keeps scoring meanwhile.
   - Stage: Crowd (on by default): off hides the crowd during
     songs (the game's Soundcheck cheat); its cheering stays.
+    Venues in Quickplay (all on by default): a switch for each of the 13 venues; off, the game never picks it
+    at random in Quickplay+, Party Play or online (only venues your save has unlocked are picked; with all of
+    them off, any). You can still choose it yourself where the game lets you.
   - Sound: Whammy sound effect (on by default): off, the
     whammy bar no longer bends your sustained notes' pitch (it still wobbles them and fills Star Power).
     Lower the track on a miss (on by default, as on the console), and under it

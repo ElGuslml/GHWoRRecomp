@@ -94,6 +94,7 @@ set(GHWOR_SOURCES
     src/startup.cpp
     src/thread_waits.cpp
     src/timer.cpp
+    src/venues.cpp
     src/widescreen.cpp
 )
 

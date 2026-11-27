@@ -1,0 +1,8 @@
+# The venues Quickplay, Party Play and online play may pick at random (src/venues.cpp, Mods > Stage > Venues in
+# Quickplay; all on by default, as on the console).
+[[midasm_hook]]
+address = 0x820F1778   # mflr r12 (the entry of sub_820F1778, the script function StructureContains: r3 = its params,
+                       # r4 = the script object)
+name = "GHWoRVenueRotationHook"
+registers = ["r3", "r4"]
+return_on_true = true

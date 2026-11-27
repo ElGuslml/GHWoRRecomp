@@ -1,4 +1,4 @@
-# The Mods tab: the note highway, its pictures, the note effects, the crowd, two sounds, custom textures and mod packs
+# The Mods tab: the note highway, its pictures, the note effects, the crowd, the venues, two sounds, custom textures and mod packs
 
 **Status (2026-11-17):**
 - The highway, the crowd and the two sounds: played by Gustavo.
@@ -25,6 +25,7 @@ Every option is off by default, which means the game is as on the console, and e
 | Sustain drop leniency (Gameplay) | `ghwor_sustain_leniency_ms` | 0-200 ms in steps of 5; 0 = the console's |
 | Crowd | `ghwor_crowd` | `true`; `false` hides it |
 | Note effects: hit burst, Star Power burst, sustain sparks, open note and kick wave | `ghwor_fx_hit_burst`, `ghwor_fx_star_power_burst`, `ghwor_fx_sustain`, `ghwor_fx_open_note` | `true`; `false` hides it |
+| Venues in Quickplay (13 switches) | `ghwor_venue_beast_dethroned`, `_cbgbs`, `_hypersphere`, `_infernal_hall`, `_metallic_lab`, `_paramourn_manor`, `_razorback_forest`, `_rush_2112`, `_serpents_stronghold`, `_monument`, `_stage_of_kings`, `_thorn_fortress`, `_wormhole` | `true`; `false` leaves it out of the random choice |
 | Whammy sound effect | `ghwor_whammy_sound` | `true`; `false` keeps the pitch |
 | Lower the track on a miss | `ghwor_miss_lower` | `true`, the console's; `false` never lowers it |
 | Instrument volume on a miss | `ghwor_miss_volume` | 0-100 % in steps of 10; 0 = muted, the console's |
@@ -206,6 +207,16 @@ seen from above, its far end too wide, and the notes came about 18 % slower at 1
     effect starts.
   - The waves and the bass's open sustains: `Create2DParticleSystem` (`sub_822B78E0`) answers 0 for their materials
     (`mat_particle_kickhit_*`), as it does when its 44 systems are in use.
+
+## Venues in Quickplay (launcher 3.37)
+
+- **What it does:** a venue switched off is never picked at random for Quickplay+ (at the start and after each song),
+  Party Play or online play. Only venues the save has unlocked are picked, as on the console. With every venue off,
+  the game picks among all of them.
+- **What stays:** Party Play's pause menu and the lobby still let you choose any venue yourself.
+- **How** (`src/venues.cpp`, `hooks/venues.toml`): `quickplay_choose_random_venue` leaves out the zones in
+  `g_levels_to_remove_from_random_rotation`, the developers' own list, empty in the retail data. `StructureContains`
+  (`sub_820F1778`) answers that a switched-off venue's zone is in it, only for that script.
 
 ## Whammy sound effect
 
@@ -411,6 +422,6 @@ differently (the section's note says so).
 ## Turning them off
 
 Set each row back to its default (Reset mods), or set the cvars to `100`, `100`, `100`, `"original"`, `true`, `true`,
-`0` and `ghwor_highway_opacity = 100`; the note effects' switches `true`; `ghwor_sustain_leniency_ms = 0`; `ghwor_infinite_front_end = false`. Custom textures: no image in the folder, or `native_x_renderer_texture_replacements =
+`0` and `ghwor_highway_opacity = 100`; the note effects' and the venues' switches `true`; `ghwor_sustain_leniency_ms = 0`; `ghwor_infinite_front_end = false`. Custom textures: no image in the folder, or `native_x_renderer_texture_replacements =
 ""`. Nothing is then changed: the interpreter's hooks do not run for the mods. Mod packs: switch them off in Mods →
 Packs (or delete `Mods\enabled.txt`).
