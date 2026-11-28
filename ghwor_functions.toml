@@ -515,3 +515,18 @@ registers = ["r31", "r29"]
 address = 0x823C6708   # mflr r12 (entry of sub_823C6708, DestroyScreenElement: r3 = its params)
 name = "GHWoRHighwayEffectDestroyHook"
 registers = ["r3"]
+
+# More than about 700 songs in one song cache (src/script_pools.cpp): a script hash table out of nodes gets more, and the
+# pool the songs' metadata is copied into is built bigger.
+[[midasm_hook]]
+address = 0x822A9878   # mflr r12 (sub_822A9878: a key inserted in a hash table, which takes the free list's head unchecked)
+name = "GHWoRHashPoolHook"
+registers = ["r3"]
+[[midasm_hook]]
+address = 0x823D0570   # mflr r12 (sub_823D0570: a fixed-size pool built; r4 the item size, r5 the count)
+name = "GHWoRPoolCreateHook"
+registers = ["r3", "r4", "r5"]
+[[midasm_hook]]
+address = 0x823D0548   # li r3,0 (sub_823D0510: the pool in r11 is empty)
+name = "GHWoRPoolEmptyHook"
+registers = ["r11"]

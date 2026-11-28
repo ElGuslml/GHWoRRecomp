@@ -87,6 +87,39 @@ package names them. The game marks them damaged whatever the order, which is why
 If this is reported again, ask whether the Customs Database is in the DLC folder. Details:
 `local_docs/15-dlc-inconsistent-loading.md` (not published).
 
+## More than about 700 songs in one song cache: a crash while it loads (2026-11-21)
+
+Onyx's song cache (`ghwor_custom_cache`, the "GH:WoR Customs Database" of one's own songs) is one package whose
+`cdl*_text.pak.xen` defines every custom song's metadata (`gh6_dlc_songlist` and its props). Onyx notes that slightly
+over 700 songs in one file crash the game; here a cache of 1746 songs (2.2 MB) crashed it seconds after the content
+listing, every start, with a new save too: "write of guest 0x00000000", lr 0x822A9880, guest stack 822A99A0 822A86B8
+822A8DCC 823A4958 (the script that loads the pak). 700 songs loaded; 1275 songs in a pak cut under 1 MB (the four
+other languages' strings left empty) crashed the same way, so the limit is not the file's size.
+
+Two fixed sizes run out, one after the other (`src/script_pools.cpp` has the details):
+
+- A script hash table out of nodes. `sub_822A9878` inserts a key and takes the table's free list head without a check:
+  with the list empty the node is address 0. These tables hold 2148 nodes. `GHWoRHashPoolHook`, at the function's
+  start, gives an empty list 4096 more from the system heap; nodes only go back to the free list, so those are reused,
+  never freed. With the 1746 songs, four tables grew once each.
+- The pool the inserted values are copied into, 6400 items of 204 bytes (`sub_822B1F48` -> `sub_823D0510`, which
+  returns 0 from an empty pool, unchecked here: "write of guest 0x00000070", lr 0x822CA368). The engine's pools cannot
+  grow later (an item goes back to its pool only if it lies in the pool's block, to the main heap otherwise), so
+  `GHWoRPoolCreateHook` builds the pools listed in `ghwor_pool_counts` bigger: by default the 204-byte one with 20000
+  items and a 12-byte one (which also runs out with these songs; its callers fall back to the heap) with 60000, about
+  5 MB more of the game's heap. Much bigger is not better: with 100000 items (20 MB) the game
+  started and listed the songs, but a song then never finished loading (no error, the loading screen stayed).
+
+With both, the 1746 songs' cache loads and Quickplay+ lists them with the disc's 110 (checked on one player's
+collection, 70 multi-song packages and that cache). `ghwor_hash_pool_grow = false` and `ghwor_pool_counts = ""` are
+the console's sizes. A pool that runs out is logged once (`[script pools] pool ... ran out`), with the value that
+builds it bigger; the small-block pools (20 to 56 bytes) run out in normal play and fall back to the heap.
+
+Also seen with that collection, not changed: Quickplay+ took the songs of one `cdl*_text.pak` only, the one with the
+highest `cdl` number. Packages of 25 or 50 songs each, every one with its own text pak, showed only the last
+package's songs; with Onyx's one-song packages the cache (`cdl2000000000`, above every song's number) is that pak. One
+cache with every song in it is the way to have them all.
+
 ## Turning it off
 
 Turn the package (or its game's group) off on the DLC page. Without a DLC folder chosen, the game's list is not
