@@ -30,7 +30,7 @@ Windows: no emulator to set up, sharp graphics, wide screens, high frame rates, 
 > This project is not affiliated with or endorsed by Microsoft, Activision or the game's developers.
 
 > [!NOTE]
-> 🤘 **Version 1.1.** Songs have been played on an Xbox 360 guitar, on drums and singing.
+> 🤘 **Version 1.2.** Songs have been played on an Xbox 360 guitar, on drums and singing.
 > Guitar Hero: Warriors of Rock shares its engine with Guitar Hero 5, and what
 > [GH5Recomp](https://github.com/ElGuslml/GH5Recomp), [GHVanHRecomp](https://github.com/ElGuslml/GHVanHRecomp) and
 > [GHMetalRecomp](https://github.com/ElGuslml/GHMetalRecomp) fix and add is here too. If something goes wrong, please
