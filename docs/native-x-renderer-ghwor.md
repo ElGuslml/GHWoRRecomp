@@ -445,6 +445,15 @@ crowd and the band before the screen effects; the note highway and the HUD come 
   view by depth. Ultra 0.41 ms, the frame 2.85 ms (250 -> 298 FPS uncapped on that song); the edges stay sharp in the
   occlusion alone (`native_x_renderer_ao_debug`, the rocker creator). **Off:** `native_x_renderer_ao_resolution =
   "full"`.
+- **Its denoise and strength, as Rock Band 2's (NativeXRenderer D187, 2026-11-27):** without DLSS or FSR 3.1 XeGTAO's
+  noise is the same in every frame and only the spatial denoise removes it; in Rock Band 2 two passes left grain on
+  the characters' skin at every quality. `src/startup.cpp`: `native_x_renderer_ao_denoise = 4` (the library's default
+  is two passes), `native_x_renderer_ao_denoise_blur = 0.5` (XeGTAO's 1.2: lower blurs more),
+  `native_x_renderer_ao_strength = 1.5`; `src/options.cpp` sets `native_x_renderer_ao_noise_moves` above 60 FPS (the
+  noise changed every frame, which the eye averages away). With DLAA, DLSS or FSR 3.1, which change the noise every
+  frame and accumulate it away, `src/options.cpp` sets `native_x_renderer_ao_denoise = 0` (the library's one pass; the
+  log's "[options] native_x_renderer_ao_denoise 4 -> 0"); the blur stays 0.5. **As before:** `native_x_renderer_ao_denoise = 0`,
+  `native_x_renderer_ao_denoise_blur = 1.2`, `native_x_renderer_ao_strength = 1.0` in `ghwor.toml`.
 
 **Texture detail** (`native_x_renderer_texture_lod_bias`: 0, -0.5, -1; Settings > Graphics > Texture detail: Normal,
 Sharper, Sharpest): the 3D view's textures half a mip level or a whole one sharper; the highway and the HUD unchanged.

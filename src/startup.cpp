@@ -140,6 +140,15 @@ native_x_renderer_record_thread = true
 # 1440. Measured at 3440x1440 on the bench song with the venue every frame: Ultra 1.36 -> 0.41 ms of the GPU a frame,
 # the frame 3.87 -> 2.85 ms. "full" = at the view's resolution, as before.
 native_x_renderer_ao_resolution = "half"
+# The ambient occlusion's denoise (NativeXRenderer D187), as Rock Band 2's: four edge-aware passes instead of two, each
+# blurring more (the pixel's own weight 0.5 instead of XeGTAO's 1.2). Without DLSS or FSR 3.1 its noise is not
+# accumulated away, and two passes left grain on the characters' skin (Gustavo, Rock Band 2 at 3440x1440, 2026-11-27).
+# With DLAA, DLSS or FSR 3.1, which accumulate it, src/options.cpp sets the library's single pass instead; above 60 FPS
+# it also has the noise change every frame.
+native_x_renderer_ao_denoise = 4
+native_x_renderer_ao_denoise_blur = 0.5
+# The ambient occlusion's strength: 1.5 (an exponent on its multiplier; 1 as computed), Gustavo's choice in Rock Band 2.
+native_x_renderer_ao_strength = 1.5
 # Where the vertical blank runs on the SDK's timer (a G-Sync / FreeSync display, V-Sync off): its ticks within a few
 # microseconds of their time (700 us of spinning each; without, up to half a millisecond late), as the display shows
 # each frame when it comes.

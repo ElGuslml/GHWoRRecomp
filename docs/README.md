@@ -6,7 +6,7 @@ the symptom, the cause, the fix and how to turn the fix off, so that you can che
 | Note | Status |
 |---|---|
 | [The fixes ported from Guitar Hero 5](fixes-from-gh5.md) | In testing; frame rates above 240 (300, 360, 480, Unlimited with V-Sync off) played by Gustavo, 2026-11-18 |
-| [Ambient occlusion and texture detail](native-x-renderer-ghwor.md#ambient-occlusion-and-texture-detail-nativexrenderer-d178-d179-2026-11-18) | Played: NativeXRenderer's XeGTAO (D178) in place of the game's own, the camera from the view's draws; the 3D view's mip bias (D179) |
+| [Ambient occlusion and texture detail](native-x-renderer-ghwor.md#ambient-occlusion-and-texture-detail-nativexrenderer-d178-d179-2026-11-18) | Played: NativeXRenderer's XeGTAO (D178) in place of the game's own, the camera from the view's draws; the 3D view's mip bias (D179); at half resolution (D184); four denoise passes, more blur and strength 1.5 as Rock Band 2 (D187) |
 | [Speakers and the game's Dolby Digital](speakers-and-dolby.md) | Played: the game told its speakers (Dolby Digital only with 5.1), its timing kept for every choice |
 | [NativeXRenderer in Guitar Hero: Warriors of Rock](native-x-renderer-ghwor.md) | In testing, the default renderer: SMAA and FXAA on the scene's copy, and DLAA, DLSS and FSR 3.1 once a pair of frames with the split render (NativeXRenderer's D159); two launcher rows for them, off by default and in testing: the screen effects before the upscaler and DLSS one frame late (D164, DLSS's upscaling modes only, not DLAA) |
 | [Downloadable content](dlc.md) | Working: the player's DLC folder, read in place (0.1.1-beta.2); Guitar Hero 5's Megadeth Track Pack adds its songs to Quickplay+ |

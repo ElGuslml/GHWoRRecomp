@@ -171,6 +171,11 @@ void LoadLauncherOptions(const std::filesystem::path& options_path,
 #endif
     if (frame_rate > 60) {
       rex::cvar::SetFlagByName("video_mode_refresh_rate", std::to_string(rate));
+      // NativeXRenderer's ambient occlusion (the launcher's row): without a temporal upscaler its noise is the same in
+      // every frame; changed every frame (its D187) the eye averages the grain away at a high frame rate (Gustavo at
+      // 160 in Rock Band 2, 2026-11-27), where at 60 it could shimmer. Above 60 only; at 60 ghwor.toml's value counts.
+      // With DLSS or FSR 3.1 the noise changes every frame anyway.
+      rex::cvar::SetFlagByName("native_x_renderer_ao_noise_moves", "true");
     }
   }
 
@@ -212,6 +217,17 @@ void LoadLauncherOptions(const std::filesystem::path& options_path,
       REXLOG_INFO("[options] the split render stays on with {}: the 3D scene over two frames as on the console, the "
                   "upscaler once a pair, at the whole scene's copy (NativeXRenderer's D159)",
                   aa);
+    }
+    // The ambient occlusion's denoise (NativeXRenderer D187; src/startup.cpp's four passes, Rock Band 2's): those passes
+    // remove a noise that is the same in every frame without a temporal upscaler. DLAA, DLSS and FSR 3.1 change it in
+    // every frame and accumulate it away, so with them the library's own single pass (native_x_renderer_ao_denoise =
+    // 0): the occlusion no softer than it needs to be and three passes fewer on the GPU (Gustavo, 2026-11-27). The
+    // blur (native_x_renderer_ao_denoise_blur) is left as it is.
+    if (temporal && rex::cvar::Query<int32_t>("native_x_renderer_ao_denoise") > 1) {
+      REXLOG_INFO("[options] native_x_renderer_ao_denoise {} -> 0 with {}: one denoise pass, the upscaler accumulates "
+                  "the ambient occlusion's noise away",
+                  rex::cvar::Query<int32_t>("native_x_renderer_ao_denoise"), aa);
+      rex::cvar::SetFlagByName("native_x_renderer_ao_denoise", "0");
     }
   }
 
